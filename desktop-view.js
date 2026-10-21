@@ -37,7 +37,7 @@ osStyles.innerHTML = `
     .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; position: relative; }
     .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #050505; border: 2px solid var(--neon-green); padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; box-shadow: var(--glow-green); }
     .bb-cell { width: 100%; height: 100%; border: 1px solid #113311; box-sizing: border-box; }
-    .bb-cell.filled { background: var(--neon-green); box-shadow: var(--glow-green); }
+    .bb-cell.filled { background: var(--neon-green) !important; box-shadow: var(--glow-green) !important; }
     .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 1px dashed #113311; padding: 6px; box-sizing: border-box; }
     .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 1px dashed var(--neon-green); }
     .bb-piece .bb-cell { width: 14px; height: 14px; }
