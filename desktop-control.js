@@ -216,10 +216,13 @@ document.querySelectorAll('.icon').forEach(icon => {
                 return;
             }
             icon.style.left = snapX + 'px'; icon.style.top = snapY + 'px';
+            
             const trashIcon = document.getElementById('icon-win-trash');
-            if (icon.id !== 'icon-win-trash' && trashIcon) {
-                let tRect = trashIcon.getBoundingClientRect();
-                if (ev.clientX >= tRect.left && ev.clientX <= tRect.right && ev.clientY >= tRect.top && ev.clientY <= tRect.bottom) {
+            if (icon.id !== 'icon-win-trash' && trashIcon && trashIcon.style.display !== 'none') {
+                let tX = trashIcon.offsetLeft;
+                let tY = trashIcon.offsetTop;
+                let distance = Math.sqrt(Math.pow(snapX - tX, 2) + Math.pow(snapY - tY, 2));
+                if (distance <= 45) {
                     icon.style.display = 'none';
                     trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
                     renderTrashList();
@@ -241,7 +244,7 @@ document.querySelectorAll('.os-window').forEach(win => {
         }
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
         document.addEventListener('pointermove', onPointerMove);
-        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); });
+        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
     });
 });
 
