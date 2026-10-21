@@ -1,10 +1,21 @@
+(function checkDeviceAccess() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isMobile && !isStandalone) {
+        document.getElementById('pwa-install-overlay').style.display = 'flex';
+        return;
+    }
+    document.getElementById('boot-screen').style.display = 'block';
+    setTimeout(printBootLines, 500);
+})();
+
 const bootScreen = document.getElementById('boot-screen'), mainContainer = document.getElementById('main-container');
 let bootLine = 0;
 function printBootLines() {
     if (bootLine < bootLogs.length) { bootScreen.innerHTML += bootLogs[bootLine] + '<br>'; bootScreen.scrollTop = bootScreen.scrollHeight; bootLine++; setTimeout(printBootLines, 260); }
     else { setTimeout(() => { bootScreen.style.display = 'none'; mainContainer.style.display = 'flex'; document.getElementById('user-input').focus(); }, 300); }
 }
-printBootLines();
+
 function updateTimer() {
     const distance = targetDate - new Date().getTime(); const label = document.getElementById('countdown'); if (!label) return;
     if (distance < 0) { label.innerHTML = "00:00:00:00"; return; }
