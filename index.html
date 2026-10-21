@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The End of Beginnings</title>
+    <link rel="manifest" href="manifest.json">
     <style>
         :root {
             --neon-green: #33ff33;
@@ -61,19 +62,19 @@
         .lang-switch.rage-mode { color: var(--neon-red) !important; border: 1px dashed var(--neon-red); box-shadow: var(--glow-red); text-shadow: var(--glow-red); animation: pulse 0.5s infinite alternate; }
         .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: #000; padding: 25px; max-width: 600px; width: 100%; text-align: center; line-height: 1.6; font-size: 15px; white-space: pre-line; }
-        .pwa-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; box-sizing: border-box; }
-        .pwa-box { border: 2px dashed var(--neon-green); padding: 25px; box-shadow: var(--glow-green); max-width: 400px; width: 100%; line-height: 1.5; font-size: 15px; }
+        .pwa-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; box-sizing: border-box; }
+        .pwa-box { border: 2px solid var(--neon-green); padding: 20px; box-shadow: var(--glow-green); max-width: 450px; width: 100%; line-height: 1.6; font-size: 15px; }
         @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
         a { color: var(--neon-green); text-decoration: underline; cursor: pointer; pointer-events: auto; }
-        @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; .modal-content { font-size: 14px; } }
+        @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; } .modal-content { font-size: 14px; } }
         @media (max-width: 480px) { #main-container { padding: 10px; } .timer-wrapper { top: 4%; width: 85%; min-width: 0; } .timer { font-size: 19px; } .secret-active .timer { font-size: 22px; } .terminal-box { margin-top: 80px; } .terminal-output { font-size: 15px; min-height: 120px; margin-bottom: 20px; } .input-group { flex-direction: column; gap: 8px; } .btn-submit { width: 100%; padding: 12px; } .terminal-input { padding: 12px; font-size: 15px; } .info-btn { bottom: 15px; left: 15px; } .lang-switch { bottom: 15px; right: 15px; } }
     </style>
 </head>
 <body>
     <div id="pwa-install-overlay" class="pwa-overlay">
         <div class="pwa-box">
-            <p>СИСТЕМА МАСКИРОВКИ АКТИВНА.</p><br>
-            <p>Чтобы данный сайт работал вам нужно добавить его на экран домой через меню браузера (нажмите на 3 точки или кнопку "Поделиться" и выберите "На экран 'Домой'").</p>
+            <p>Чтобы данный сайт работал вам нужно добавить его на экран домой.</p><br>
+            <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
 
