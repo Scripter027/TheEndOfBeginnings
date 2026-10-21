@@ -22,9 +22,9 @@ window.initBlockBlast = function() {
         const scoreLabel = document.getElementById('bb-score');
         if (!scoreLabel) return;
         if (currentLang === 'ru') {
-            scoreLabel.innerText = `СЧЕТ: \${currentScore} | РЕКОРД: \${highScore}`;
+            scoreLabel.innerText = "СЧЕТ: " + currentScore + " | РЕКОРД: " + highScore;
         } else {
-            scoreLabel.innerText = `SCORE: \${currentScore} | HIGH: \${highScore}`;
+            scoreLabel.innerText = "SCORE: " + currentScore + " | HIGH: " + highScore;
         }
     }
 
@@ -47,8 +47,8 @@ window.initBlockBlast = function() {
             availablePieces.push(shape);
             const pieceWrap = document.createElement('div');
             pieceWrap.className = 'bb-piece'; pieceWrap.dataset.index = i;
-            pieceWrap.style.gridTemplateRows = `repeat(\${shape.length}, 14px)`;
-            pieceWrap.style.gridTemplateColumns = `repeat(\${shape.length}, 14px)`;
+            pieceWrap.style.gridTemplateRows = "repeat(" + shape.length + ", 14px)";
+            pieceWrap.style.gridTemplateColumns = "repeat(" + shape.length + ", 14px)";
             
             shape.forEach(row => {
                 row.forEach(val => {
@@ -70,7 +70,7 @@ window.initBlockBlast = function() {
             
             function onMove(ev) {
                 let dx = ev.clientX - startX, dy = ev.clientY - startY;
-                el.style.transform = `translate(\${dx}px, \${dy}px) scale(1.1)`;
+                el.style.transform = "translate(" + dx + "px, " + dy + "px) scale(1.1)";
                 el.style.zIndex = "10000";
             }
             
@@ -155,7 +155,9 @@ window.initBlockBlast = function() {
                 updateScoreLabel();
             }
             const isRu = (currentLang === 'ru');
-            document.getElementById('bb-msg').innerHTML = `<span style='color:var(--neon-red);font-weight:bold;'>\${isRu?'ИГРА ОКОНЧЕНА.':'GAME OVER.'}</span><br><button id='bb-rst-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;margin-top:5px;font-weight:bold;font-family:inherit;'>\${isRu?'СНАЧАЛА':'RESTART'}</button>`;
+            let mainMsg = isRu ? 'ИГРА ОКОНЧЕНА.' : 'GAME OVER.';
+            let rstText = isRu ? 'СНАЧАЛА' : 'RESTART';
+            document.getElementById('bb-msg').innerHTML = "<span style='color:var(--neon-red);font-weight:bold;'>" + mainMsg + "</span><br><button id='bb-rst-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;margin-top:5px;font-weight:bold;font-family:inherit;'>" + rstText + "</button>";
             document.getElementById('bb-rst-btn').addEventListener('pointerdown', () => window.resetBlockBlastGame());
         }
     }
