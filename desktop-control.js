@@ -4,6 +4,7 @@ let desktopLangClicks = 0;
 let trashedApps = {};
 const GRID_X = 100;
 const GRID_Y = 90;
+
 window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-bsod') { document.getElementById('bsodScreen').style.display = 'block'; return; }
     const win = document.getElementById(id);
@@ -14,17 +15,20 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
 };
+
 window.closeOSWindow = function(id) {
     const win = document.getElementById(id);
     if (win) win.style.display = 'none';
     delete window.openWindowsTrack[id];
     renderTaskbarApps();
 };
+
 window.minimizeOSWindow = function(id) {
     const win = document.getElementById(id);
     if (win) win.style.display = 'none';
     renderTaskbarApps();
 };
+
 window.toggleWindowFromTaskbar = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
@@ -32,6 +36,7 @@ window.toggleWindowFromTaskbar = function(id) {
     else { win.style.display = 'block'; win.style.zIndex = ++window.osZIndex; }
     renderTaskbarApps();
 };
+
 function renderTaskbarApps() {
     const container = document.getElementById('taskbar-apps');
     if (!container) return;
@@ -46,11 +51,14 @@ function renderTaskbarApps() {
         container.appendChild(btn);
     }
 }
+
 window.exitToTerminal = function() {
     document.getElementById('desktop-env').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
+    document.getElementById('response-text').innerText = langData[currentLang].defaultPrompt;
     document.getElementById('user-input').focus();
 };
+
 window.toggleDesktopLanguage = function() {
     desktopLangClicks++;
     if (desktopLangClicks >= 10) {
@@ -64,6 +72,7 @@ window.toggleDesktopLanguage = function() {
     if (langBtn) langBtn.innerText = currentLang.toUpperCase();
     updateDesktopTexts();
 };
+
 function updateDesktopTexts() {
     const trashBody = document.getElementById('win-trash-body');
     const searchBody = document.getElementById('search-browser-body');
@@ -75,6 +84,7 @@ function updateDesktopTexts() {
         if(searchBody) searchBody.innerHTML = "<strong>Error 404:</strong> No connection to the external gateway.";
     }
 }
+
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     if (step === 1) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(2)">📁 ТЫ ИЗДЕВАЕШЬСЯ</span>';
@@ -83,10 +93,12 @@ window.advanceNestedFolder = function(step) {
     else if (step === 4) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 СМОТРИ РАЗ ХОЧЕШЬ</span>';
     else if (step === 5) body.innerHTML = '<p style="color:var(--bright-green)">[Здесь абсолютно пусто...]</p>';
 };
+
 window.emptyTrash = function() {
     trashedApps = {};
     renderTrashList();
 };
+
 window.restoreApp = function(id) {
     const icon = document.getElementById(id);
     if (icon) {
@@ -95,6 +107,7 @@ window.restoreApp = function(id) {
         renderTrashList();
     }
 };
+
 function renderTrashList() {
     const container = document.getElementById('trashListContainer');
     if (!container) return;
@@ -109,6 +122,7 @@ function renderTrashList() {
     }
     if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
 }
+
 window.activateDesktopMode = function() {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('boot-screen').style.display = 'none';
@@ -117,6 +131,7 @@ window.activateDesktopMode = function() {
     if (window.initBlockBlast) window.initBlockBlast();
     renderTrashList();
 };
+
 document.querySelectorAll('.icon').forEach(icon => {
     icon.addEventListener('dblclick', () => { if(icon.style.display !== 'none') window.openOSWindow(icon.dataset.id, icon.dataset.title, icon.dataset.icon); });
     let lastTap = 0;
@@ -160,6 +175,7 @@ document.querySelectorAll('.icon').forEach(icon => {
         });
     });
 });
+
 document.querySelectorAll('.os-window').forEach(win => {
     win.querySelector('.window-header').addEventListener('pointerdown', function(e) {
         if (e.target.classList.contains('window-btn')) return;
@@ -172,6 +188,16 @@ document.querySelectorAll('.os-window').forEach(win => {
         }
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
         document.addEventListener('pointermove', onPointerMove);
-        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
+        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.onmouseup = null; });
     });
 });
+
+function updateTaskbarTimer() {
+    const distance = targetDate - new Date().getTime();
+    const tbLabel = document.getElementById('taskbar-timer');
+    if (!tbLabel) return;
+    if (distance < 0) { tbLabel.innerHTML = "00:00:00:00"; return; }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    tbLabel.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+}
+setInterval(updateTaskbarTimer, 1000);
