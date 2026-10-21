@@ -1,14 +1,19 @@
 window.osZIndex = 3000;
 window.openWindowsTrack = {};
+let desktopLangClicks = 0;
 
 window.openOSWindow = function(id, title, iconStr) {
+    if (id === 'win-bsod') {
+        document.getElementById('bsodScreen').style.display = 'block';
+        return;
+    }
     const win = document.getElementById(id);
     if (!win) return;
     win.style.display = 'block';
     win.style.zIndex = ++window.osZIndex;
     if (window.innerWidth < 600) { win.style.left = '4vw'; win.style.top = '10vh'; }
     if (!window.openWindowsTrack[id]) {
-        window.openWindowsTrack[id] = iconStr || '⚙️';
+        window.openWindowsTrack[id] = iconStr || '📦';
         renderTaskbarApps();
     }
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
@@ -52,6 +57,19 @@ function renderTaskbarApps() {
 }
 
 window.toggleDesktopLanguage = function() {
+    desktopLangClicks++;
+    if (desktopLangClicks >= 10) {
+        const env = document.getElementById('desktop-env');
+        const banner = document.getElementById('rageBanner');
+        env.classList.add('rage-active');
+        banner.style.display = 'block';
+        setTimeout(() => {
+            env.classList.remove('rage-active');
+            banner.style.display = 'none';
+            desktopLangClicks = 0;
+        }, 10000);
+    }
+
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
     const langBtn = document.getElementById('taskbar-lang-btn');
     if (langBtn) langBtn.innerText = currentLang.toUpperCase();
@@ -72,6 +90,15 @@ window.toggleDesktopLanguage = function() {
     }
 };
 
+window.advanceNestedFolder = function(step) {
+    const body = document.getElementById('nestedFolderBody');
+    if (step === 1) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(2)">📁 ТЫ ИЗДЕВАЕШЬСЯ</span>';
+    else if (step === 2) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(3)">📁 НЕ ОТКРЫВАЙ СКАЗАЛ</span>';
+    else if (step === 3) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(4)">📁 ЛАДНО</span>';
+    else if (step === 4) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 СМОТРИ РАЗ ХОЧЕШЬ</span>';
+    else if (step === 5) body.innerHTML = '<p style="color:var(--bright-green)">[Здесь абсолютно пусто...]</p>';
+};
+
 window.activateDesktopMode = function() {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('boot-screen').style.display = 'none';
@@ -85,6 +112,43 @@ window.activateDesktopMode = function() {
     initZipLogic();
 };
 
+document.querySelectorAll('.icon').forEach(icon => {
+    icon.addEventListener('dblclick', () => {
+        window.openOSWindow(icon.dataset.id, icon.dataset.title, icon.dataset.icon);
+    });
+    
+    let lastTap = 0;
+    icon.addEventListener('touchend', (e) => {
+        let currentTime = new Date().getTime();
+        let tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault();
+            window.openOSWindow(icon.dataset.id, icon.dataset.title, icon.dataset.icon);
+        }
+        lastTap = currentTime;
+    });
+
+    icon.addEventListener('pointerdown', function(e) {
+        icon.style.zIndex = "5000";
+        let shiftX = e.clientX - icon.getBoundingClientRect().left;
+        let shiftY = e.clientY - icon.getBoundingClientRect().top;
+        
+        function moveAt(pageX, pageY) {
+            let container = document.getElementById('desktopIconsContainer').getBoundingClientRect();
+            let x = pageX - container.left - shiftX;
+            let y = pageY - container.top - shiftY;
+            icon.style.left = x + 'px'; icon.style.top = y + 'px';
+        }
+        function onPointerMove(ev) { moveAt(ev.clientX, ev.clientY); }
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', function onUp() {
+            icon.style.zIndex = "auto";
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onUp);
+        });
+    });
+});
+
 document.querySelectorAll('.os-window').forEach(win => {
     const header = win.querySelector('.window-header');
     header.addEventListener('pointerdown', function(e) {
@@ -93,9 +157,8 @@ document.querySelectorAll('.os-window').forEach(win => {
         let shiftX = e.clientX - win.getBoundingClientRect().left;
         let shiftY = e.clientY - win.getBoundingClientRect().top;
         function moveAt(pageX, pageY) {
-            let left = pageX - shiftX; let top = pageY - shiftY;
-            if (top < 0) top = 0;
-            win.style.left = left + 'px'; win.style.top = top + 'px';
+            let top = pageY - shiftY; if (top < 0) top = 0;
+            win.style.left = (pageX - shiftX) + 'px'; win.style.top = top + 'px';
         }
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
         document.addEventListener('pointermove', onPointerMove);
