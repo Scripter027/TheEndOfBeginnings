@@ -17,7 +17,7 @@ window.initDinoGame = function() {
         gameSpeed = 6; score = 0; isGameOver = false; isStarted = false;
         dino.y = 110; dino.velocity = 0; dino.isJumping = false;
         obstacles = [];
-        document.getElementById('dino-hint').innerHTML = "Нажми ПРОБЕЛ / Кликни для прыжка и старта";
+        document.getElementById('dino-hint').innerHTML = "Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта";
     };
 
     function spawnObstacle() {
@@ -98,5 +98,10 @@ window.initDinoGame = function() {
         if (!isStarted) { isStarted = true; document.getElementById('dino-hint').innerText = "Прыжок: ПРОБЕЛ / Клик"; }
         if (!dino.isJumping) { dino.velocity = dino.jumpPower; dino.isJumping = true; }
     };
-    canvas.addEventListener('click', trigger);
+    canvas.addEventListener('mousedown', (e) => { if(e.button === 0) trigger(); });
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && document.getElementById('win-dino').style.display === 'block') {
+            e.preventDefault(); trigger();
+        }
+    });
 };
