@@ -65,16 +65,19 @@ const desktopHTML = `
         </div>
 
         <div class="desktop-icons-container" id="desktopIconsContainer">
-            <div class="icon" style="top:20px; left:20px;" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
-            <div class="icon" style="top:20px; left:120px;" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
-            <div class="icon" style="top:20px; left:220px;" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
-            <div class="icon" style="top:140px; left:20px;" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
-            <div class="icon" style="top:140px; left:120px;" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
-            <div class="icon" style="top:140px; left:220px;" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
-            <div class="icon" style="top:260px; left:20px;" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
-            <div class="icon" style="top:260px; left:120px;" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
-            <div class="icon" style="top:260px; left:220px;" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
-            <div class="icon" style="top:380px; left:20px;" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
+            <div class="icon" style="top:0px; left:0px;" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
+            <div class="icon" style="top:90px; left:0px;" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
+            <div class="icon" style="top:180px; left:0px;" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
+            
+            <div class="icon" style="top:0px; left:100px;" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
+            <div class="icon" style="top:90px; left:100px;" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
+            
+            <div class="icon" style="top:0px; left:200px;" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
+            <div class="icon" style="top:90px; left:200px;" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
+            <div class="icon" style="top:180px; left:200px;" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
+            
+            <div class="icon" style="top:270px; left:0px;" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
+            <div class="icon" style="top:270px; left:100px;" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
         </div>
         
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
@@ -163,6 +166,7 @@ const desktopHTML = `
         </div>
     </div>
 `;
+
 const divMock = document.createElement('div');
 divMock.innerHTML = desktopHTML;
 document.body.appendChild(divMock.firstElementChild);
