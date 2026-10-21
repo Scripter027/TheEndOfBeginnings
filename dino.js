@@ -85,14 +85,8 @@ window.initDinoGame = function() {
             if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
                 isGameOver = true;
                 document.getElementById('dino-hint').innerHTML = "<button id='dino-restart-btn' style='background:var(--neon-green);color:#000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>ПЕРЕЗАПУСК</button>";
-                document.getElementById('dino-restart-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    window.resetDinoGame();
-                });
-                document.getElementById('dino-restart-btn').addEventListener('touchstart', (e) => {
-                    e.stopPropagation();
-                    window.resetDinoGame();
-                });
+                const rst = document.getElementById('dino-restart-btn');
+                rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
             }
             if (o.x < -30) obstacles.splice(i, 1);
         }
@@ -107,11 +101,6 @@ window.initDinoGame = function() {
         if (!isStarted) { isStarted = true; document.getElementById('dino-hint').innerText = "Прыжок: ПРОБЕЛ / Клик"; }
         if (!dino.isJumping) { dino.velocity = dino.jumpPower; dino.isJumping = true; }
     };
-    canvas.addEventListener('mousedown', (e) => { if(e.button === 0) trigger(e); });
-    canvas.addEventListener('touchstart', (e) => { trigger(e); }, {passive: false});
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && document.getElementById('win-dino').style.display === 'block') {
-            trigger(e);
-        }
-    });
+    canvas.addEventListener('pointerdown', (e) => { trigger(e); });
+    window.addEventListener('keydown', (e) => { if (e.code === 'Space' && document.getElementById('win-dino').style.display === 'block') trigger(e); });
 };
