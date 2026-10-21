@@ -39,7 +39,7 @@ osStyles.innerHTML = `
     .bb-cell { width: 100%; height: 100%; border: 1px solid #113311; box-sizing: border-box; }
     .bb-cell.filled { background: var(--neon-green); box-shadow: var(--glow-green); }
     .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 1px dashed #113311; padding: 6px; box-sizing: border-box; }
-    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; user-select: none; }
+    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 1px dashed var(--neon-green); }
     .bb-piece .bb-cell { width: 14px; height: 14px; }
     .rage-banner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold; border: 4px solid #ff3333; background: #000000; color: #ff3333; padding: 20px 4px; text-align: center; z-index: 9999; box-shadow: 0 0 30px #ff3333; width: 90%; max-width: 450px; }
     .bsod-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0000aa; color: #ffffff; z-index: 99999; font-family: monospace; padding: 40px 20px; box-sizing: border-box; text-shadow: none; font-size: 14px; line-height: 1.6; }
