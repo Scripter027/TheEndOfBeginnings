@@ -126,11 +126,11 @@ function updateDesktopTexts() {
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     const isRu = (currentLang === 'ru');
-    if (step === 1) body.innerHTML = `<span class="nested-folder-link" onclick="advanceNestedFolder(2)">📁 \${isRu?'ТЫ ИЗДЕВАЕШЬСЯ':'ARE YOU KIDDING ME'}</span>`;
-    else if (step === 2) body.innerHTML = `<span class="nested-folder-link" onclick="advanceNestedFolder(3)">📁 \${isRu?'НЕ ОТКРЫВАЙ СКАЗАЛ':'I SAID DO NOT OPEN'}</span>`;
-    else if (step === 3) body.innerHTML = `<span class="nested-folder-link" onclick="advanceNestedFolder(4)">📁 \${isRu?'ЛАДНО':'FINE'}</span>`;
-    else if (step === 4) body.innerHTML = `<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 \${isRu?'СМОТРИ РАЗ ХОЧЕШЬ':'LOOK IF YOU WANT'}</span>`;
-    else if (step === 5) body.innerHTML = `<p style="color:var(--bright-green)">\${isRu?'[Здесь абсолютно пусто...]':'[It is absolutely empty here...]'}</p>';
+    if (step === 1) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(2)">📁 ' + (isRu ? 'ТЫ ИЗДЕВАЕШЬСЯ' : 'ARE YOU KIDDING ME') + '</span>';
+    else if (step === 2) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(3)">📁 ' + (isRu ? 'НЕ ОТКРЫВАЙ СКАЗАЛ' : 'I SAID DO NOT OPEN') + '</span>';
+    else if (step === 3) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(4)">📁 ' + (isRu ? 'ЛАДНО' : 'FINE') + '</span>';
+    else if (step === 4) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 ' + (isRu ? 'СМОТРИ РАЗ ХОЧЕШЬ' : 'LOOK IF YOU WANT') + '</span>';
+    else if (step === 5) body.innerHTML = '<p style="color:var(--bright-green)">' + (isRu ? '[Здесь абсолютно пусто...]' : '[It is absolutely empty here...]') + '</p>';
 };
 
 window.emptyTrash = function() {
@@ -187,7 +187,6 @@ document.querySelectorAll('.icon').forEach(icon => {
             setTimeout(() => { if(icon.offsetTop === initialTop && icon.offsetLeft === initialLeft && icon.style.display !== 'none') window.openOSWindow('win-trash', currentLang==='ru'?'Корзина':'Trash', '🗑️'); }, 200);
         }
         icon.style.zIndex = "5000";
-        icon.style.borderStyle = "solid";
         let shiftX = e.clientX - icon.getBoundingClientRect().left;
         let shiftY = e.clientY - icon.getBoundingClientRect().top;
         let oldTop = icon.style.top, oldLeft = icon.style.left;
@@ -201,7 +200,6 @@ document.querySelectorAll('.icon').forEach(icon => {
         document.addEventListener('pointermove', onPointerMove);
         document.addEventListener('pointerup', function onUp(ev) {
             icon.style.zIndex = "auto";
-            icon.style.borderStyle = "dashed";
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
             
