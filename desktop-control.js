@@ -12,8 +12,7 @@ window.openOSWindow = function(id, title, iconStr) {
     win.style.display = 'block'; win.style.zIndex = ++window.osZIndex;
     if (window.innerWidth < 600) { win.style.left = '4vw'; win.style.top = '10vh'; }
     if (!window.openWindowsTrack[id]) {
-        let localizedTitle = iconStr || '📦';
-        window.openWindowsTrack[id] = localizedTitle;
+        window.openWindowsTrack[id] = iconStr || '📦';
         renderTaskbarApps();
     }
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
@@ -134,23 +133,42 @@ window.advanceNestedFolder = function(step) {
     else if (step === 5) body.innerHTML = `<p style="color:var(--bright-green)">${isRu?'[Здесь абсолютно пусто...]':'[It is absolutely empty here...]'}</p>`;
 };
 
-window.emptyTrash = function() { trashedApps = {}; renderTrashList(); };
-window.restoreApp = function(id) { const icon = document.getElementById(id); if (icon) { icon.style.display = 'flex'; delete trashedApps[id]; renderTrashList(); } };
+window.emptyTrash = function() {
+    trashedApps = {};
+    renderTrashList();
+};
+
+window.restoreApp = function(id) {
+    const icon = document.getElementById(id);
+    if (icon) {
+        icon.style.display = 'flex';
+        delete trashedApps[id];
+        renderTrashList();
+    }
+};
 
 function renderTrashList() {
     const container = document.getElementById('trashListContainer');
-    if (!container) return; container.innerHTML = ''; let hasItems = false;
+    if (!container) return;
+    container.innerHTML = '';
+    let hasItems = false;
     for (const id in trashedApps) {
-        hasItems = true; const item = document.createElement('div'); item.className = 'trash-item';
-        item.innerHTML = `<span>${trashedApps[id]}</span><button class="trash-btn" onclick="restoreApp('${id}')">${currentLang==='ru'?'Вернуть':'Restore'}</button>`;
+        hasItems = true;
+        const item = document.createElement('div');
+        item.className = 'trash-item';
+        const displayTitle = currentLang === 'ru' ? trashedApps[id].ru : trashedApps[id].en;
+        item.innerHTML = `<span>${displayTitle}</span><button class="trash-btn" onclick="restoreApp('${id}')">${currentLang==='ru'?'Вернуть':'Restore'}</button>`;
         container.appendChild(item);
     }
     if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
 }
 
 window.activateDesktopMode = function() {
-    document.getElementById('main-container').style.display = 'none'; document.getElementById('boot-screen').style.display = 'none'; document.getElementById('desktop-env').style.display = 'block';
-    if (window.initDinoGame) window.initDinoGame(); if (window.initBlockBlast) window.initBlockBlast();
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('boot-screen').style.display = 'none';
+    document.getElementById('desktop-env').style.display = 'block';
+    if (window.initDinoGame) window.initDinoGame();
+    if (window.initBlockBlast) window.initBlockBlast();
     updateDesktopTexts();
 };
 
@@ -203,7 +221,7 @@ document.querySelectorAll('.icon').forEach(icon => {
                 let tRect = trashIcon.getBoundingClientRect();
                 if (ev.clientX >= tRect.left && ev.clientX <= tRect.right && ev.clientY >= tRect.top && ev.clientY <= tRect.bottom) {
                     icon.style.display = 'none';
-                    trashedApps[icon.id] = currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn;
+                    trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
                     renderTrashList();
                 }
             }
@@ -223,7 +241,7 @@ document.querySelectorAll('.os-window').forEach(win => {
         }
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
         document.addEventListener('pointermove', onPointerMove);
-        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
+        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); });
     });
 });
 
@@ -236,13 +254,3 @@ function updateTaskbarTimer() {
     tbLabel.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 }
 setInterval(updateTaskbarTimer, 1000);
-
-function initZipLogic() {
-    const zipBtn = document.getElementById('zip-btn'), zipInput = document.getElementById('zip-input');
-    if (!zipBtn) return;
-    zipBtn.onclick = function() {
-        const val = zipInput.value.trim();
-        if (val === "246") { document.getElementById('win-zip').querySelector('.window-body').innerHTML = '<p style="color:var(--bright-green)">АРХИВ ДЕКОДИРОВАН!<br><br>Данные шага 5: Секретная директива Keeper Ent. активна. Используйте триггер логов в главном терминале.</p>'; }
-        else { alert('НЕВЕРНЫЙ КЛЮЧ ШИФРОВАНИЯ'); }
-    };
-}
