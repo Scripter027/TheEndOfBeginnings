@@ -5,6 +5,7 @@ window.initDinoGame = function() {
     
     let gameSpeed = 6;
     let score = 0;
+    let highScore = parseInt(localStorage.getItem('kpr_dino_highscore')) || 0;
     let isGameOver = false;
     let isStarted = false;
     let legToggle = false;
@@ -22,7 +23,8 @@ window.initDinoGame = function() {
         gameSpeed = 6; score = 0; isGameOver = false; isStarted = false;
         dino.y = 110; dino.velocity = 0; dino.isJumping = false;
         obstacles = [];
-        document.getElementById('dino-hint').innerHTML = "Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта";
+        highScore = parseInt(localStorage.getItem('kpr_dino_highscore')) || 0;
+        document.getElementById('dino-hint').innerHTML = currentLang === 'ru' ? "Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта" : "Press SPACE / Click mouse to jump and start";
     };
 
     function spawnObstacle() {
@@ -89,7 +91,11 @@ window.initDinoGame = function() {
             
             if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
                 isGameOver = true;
-                document.getElementById('dino-hint').innerHTML = "<button id='dino-restart-btn' style='background:var(--neon-green);color:#000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>ПЕРЕЗАПУСК</button>";
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('kpr_dino_highscore', highScore);
+                }
+                document.getElementById('dino-hint').innerHTML = `<button id='dino-restart-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>\${currentLang==='ru'?'ПЕРЕЗАПУСК':'RESTART'}</button>`;
                 const rst = document.getElementById('dino-restart-btn');
                 if (rst) {
                     rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
@@ -98,14 +104,15 @@ window.initDinoGame = function() {
             if (o.x < -30) obstacles.splice(i, 1);
         }
         ctx.fillStyle = '#33ff33'; ctx.font = '14px Courier New';
-        ctx.fillText(`SCORE: ${score}`, canvas.width - 120, 20);
+        ctx.fillText(`SCORE: \${score}`, 10, 20);
+        ctx.fillText(`HI: \${highScore}`, canvas.width - 120, 20);
     }
     
     window.dinoTimerActive = setInterval(update, 20);
     const trigger = (e) => {
         if (isGameOver) return;
         if (e) e.preventDefault();
-        if (!isStarted) { isStarted = true; document.getElementById('dino-hint').innerText = "Прыжок: ПРОБЕЛ / Клик"; }
+        if (!isStarted) { isStarted = true; document.getElementById('dino-hint').innerText = currentLang === 'ru' ? "Прыжок: ПРОБЕЛ / Клик" : "Jump: SPACE / Click"; }
         if (!dino.isJumping) { dino.velocity = dino.jumpPower; dino.isJumping = true; }
     };
     canvas.addEventListener('pointerdown', (e) => { trigger(e); });
