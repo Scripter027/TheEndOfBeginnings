@@ -135,6 +135,7 @@ window.advanceNestedFolder = function(step) {
 
 window.emptyTrash = function() {
     trashedApps = {};
+    localStorage.removeItem('kpr_trashed_apps');
     renderTrashList();
 };
 
@@ -143,6 +144,7 @@ window.restoreApp = function(id) {
     if (icon) {
         icon.style.display = 'flex';
         delete trashedApps[id];
+        localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
         renderTrashList();
     }
 };
@@ -167,6 +169,25 @@ window.activateDesktopMode = function() {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('boot-screen').style.display = 'none';
     document.getElementById('desktop-env').style.display = 'block';
+    
+    try {
+        const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+        const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
+        trashedApps = savedTrash;
+        
+        document.querySelectorAll('.icon').forEach(icon => {
+            if (savedPositions[icon.id]) {
+                icon.style.left = savedPositions[icon.id].left;
+                icon.style.top = savedPositions[icon.id].top;
+            }
+            if (trashedApps[icon.id]) {
+                icon.style.display = 'none';
+            } else {
+                icon.style.display = 'flex';
+            }
+        });
+    } catch(e) {}
+
     if (window.initDinoGame) window.initDinoGame();
     if (window.initBlockBlast) window.initBlockBlast();
     updateDesktopTexts();
@@ -211,6 +232,7 @@ document.querySelectorAll('.icon').forEach(icon => {
             if (icon.id !== 'icon-win-trash' && trashIcon && snapX === trashIcon.offsetLeft && snapY === trashIcon.offsetTop) {
                 icon.style.display = 'none';
                 trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
+                localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
                 renderTrashList();
                 icon.style.left = oldLeft; icon.style.top = oldTop;
                 return;
@@ -227,6 +249,12 @@ document.querySelectorAll('.icon').forEach(icon => {
             }
             
             icon.style.left = snapX + 'px'; icon.style.top = snapY + 'px';
+            
+            try {
+                let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+                positions[icon.id] = { left: icon.style.left, top: icon.style.top };
+                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+            } catch(err) {}
         });
     });
 });
