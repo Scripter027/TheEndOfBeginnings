@@ -95,7 +95,8 @@ window.initDinoGame = function() {
                     highScore = score;
                     localStorage.setItem('kpr_dino_highscore', highScore);
                 }
-                document.getElementById('dino-hint').innerHTML = `<button id='dino-restart-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>\${currentLang==='ru'?'ПЕРЕЗАПУСК':'RESTART'}</button>`;
+                let btnText = currentLang === 'ru' ? 'ПЕРЕЗАПУСК' : 'RESTART';
+                document.getElementById('dino-hint').innerHTML = "<button id='dino-restart-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>" + btnText + "</button>";
                 const rst = document.getElementById('dino-restart-btn');
                 if (rst) {
                     rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
@@ -104,8 +105,8 @@ window.initDinoGame = function() {
             if (o.x < -30) obstacles.splice(i, 1);
         }
         ctx.fillStyle = '#33ff33'; ctx.font = '14px Courier New';
-        ctx.fillText(`SCORE: \${score}`, 10, 20);
-        ctx.fillText(`HI: \${highScore}`, canvas.width - 120, 20);
+        ctx.fillText("SCORE: " + score, 10, 20);
+        ctx.fillText("HI: " + highScore, canvas.width - 120, 20);
     }
     
     window.dinoTimerActive = setInterval(update, 20);
