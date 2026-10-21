@@ -14,25 +14,24 @@ osStyles.innerHTML = `
     .window-close:hover, .window-close:active { background: var(--neon-red) !important; color: #000 !important; border-color: var(--neon-red) !important; }
     .window-body { padding: 12px; font-size: 13px; height: calc(100% - 38px); overflow-y: auto; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
     .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 44px; background: rgba(0, 34, 0, 0.9); border-top: 2px solid var(--neon-green); display: flex; justify-content: space-between; align-items: center; padding: 0 10px; box-sizing: border-box; z-index: 4000; box-shadow: var(--glow-green); }
-    .taskbar-left { display: flex; align-items: center; gap: 8px; max-width: 70%; overflow: hidden; }
+    .taskbar-left { display: flex; align-items: center; gap: 10px; max-width: 70%; }
     .taskbar-start { font-weight: bold; border: 1px solid var(--neon-green); padding: 5px 8px; font-size: 11px; white-space: nowrap; }
     .taskbar-lang { font-weight: bold; border: 1px dashed var(--neon-green); padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: var(--neon-green); font-family: inherit; }
-    .taskbar-apps { display: flex; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .taskbar-apps::-webkit-scrollbar { display: none; }
-    .taskbar-app-btn { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 4px 8px; font-size: 10px; cursor: pointer; font-family: inherit; white-space: nowrap; }
-    .taskbar-app-btn.active { background: var(--neon-green); color: #000; text-shadow: none; }
+    .taskbar-apps { display: flex; gap: 6px; overflow-x: auto; }
+    .taskbar-app-btn { background: transparent; border: 1px solid var(--neon-green); padding: 3px 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .taskbar-app-btn.active { background: var(--neon-green); box-shadow: var(--glow-green); }
     .taskbar-timer { font-weight: bold; font-size: 12px; letter-spacing: 0.5px; text-shadow: var(--glow-green); white-space: nowrap; }
     .msg-container { display: flex; height: 180px; border: 1px dashed var(--neon-green); }
     .msg-left { width: 35%; border-right: 1px dashed var(--neon-green); padding: 6px; font-size: 11px; color: rgba(51, 255, 51, 0.5); overflow-y: auto; }
     .msg-right { width: 65%; padding: 6px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px; }
     .dino-canvas { background: #050505; border: 1px solid var(--neon-green); display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; }
-    .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+    .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; position: relative; }
     .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #050505; border: 2px solid var(--neon-green); padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; }
     .bb-cell { width: 100%; height: 100%; border: 1px solid #113311; box-sizing: border-box; }
     .bb-cell.filled { background: var(--neon-green); box-shadow: var(--glow-green); }
-    .bb-dock { display: flex; gap: 8px; justify-content: center; min-height: 80px; width: 100%; border: 1px dashed #113311; padding: 6px; box-sizing: border-box; overflow-x: auto; }
-    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; transform: scale(0.8); transform-origin: center; }
-    .bb-piece .bb-cell { width: 16px; height: 16px; }
+    .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 1px dashed #113311; padding: 6px; box-sizing: border-box; }
+    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; user-select: none; }
+    .bb-piece .bb-cell { width: 14px; height: 14px; }
     @media (max-width: 600px) {
         .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; }
         .window-header { padding: 8px; }
@@ -44,14 +43,14 @@ document.head.appendChild(osStyles);
 const desktopHTML = `
     <div id="desktop-env" class="desktop-env">
         <div class="desktop-icons-container">
-            <div class="icon" onclick="openOSWindow('win-trash', 'Корзина')"><div class="icon-pic">🗑️</div><div class="icon-name">Корзина</div></div>
-            <div class="icon" onclick="openOSWindow('win-zip', 'secret.zip')"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
-            <div class="icon" onclick="openOSWindow('win-msg', 'KPR-Связь')"><div class="icon-pic">📟</div><div class="icon-name">KPR-Связь</div></div>
-            <div class="icon" onclick="openOSWindow('win-zip2', 'secret1.zip')"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
-            <div class="icon" onclick="openOSWindow('win-search', 'Поисковик')"><div class="icon-pic">🌐</div><div class="icon-name">Поисковик</div></div>
-            <div class="icon" onclick="openOSWindow('win-zip3', 'secret2.zip')"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
-            <div class="icon" onclick="openOSWindow('win-dino', 'Динозавр')"><div class="icon-pic">🦖</div><div class="icon-name">Динозавр</div></div>
-            <div class="icon" onclick="openOSWindow('win-blocks', 'Блок Бласт')"><div class="icon-pic">🧱</div><div class="icon-name">Блок Бласт</div></div>
+            <div class="icon" onclick="openOSWindow('win-trash', 'Корзина', '🗑️')"><div class="icon-pic">🗑️</div><div class="icon-name">Корзина</div></div>
+            <div class="icon" onclick="openOSWindow('win-zip', 'secret.zip', '📦')"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
+            <div class="icon" onclick="openOSWindow('win-msg', 'KPR-Связь', '📟')"><div class="icon-pic">📟</div><div class="icon-name">KPR-Связь</div></div>
+            <div class="icon" onclick="openOSWindow('win-zip2', 'secret1.zip', '📦')"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
+            <div class="icon" onclick="openOSWindow('win-search', 'Поисковик', '🌐')"><div class="icon-pic">🌐</div><div class="icon-name">Поисковик</div></div>
+            <div class="icon" onclick="openOSWindow('win-zip3', 'secret2.zip', '📦')"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
+            <div class="icon" onclick="openOSWindow('win-dino', 'Динозавр', '🦖')"><div class="icon-pic">🦖</div><div class="icon-name">Динозавр</div></div>
+            <div class="icon" onclick="openOSWindow('win-blocks', 'Блок Бласт', '🧱')"><div class="icon-pic">🧱</div><div class="icon-name">Блок Бласт</div></div>
         </div>
         
         <div id="win-trash" class="os-window" style="width: 320px; height: 180px; top: 15%; left: 10px;">
@@ -113,7 +112,7 @@ const desktopHTML = `
                     <div style="font-size:14px; font-weight:bold;" id="bb-score">СЧЕТ: 0</div>
                     <div id="bbBoard" class="bb-board"></div>
                     <div id="bbDock" class="bb-dock"></div>
-                    <div id="bb-msg" style="font-size:11px; text-align:center; color:rgba(51,255,51,0.7);">Зажми мышь на фигуре и тащи её на доску</div>
+                    <div id="bb-msg" style="font-size:11px; text-align:center; color:rgba(51,255,51,0.7);">Зажми фигуру и тащи её на доску</div>
                 </div>
             </div>
         </div>
