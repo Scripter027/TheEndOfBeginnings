@@ -6,11 +6,12 @@ osStyles.innerHTML = `
     .desktop-env.rage-active .window-btn { border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
     .desktop-env.rage-active .taskbar { border-top-color: var(--neon-green) !important; box-shadow: var(--glow-green) !important; }
     .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
-    .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 6px; border: 1px solid transparent; width: 90px; height: 80px; box-sizing: border-box; touch-action: none; z-index: 2100; }
-    .icon:hover, .icon:active { background: rgba(51, 255, 51, 0.15); border-color: var(--neon-green); box-shadow: var(--glow-green); }
+    .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 4px; border: 1px dashed var(--neon-green); width: 80px; height: 75px; box-shadow: var(--glow-green); background: rgba(0, 0, 0, 0.4); box-sizing: border-box; touch-action: none; z-index: 2100; }
+    .icon:hover, .icon:active { background: rgba(51, 255, 51, 0.2); border-style: solid; border-color: var(--neon-green); box-shadow: 0 0 15px rgba(51, 255, 51, 0.6); }
+    .desktop-env.rage-active .icon { border-color: var(--neon-red) !important; }
     .desktop-env.rage-active .icon:hover, .desktop-env.rage-active .icon:active { background: rgba(255, 51, 51, 0.15); }
-    .icon-pic { font-size: 28px; margin-bottom: 4px; pointer-events: none; }
-    .icon-name { font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.2; pointer-events: none; }
+    .icon-pic { font-size: 24px; margin-bottom: 2px; pointer-events: none; }
+    .icon-name { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.1; pointer-events: none; }
     .os-window { display: none; position: absolute; border: 2px solid var(--neon-green); background: #000; box-shadow: 0 0 20px rgba(51, 255, 51, 0.3); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; text-shadow: var(--glow-green); box-sizing: border-box; }
     .window-header { background: var(--neon-green); color: #000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
     .window-controls { display: flex; gap: 8px; }
@@ -64,38 +65,38 @@ const desktopHTML = `
         </div>
 
         <div class="desktop-icons-container" id="desktopIconsContainer">
-            <div class="icon" style="top:20px; left:20px;" id="icon-win-trash" data-id="win-trash" data-title="Корзина" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name">Корзина</div></div>
-            <div class="icon" style="top:20px; left:120px;" id="icon-win-zip" data-id="win-zip" data-title="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
-            <div class="icon" style="top:20px; left:220px;" id="icon-win-msg" data-id="win-msg" data-title="KPR-Связь" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name">KPR-Связь</div></div>
-            <div class="icon" style="top:140px; left:20px;" id="icon-win-zip2" data-id="win-zip2" data-title="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
-            <div class="icon" style="top:140px; left:120px;" id="icon-win-search" data-id="win-search" data-title="Поисковик" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name">Поисковик</div></div>
-            <div class="icon" style="top:140px; left:220px;" id="icon-win-zip3" data-id="win-zip3" data-title="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
-            <div class="icon" style="top:260px; left:20px;" id="icon-win-dino" data-id="win-dino" data-title="Динозавр" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name">Динозавр</div></div>
-            <div class="icon" style="top:260px; left:120px;" id="icon-win-blocks" data-id="win-blocks" data-title="Блок Бласт" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name">Блок Бласт</div></div>
-            <div class="icon" style="top:260px; left:220px;" id="icon-win-dontopen" data-id="win-dontopen" data-title="НЕ ОТКРЫВАТЬ" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name">НЕ ОТКРЫВАТЬ</div></div>
-            <div class="icon" style="top:380px; left:20px;" id="icon-win-bsod" data-id="win-bsod" data-title="Экран Смерти" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name">Экран Смерти</div></div>
+            <div class="icon" style="top:20px; left:20px;" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
+            <div class="icon" style="top:20px; left:120px;" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
+            <div class="icon" style="top:20px; left:220px;" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
+            <div class="icon" style="top:140px; left:20px;" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
+            <div class="icon" style="top:140px; left:120px;" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
+            <div class="icon" style="top:140px; left:220px;" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
+            <div class="icon" style="top:260px; left:20px;" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
+            <div class="icon" style="top:260px; left:120px;" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
+            <div class="icon" style="top:260px; left:220px;" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
+            <div class="icon" style="top:380px; left:20px;" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
         </div>
         
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
-            <div class="window-header"><span>КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
+            <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
             <div class="window-body">
                 <div class="trash-controls">
-                    <button class="trash-btn" onclick="emptyTrash()">Очистить</button>
+                    <button class="trash-btn" id="btn-trash-clear" onclick="emptyTrash()">Очистить</button>
                 </div>
                 <div class="trash-list" id="trashListContainer"></div>
             </div>
         </div>
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
-            <div class="window-header"><span>АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
+            <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body" id="win-zip-body">
-                <p style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
-                <input type="password" id="zip-input" placeholder="Введите пароль..." style="background:#000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-family:inherit; font-size:14px; border-radius:0;">
+                <p id="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" id="zip-input" placeholder="..." style="background:#000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-family:inherit; font-size:14px; border-radius:0;">
                 <button id="zip-btn" style="background:var(--neon-green); color:#000; border:none; padding:8px 16px; margin-top:10px; font-weight:bold; cursor:pointer; font-family:inherit; width:100%;">ОК</button>
             </div>
         </div>
 
         <div id="win-zip2" class="os-window" style="width: 320px; height: 180px; top: 25%; left: 20px;">
-            <div class="window-header"><span>АРХИВАТОР - SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
+            <div class="window-header"><span id="head-zip2">АРХИВАТОР - SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
             <div class="window-body" id="win-zip2-body">
                 <p>Локальные метаданные KPR-OS.</p>
                 <p style="color:var(--bright-green);margin-top:10px;">Статус: Архив поврежден временным сдвигом.</p>
@@ -103,21 +104,21 @@ const desktopHTML = `
         </div>
 
         <div id="win-zip3" class="os-window" style="width: 320px; height: 180px; top: 30%; left: 25px;">
-            <div class="window-header"><span>АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
+            <div class="window-header"><span id="head-zip3">АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
             <div class="window-body" id="win-zip3-body">
                 <p>Манифест: "Новая Эра близко. Подготовьте терминальные ключи шлюза."</p>
             </div>
         </div>
 
         <div id="win-dontopen" class="os-window" style="width: 320px; height: 200px; top: 20%; left: 30px;">
-            <div class="window-header"><span>НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
+            <div class="window-header"><span id="head-dontopen">НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
             <div class="window-body" id="nestedFolderBody">
-                <span class="nested-folder-link" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span>
+                <span class="nested-folder-link" id="nested-link-0" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span>
             </div>
         </div>
         
         <div id="win-msg" class="os-window" style="width: 360px; height: 260px; top: 12%; left: 12px;">
-            <div class="window-header"><span>МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
+            <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
             <div class="window-body" style="padding:0;">
                 <div class="msg-container">
                     <div class="msg-left" id="msg-user-list">[Списков нет]</div>
@@ -127,12 +128,12 @@ const desktopHTML = `
         </div>
         
         <div id="win-search" class="os-window" style="width: 330px; height: 180px; top: 40%; left: 8px;">
-            <div class="window-header"><span>БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
+            <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
             <div class="window-body" id="search-browser-body"><strong>Ошибка 404:</strong> Нет связи с внешним шлюзом. Локальный прокси-сервер KPR-GATEWAY не отвечает.</div>
         </div>
         
         <div id="win-dino" class="os-window" style="width: 360px; height: 240px; top: 5%; left: 5px;">
-            <div class="window-header"><span>DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
+            <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
             <div class="window-body" style="text-align:center; overflow:hidden;">
                 <canvas id="dinoCanvas" class="dino-canvas" width="580" height="150"></canvas>
                 <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(51,255,51,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
@@ -140,7 +141,7 @@ const desktopHTML = `
         </div>
         
         <div id="win-blocks" class="os-window" style="width: 320px; height: 460px; top: 2px; left: 2px;">
-            <div class="window-header"><span>BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
+            <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
             <div class="window-body" style="overflow-y:auto;">
                 <div class="bb-container">
                     <div style="font-size:14px; font-weight:bold;" id="bb-score">СЧЕТ: 0</div>
@@ -153,16 +154,15 @@ const desktopHTML = `
 
         <div class="taskbar">
             <div class="taskbar-left">
-                <div class="taskbar-start">KPR-OS v1.0</div>
+                <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
                 <button class="taskbar-lang" id="taskbar-lang-btn" onclick="toggleDesktopLanguage()">RU</button>
-                <button class="taskbar-exit" onclick="exitToTerminal()">ВЫХОД</button>
+                <button class="taskbar-exit" id="tb-exit-btn" onclick="exitToTerminal()">ВЫХОД</button>
                 <div id="taskbar-apps" class="taskbar-apps"></div>
             </div>
             <div id="taskbar-timer" class="taskbar-timer">00:00:00:00</div>
         </div>
     </div>
 `;
-
 const divMock = document.createElement('div');
 divMock.innerHTML = desktopHTML;
 document.body.appendChild(divMock.firstElementChild);
