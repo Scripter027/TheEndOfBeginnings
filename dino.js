@@ -13,6 +13,11 @@ window.initDinoGame = function() {
     let dino = { x: 50, y: 110, w: 24, h: 26, velocity: 0, gravity: 0.6, jumpPower: -10, isJumping: false };
     let obstacles = [];
     
+    if (window.dinoTimerActive) {
+        clearInterval(window.dinoTimerActive);
+        window.dinoTimerActive = null;
+    }
+    
     window.resetDinoGame = function() {
         gameSpeed = 6; score = 0; isGameOver = false; isStarted = false;
         dino.y = 110; dino.velocity = 0; dino.isJumping = false;
@@ -86,7 +91,9 @@ window.initDinoGame = function() {
                 isGameOver = true;
                 document.getElementById('dino-hint').innerHTML = "<button id='dino-restart-btn' style='background:var(--neon-green);color:#000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>ПЕРЕЗАПУСК</button>";
                 const rst = document.getElementById('dino-restart-btn');
-                rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
+                if (rst) {
+                    rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
+                }
             }
             if (o.x < -30) obstacles.splice(i, 1);
         }
@@ -94,7 +101,7 @@ window.initDinoGame = function() {
         ctx.fillText(`SCORE: ${score}`, canvas.width - 120, 20);
     }
     
-    setInterval(update, 20);
+    window.dinoTimerActive = setInterval(update, 20);
     const trigger = (e) => {
         if (isGameOver) return;
         if (e) e.preventDefault();
