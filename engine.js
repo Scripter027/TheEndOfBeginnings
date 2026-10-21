@@ -38,8 +38,26 @@ function cleanInputString(str) { let res = str.trim(); if (res === "!!!!!") retu
 function checkCode() {
     if (isLock) return; const inputField = document.getElementById('user-input'), outputField = document.getElementById('response-text'), rawValue = inputField.value, trimmedValue = rawValue.trim();
     if (trimmedValue.toUpperCase() === 'PLAYMODE') {
-        inputField.value = ""; triggerInputFlash(); document.body.classList.add('wrong-flash');
-        setTimeout(() => { document.body.classList.remove('wrong-flash'); if(window.activateDesktopMode) window.activateDesktopMode(); }, 1200); return;
+        inputField.value = ""; triggerInputFlash(); isLock = true;
+        outputField.innerText = "INITIALIZING DEPLOYMODE...";
+        setTimeout(() => {
+            outputField.innerHTML = 'LOADING KPR-OS OS...<br><div style="width:100%; border:2px solid var(--neon-green); height:20px; position:relative; margin-top:10px;"><div id="pm-progress" style="width:0%; background:var(--neon-green); height:100%; transition:width 0.1s linear;"></div></div>';
+            const prog = document.getElementById('pm-progress');
+            let w = 0;
+            const iv = setInterval(() => {
+                w += 5; if(prog) prog.style.width = w + '%';
+                if(w >= 100) {
+                    clearInterval(iv);
+                    setTimeout(() => {
+                        mainContainer.style.display = 'none';
+                        bootScreen.style.display = 'none';
+                        isLock = false;
+                        if(window.activateDesktopMode) window.activateDesktopMode();
+                    }, 400);
+                }
+            }, 100);
+        }, 1000);
+        return;
     }
     if (trimmedValue === "") { isLock = true; outputField.innerText = langData[currentLang].emptyWrong; document.body.classList.add('wrong-flash'); setTimeout(() => { document.body.classList.remove('wrong-flash'); outputField.innerText = langData[currentLang].defaultPrompt; isLock = false; inputField.focus(); }, 3000); inputField.value = ""; return; }
     if (currentStep === 5 && trimmedValue === "!!!!!") { triggerInputFlash(); outputField.innerText = langData[currentLang].steps[currentStep].reply; currentStep++; inputField.value = ""; langClickCount = 0; return; }
