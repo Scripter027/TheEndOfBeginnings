@@ -202,32 +202,32 @@ document.querySelectorAll('.icon').forEach(icon => {
             icon.style.zIndex = "auto";
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
+            
             let curX = icon.offsetLeft, curY = icon.offsetTop;
             let snapX = Math.round(curX / GRID_X) * GRID_X;
             let snapY = Math.round(curY / GRID_Y) * GRID_Y;
+            
+            const trashIcon = document.getElementById('icon-win-trash');
+            
+            if (icon.id !== 'icon-win-trash' && trashIcon && snapX === trashIcon.offsetLeft && snapY === trashIcon.offsetTop) {
+                icon.style.display = 'none';
+                trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
+                renderTrashList();
+                icon.style.left = oldLeft; icon.style.top = oldTop;
+                return;
+            }
             
             let overlap = false;
             document.querySelectorAll('.icon').forEach(other => {
                 if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snapX && other.offsetTop === snapY) overlap = true;
             });
             
-            if (overlap && icon.dataset.id !== 'win-trash') {
+            if (overlap) {
                 icon.style.left = oldLeft; icon.style.top = oldTop;
                 return;
             }
-            icon.style.left = snapX + 'px'; icon.style.top = snapY + 'px';
             
-            const trashIcon = document.getElementById('icon-win-trash');
-            if (icon.id !== 'icon-win-trash' && trashIcon && trashIcon.style.display !== 'none') {
-                let tX = trashIcon.offsetLeft;
-                let tY = trashIcon.offsetTop;
-                let distance = Math.sqrt(Math.pow(snapX - tX, 2) + Math.pow(snapY - tY, 2));
-                if (distance <= 45) {
-                    icon.style.display = 'none';
-                    trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
-                    renderTrashList();
-                }
-            }
+            icon.style.left = snapX + 'px'; icon.style.top = snapY + 'px';
         });
     });
 });
