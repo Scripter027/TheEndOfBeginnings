@@ -1,19 +1,14 @@
 window.osZIndex = 3000;
 window.openWindowsTrack = {};
 
-window.openOSWindow = function(id, title) {
+window.openOSWindow = function(id, title, iconStr) {
     const win = document.getElementById(id);
     if (!win) return;
     win.style.display = 'block';
     win.style.zIndex = ++window.osZIndex;
-    
-    if (window.innerWidth < 600) {
-        win.style.left = '4vw';
-        win.style.top = '10vh';
-    }
-    
+    if (window.innerWidth < 600) { win.style.left = '4vw'; win.style.top = '10vh'; }
     if (!window.openWindowsTrack[id]) {
-        window.openWindowsTrack[id] = title || 'Окно';
+        window.openWindowsTrack[id] = iconStr || '⚙️';
         renderTaskbarApps();
     }
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
@@ -36,12 +31,8 @@ window.minimizeOSWindow = function(id) {
 window.toggleWindowFromTaskbar = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
-    if (win.style.display === 'block') {
-        win.style.display = 'none';
-    } else {
-        win.style.display = 'block';
-        win.style.zIndex = ++window.osZIndex;
-    }
+    if (win.style.display === 'block') { win.style.display = 'none'; }
+    else { win.style.display = 'block'; win.style.zIndex = ++window.osZIndex; }
     renderTaskbarApps();
 };
 
@@ -64,12 +55,10 @@ window.toggleDesktopLanguage = function() {
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
     const langBtn = document.getElementById('taskbar-lang-btn');
     if (langBtn) langBtn.innerText = currentLang.toUpperCase();
-    
     const trashBody = document.getElementById('win-trash-body');
     const searchBody = document.getElementById('search-browser-body');
     const zip1Body = document.getElementById('win-zip2-body');
     const zip2Body = document.getElementById('win-zip3-body');
-    
     if (currentLang === 'ru') {
         if(trashBody) trashBody.innerText = "Здесь абсолютно пусто. Файлы стёрты из реальности.";
         if(searchBody) searchBody.innerHTML = "<strong>Ошибка 404:</strong> Нет связи с внешним шлюзом. Локальный прокси-сервер KPR-GATEWAY не отвечает.";
@@ -98,37 +87,23 @@ window.activateDesktopMode = function() {
 
 document.querySelectorAll('.os-window').forEach(win => {
     const header = win.querySelector('.window-header');
-    header.onmousedown = function(e) {
+    header.addEventListener('pointerdown', function(e) {
         if (e.target.classList.contains('window-btn')) return;
         win.style.zIndex = ++window.osZIndex;
         let shiftX = e.clientX - win.getBoundingClientRect().left;
         let shiftY = e.clientY - win.getBoundingClientRect().top;
         function moveAt(pageX, pageY) {
-            let left = pageX - shiftX;
-            let top = pageY - shiftY;
+            let left = pageX - shiftX; let top = pageY - shiftY;
             if (top < 0) top = 0;
             win.style.left = left + 'px'; win.style.top = top + 'px';
         }
-        function onMouseMove(e) { moveAt(e.clientX, e.clientY); }
-        document.addEventListener('mousemove', onMouseMove);
-        document.onmouseup = function() { document.removeEventListener('mousemove', onMouseMove); document.onmouseup = null; };
-    };
-    header.ontouchstart = function(e) {
-        if (e.target.classList.contains('window-btn')) return;
-        win.style.zIndex = ++window.osZIndex;
-        let touch = e.touches[0];
-        let shiftX = touch.clientX - win.getBoundingClientRect().left;
-        let shiftY = touch.clientY - win.getBoundingClientRect().top;
-        function onTouchMove(e) {
-            let t = e.touches[0];
-            let left = t.clientX - shiftX;
-            let top = t.clientY - shiftY;
-            if (top < 0) top = 0;
-            win.style.left = left + 'px'; win.style.top = top + 'px';
-        }
-        document.addEventListener('touchmove', onTouchMove, {passive: false});
-        document.ontouchend = function() { document.removeEventListener('touchmove', onTouchMove); document.ontouchend = null; };
-    };
+        function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', function onUp() {
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onUp);
+        });
+    });
 });
 
 function updateTaskbarTimer() {
