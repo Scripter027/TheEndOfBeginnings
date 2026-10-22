@@ -50,10 +50,10 @@ osStyles.innerHTML = `
     .trash-controls, .explorer-controls { display: flex; gap: 10px; margin-bottom: 12px; }
     .trash-btn, .explorer-btn { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 4px 8px; cursor: pointer; font-size: 12px; box-shadow: var(--glow-green); border-radius: 0; }
     .trash-btn:hover, .explorer-btn:hover { background: var(--neon-green); color: #000000; text-shadow: none; }
-    .trash-list, .explorer-list { border-top: 1px dashed var(--neon-green); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .trash-item, .explorer-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px; border: 1px solid transparent; }
-    .explorer-item:hover { border-color: var(--neon-green); background: rgba(51, 255, 51, 0.05); }
-    .explorer-item-left { display: flex; align-items: center; gap: 8px; }
+    .trash-list, .explorer-list, .store-list { border-top: 1px dashed var(--neon-green); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .trash-item, .explorer-item, .store-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px; border: 1px solid transparent; }
+    .explorer-item:hover, .store-item:hover { border-color: var(--neon-green); background: rgba(51, 255, 51, 0.05); }
+    .explorer-item-left, .store-item-left { display: flex; align-items: center; gap: 8px; }
     @media (max-width: 600px) { .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; } .window-header { padding: 8px; } .window-btn { padding: 6px 12px; font-size: 14px; } .taskbar-start { display: none; } }
 `;
 document.head.appendChild(osStyles);
@@ -72,6 +72,7 @@ const desktopHTML = `
         <div class="desktop-icons-container" id="desktopIconsContainer">
             <div class="icon" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
             <div class="icon" id="icon-win-explorer" data-id="win-explorer" data-title-ru="Проводник" data-title-en="Explorer" data-icon="🗁"><div class="icon-pic">🗁</div><div class="icon-name" id="label-win-explorer">Проводник</div></div>
+            <div class="icon" id="icon-win-store" data-id="win-store" data-title-ru="Магазин" data-title-en="Store" data-icon="🏪"><div class="icon-pic">🏪</div><div class="icon-name" id="label-win-store">Магазин</div></div>
             <div class="icon" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
             <div class="icon" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
             <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
@@ -99,6 +100,15 @@ const desktopHTML = `
                 <div class="explorer-list" id="explorerListContainer"></div>
             </div>
         </div>
+`;
+const desktopHTMLContent3 = `
+        <div id="win-store" class="os-window" style="width: 360px; height: 320px; top: 15%; left: 60px;">
+            <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-store')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-store')">X</span></div></div>
+            <div class="window-body">
+                <div class="store-list" id="storeListContainer"></div>
+            </div>
+        </div>
+
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
             <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body" id="win-zip-body">
@@ -181,5 +191,5 @@ const desktopHTML = `
 `;
 
 const divMock = document.createElement('div');
-divMock.innerHTML = desktopHTML;
+divMock.innerHTML = desktopHTML + desktopHTMLContent3;
 document.body.appendChild(divMock.firstElementChild);
