@@ -1,6 +1,36 @@
+const tgConfig = { link: "https://t.me/+DgXdw2zvilgwYzdi", textRu: "Ссылка: ", textEn: "Link: " };
 const targetDate = new Date('2027-02-22T00:00:00').getTime();
 let currentLang = 'ru', isSecretMode = false, isLock = false, currentStep = 0, langClickCount = 0;
-const tgConfig = { link: "https://t.me", textRu: "Линк: ", textEn: "Link: " };
+
+const FREE_ANSWERS_DATA = {
+    ru: {
+        "67": "Перестань деградировать и займись делом!",
+        "БУРМАЛДА": "не ну ты молодец конечно что за молодежные мемчики шаришь, но это не пароль!",
+        "ПРИВЕТ": "Пока до тех пор пока не найдешь пароль!",
+        "КТО ТЫ": "Терминал, который ждет твоего правильного пароля! Мне не платят за пустую болтовню с тобой!",
+        "ГДЕ Я": "Откуда я то знаю? Ты открыл сайт с поиском пароля, а находится ты можешь где угодно!",
+        "КАКОЙ ПАРОЛЬ": "Ты мне скажи.",
+        "УРАН": "…",
+        "ХАМАМ": "…"
+    },
+    en: {
+        "67": "Stop degrading and get to work!",
+        "БУРМАЛДА": "Ne nu to molded konechno chto za molodezhnie memchiki sharish, no eto ne parol.",
+        "HELLO": "Bye until you find the password!",
+        "PRIVET": "Bye until you find the password!",
+        "ПРИВЕТ": "Bye until you find the password!",
+        "WHO ARE YOU": "A terminal waiting for your correct password!",
+        "КТО ТЫ": "A terminal waiting for your correct password!",
+        "WHERE AM I": "You opened a password search site, you could be anywhere!",
+        "ГДЕ Я": "You could be anywhere!",
+        "WHAT PASSWORD": "You tell me.",
+        "КАКОЙ ПАРОЛЬ": "You tell me.",
+        "URAN": "…",
+        "УРАН": "…",
+        "HAMAM": "…",
+        "ХАМАМ": "…"
+    }
+};
 
 const bootLogs = [
     "ROM BIOS v4.01-KEEPER ENTERTAINMENT STAGE 1", "COPYRIGHT (C) 2026-2027 KEEPER ENT. ALL RIGHTS RESERVED.",
@@ -11,7 +41,6 @@ const bootLogs = [
     "CONNECTING SECURE UPLINK CHANNELS...", "ESTABLISHING ROUTING THROUGH KPR-GATEWAY...",
     "ENCRYPTING SESSION ID ... AES-X-256 ACTIVE", "STATUS: ACCESS GRANTED TO KEEPER MAIN TERMINAL.", "RUNNING SYSTEM..."
 ];
-
 const QUEST_CONFIG = {
     codes: {
         0: { ru: "ПАРОЛЬ", en: "PASSWORD" },
@@ -42,7 +71,7 @@ const langData = {
             6: { trigger: "VA*ФWN%ЧИ+ADЬS>РФ$ЛНХЯ'XW1%ЙКL_5ЧIGPТЫОИ]?ЕJE#", reply: "Новая Эра Keeper Ent. вот вот начнется." }
         },
         contempt: ["Хватит тратить мое время.", "Ты бесполезен.", "Доступ запрещен.", "Этот ответ не имеет значения.", "Разговор окончен."],
-        freeAnswers: { "67": "Перестань деградировать и займись делом!", "БУРМАЛДА": "не ну ты молодец конечно что за молодежные мемчики шаришь, но это не пароль!", "ПРИВЕТ": "Пока до тех пор пока не найдешь пароль!" }
+        freeAnswers: FREE_ANSWERS_DATA.ru
     },
     en: {
         defaultPrompt: "ENTER PASSWORD", labelSecret: "Until moment x left:", wrong: "WRONG.", emptyWrong: "WRONG. SERIOUSLY? EMPTY LINE?", btnText: "SUBMIT", rageSwitch: "UNFRIEND SYSTEM", rageReply: "STOP PLAYING AROUND! THIS IS NOT A TOY!",
@@ -57,6 +86,6 @@ const langData = {
             6: { trigger: "VA*ФWN%ЧИ+ADЬS>РФ$ЛНХЯ'XW1%ЙКL_5ЧIGPТЫОИ]?ЕJE#", reply: "A New Era is about to begin." }
         },
         contempt: ["Stop wasting my time.", "Access denied."],
-        freeAnswers: { "HELLO": "Bye!" }
+        freeAnswers: FREE_ANSWERS_DATA.en
     }
 };
