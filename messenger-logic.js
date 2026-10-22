@@ -2,7 +2,13 @@ window.initMessenger = function() {
     const listEl = document.getElementById('msg-user-list');
     const chatEl = document.getElementById('msg-chat-zone');
     if (listEl) listEl.innerHTML = '';
-    if (chatEl) chatEl.innerHTML = currentLang === 'ru' ? 'ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ НАЧАЛА СЕССИИ' : 'SELECT A USER TO START SESSION';
+    if (chatEl) {
+        chatEl.innerHTML = `
+            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(85,255,85,0.6); padding:10px;">
+                ${currentLang === 'ru' ? 'ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ НАЧАЛА СЕССИИ' : 'SELECT A USER TO START SESSION'}
+            </div>
+        `;
+    }
     if (window.renderMessengerUsers) window.renderMessengerUsers();
 };
 
@@ -22,9 +28,18 @@ window.renderMessengerUsers = function() {
         item.onclick = () => {
             const chatZone = document.getElementById('msg-chat-zone');
             if (chatZone) {
-                chatZone.innerHTML = currentLang === 'ru' ? 
-                    `<strong>${u.ru}:</strong> Нет соединения. Канал зашифрован.` : 
-                    `<strong>${u.en}:</strong> No connection. Channel encrypted.`;
+                const titleText = currentLang === 'ru' ? u.ru : u.en;
+                const statusText = currentLang === 'ru' ? 'Нет соединения. Канал зашифрован.' : 'No connection. Channel encrypted.';
+                chatZone.innerHTML = `
+                    <div style="width:100%; height:100%; display:flex; flex-direction:column;">
+                        <div style="padding:8px; border-bottom:2px solid #55ff55; font-weight:bold; color:#88ff88; text-align:left; letter-spacing:1px; background:rgba(0,0,0,0.3);">
+                            // ${titleText.toUpperCase()}
+                        </div>
+                        <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:15px; color:#55ff55;">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
             }
         };
         listEl.appendChild(item);
