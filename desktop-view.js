@@ -44,7 +44,6 @@ window.closeOSWindow = function(id) {
     delete window.openWindowsTrack[id];
     renderTaskbarApps();
 };
-
 window.minimizeOSWindow = function(id) {
     const win = document.getElementById(id);
     if (win) win.style.display = 'none';
@@ -174,7 +173,6 @@ function updateDesktopTexts() {
         window.initSearchBrowser();
     }
 }
-
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     if (!body) return;
@@ -193,6 +191,7 @@ window.emptyTrash = function() {
     if (typeof renderTrashList === 'function') renderTrashList();
     if (window.renderStoreList) window.renderStoreList();
 };
+
 window.restoreApp = function(id) {
     const icon = document.getElementById(id);
     if (icon && typeof window.getFirstAvailableSlot === 'function') {
@@ -207,6 +206,85 @@ window.restoreApp = function(id) {
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
         if (typeof renderTrashList === 'function') renderTrashList();
         if (typeof renderExplorerList === 'function') renderExplorerList();
+        if (window.renderStoreList) window.renderStoreList();
+    }
+};
+
+function renderTrashList() {
+    const container = document.getElementById('trashListContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    let hasItems = false;
+    for (const id in trashedApps) {
+        hasItems = true;
+        const item = document.createElement('div');
+        item.className = 'trash-item';
+        const displayTitle = currentLang === 'ru' ? trashedApps[id].ru : trashedApps[id].en;
+        item.innerHTML = `<span>${displayTitle}</span><button class="trash-btn" onclick="restoreApp('${id}')">${currentLang==='ru'?'Вернуть':'Restore'}</button>`;
+        container.appendChild(item);
+    }
+    if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
+}
+window.currentExplorerTab = 'apps';
+window.switchExplorerTab = function(tabId) {
+    window.currentExplorerTab = tabId;
+    renderExplorerList();
+};
+
+function renderExplorerList() {
+    const container = document.getElementById('explorerListContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    const icons = document.querySelectorAll('.icon');
+    const isRu = (currentLang === 'ru');
+    const appTypes = {
+        apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'],
+        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris'],
+        other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen']
+    };
+    const listHTML = [];
+    icons.forEach(icon => {
+        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
+        if (trashedApps[icon.id]) return;
+        if (appTypes[window.currentExplorerTab] && appTypes[window.currentExplorerTab].includes(icon.id)) {
+            const titleRu = icon.dataset.titleRu || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
+            const titleEn = icon.dataset.titleEn || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
+            const displayTitle = isRu ? titleRu : titleEn;
+            const pic = icon.querySelector('.icon-pic') ? icon.querySelector('.icon-pic').innerText : '📦';
+            const targetId = icon.dataset.id || '';
+            listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
+        }
+    });
+    const contentWrap = document.createElement('div');
+    contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; margin-bottom:10px;";
+    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
+    const tabsWrap = document.createElement('div');
+    tabsWrap.className = "store-tabs-container";
+    const tabs = [{id:'apps', ru:'Приложения', en:'Apps'}, {id:'games', ru:'Игры', en:'Games'}, {id:'other', ru:'Прочее', en:'Other'}];
+    tabs.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = "store-tab-btn" + (window.currentExplorerTab === t.id ? " active" : "");
+        btn.innerText = isRu ? t.ru : t.en;
+        btn.onclick = () => window.switchExplorerTab(t.id);
+        tabsWrap.appendChild(btn);
+    });
+    container.appendChild(contentWrap);
+    container.appendChild(tabsWrap);
+}
+
+window.checkZipPassword = function(winId) {
+    const win = document.getElementById(winId);
+    if (!win) return;
+    const input = win.querySelector('.zip-input-field');
+    const body = win.querySelector('.window-body');
+    if (!input || !body) return;
+    const isRu = (currentLang === 'ru');
+    if (input.value === '246' || input.value === '!!!!!') {
+        if (winId === 'win-zip') body.innerHTML = isRu ? "<p>Доступ открыт. Ключевой лог: [STAGE-1-COMPLETE]</p>" : "<p>Access granted. Key log: [STAGE-1-COMPLETE]</p>";
+        else if (winId === 'win-zip2') body.innerHTML = isRu ? "<p>Локальные метаданные KPR-OS.</p><p style='color:var(--bright-green);margin-top:10px;'>Статус: Архив поврежден временным сдвигом.</p>" : "<p>Local KPR-OS metadata.</p><p style='color:var(--bright-green);margin-top:10px;'>Status: Archive damaged by time shift.</p>";
+        else if (winId === 'win-zip3') body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте терминальные ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
+    } else {
+        alert(isRu ? 'НЕВЕРНЫЙ ПАРОЛЬ' : 'INVALID PASSWORD');
     }
 };
 
