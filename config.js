@@ -1,6 +1,6 @@
-const tgConfig = { link: "https://t.me/+DgXdw2zvilgwYzdi", textRu: "Ссылка: ", textEn: "Link: " };
-const targetDate = new Date('2027-02-22T00:00:00').getTime();
-let currentLang = 'ru', isSecretMode = false, isLock = false, currentStep = 0, langClickCount = 0;
+const tgConfig = { link: "https://t.me", textRu: "Линк: ", textEn: "Link: " };
+const targetDate = new Date("2027-02-22T00:00:00").getTime();
+let currentLang = "ru", isSecretMode = false, isLock = false, currentStep = 0, langClickCount = 0;
 
 const FREE_ANSWERS_DATA = {
     ru: {
@@ -41,6 +41,7 @@ const bootLogs = [
     "CONNECTING SECURE UPLINK CHANNELS...", "ESTABLISHING ROUTING THROUGH KPR-GATEWAY...",
     "ENCRYPTING SESSION ID ... AES-X-256 ACTIVE", "STATUS: ACCESS GRANTED TO KEEPER MAIN TERMINAL.", "RUNNING SYSTEM..."
 ];
+
 const QUEST_CONFIG = {
     codes: {
         0: { ru: "ПАРОЛЬ", en: "PASSWORD" },
@@ -59,10 +60,10 @@ const QUEST_CONFIG = {
 
 const langData = {
     ru: {
-        defaultPrompt: "ВВЕДИТЕ ПАРОЛЬ", labelSecret: "До момента x осталось:", wrong: "НЕПРАВИЛЬНО.", emptyWrong: "НЕПРАВИЛЬНО. СЕРЬЕЗНО? ПУСТАЯ СТРОКА?", btnText: "ВВОД", rageSwitch: "СИСТЕМА УДАЛЕНИЯ", rageReply: "ХВАТИТ ИГРАТЬСЯ! ЭТО НЕ ИГРУШКИ!",
+        labelSecret: "До момента x осталось:", wrong: "НЕПРАВИЛЬНО.", emptyWrong: "НЕПРАВИЛЬНО. СЕРЬЕЗНО? ПУСТАЯ СТРОКА?", defaultPrompt: "ВВЕДИТЕ ПАРОЛЬ", btnText: "ВВОД", rageSwitch: "СИСТЕМА УДАЛЕНИЯ", rageReply: "ХВАТИТ ИГРАТЬСЯ! ЭТО НЕ ИГРУШКИ!",
         hackerManifest: "Тем, кто любит смотреть в код! \n\nМы прекрасно понимаем, что вы хотите увидеть все пароли. И знаем, что это можно сделать, подсмотрев в код. Но этот сайт был создан для того, чтобы вы сами опробовали свои силы и подумали, какой может быть пароль. Подсмотрев в код, вы вероятно облегчите задачу, но явно не честно. Мы настоятельно просим вас этого не делать!",
         steps: {
-            0: { trigger: "ПАРОЛЬ", reply: "Серьезо? Ты жалок. Ладно дам подсказку - 12 + 4." },
+            0: { trigger: "ПАРОЛЬ", reply: "Серьезно? Ты жалок. Ладно дам подсказку - 12 + 4." },
             1: { trigger: "16", reply: "Молодец! Кстати столько лет подряд ИИ подбирал бы пароль. Скажи слово побег но без о и е" },
             2: { trigger: "ПБГ", reply: "ладно на самом деле у меня нет пароля. Прости, но разбирайся *сам*" },
             3: { trigger: "САМ", reply: "я же сказал у ме123+123ня ничего нет! Я чист!" },
@@ -70,22 +71,22 @@ const langData = {
             5: { trigger: "!!!!!", reply: "Вот пароль! Подавись им и прочь отсюда: va*фwn%чи+adьs>рф$лнхя'xw1%йкl_5чigpтыои]?еje# !" },
             6: { trigger: "VA*ФWN%ЧИ+ADЬS>РФ$ЛНХЯ'XW1%ЙКL_5ЧIGPТЫОИ]?ЕJE#", reply: "Новая Эра Keeper Ent. вот вот начнется." }
         },
-        contempt: ["Хватит тратить мое время.", "Ты бесполезен.", "Доступ запрещен.", "Этот ответ не имеет значения.", "Разговор окончен."],
+        contempt: ["Хватит тратить мое время.", "Ты бесполезен.", "Доступ запрещен.", "Этот answer не имеет значения.", "Разговор окончен."],
         freeAnswers: FREE_ANSWERS_DATA.ru
     },
     en: {
-        defaultPrompt: "ENTER PASSWORD", labelSecret: "Until moment x left:", wrong: "WRONG.", emptyWrong: "WRONG. SERIOUSLY? EMPTY LINE?", btnText: "SUBMIT", rageSwitch: "UNFRIEND SYSTEM", rageReply: "STOP PLAYING AROUND! THIS IS NOT A TOY!",
-        hackerManifest: "To those who love looking at the code!",
+        labelSecret: "Until moment x left:", wrong: "WRONG.", emptyWrong: "WRONG. SERIOUSLY? EMPTY LINE?", defaultPrompt: "ENTER PASSWORD", btnText: "SUBMIT", rageSwitch: "UNFRIEND SYSTEM", rageReply: "STOP PLAYING AROUND! THIS IS NOT A TOY!",
+        hackerManifest: "To those who love looking at the code! \n\nWe perfectly understand that you want to see all the passwords. And we know it can be done by looking into the code. But this site was created for you to test your own strengths and think about what the password could be. By looking into the code, you will probably make the task easier, but clearly not fair. We strongly ask you not to do this!",
         steps: {
             0: { trigger: "PASSWORD", reply: "Seriously? You are pathetic. Fine, I'll give you a hint - 12 + 4." },
-            1: { trigger: "16", reply: "Well done!" },
-            2: { trigger: "YOURSELF", reply: "deal with it yourself" },
-            3: { trigger: "YOURSELF", reply: "I have nothing!" },
-            4: { trigger: "246", reply: "ENOUGH!" },
-            5: { trigger: "!!!!!", reply: "Choke on it!" },
-            6: { trigger: "VA*ФWN%ЧИ+ADЬS>РФ$ЛНХЯ'XW1%ЙКL_5ЧIGPТЫОИ]?ЕJE#", reply: "A New Era is about to begin." }
+            1: { trigger: "16", reply: "Well done! By the way, that's how many years in a row an AI would brute-force the password. Say the word 'escape' but without vowels" },
+            2: { trigger: "YOURSELF", reply: "fine, the truth is I don't have a password. Sorry, but deal with it *yourself*" },
+            3: { trigger: "YOURSELF", reply: "I ha123+123ve nothing, I told you! I am clean!" },
+            4: { trigger: "246", reply: "ENOUGH! I DON'T HAVE A PASSWORD! *!!!!!*" },
+            5: { trigger: "!!!!!", reply: "Here is the password! Choke on it and get out: va*фwn%чи+adьs>рф$лнхя'xw1%йкl_5чigpтыои]?еje# !" },
+            6: { trigger: "VA*ФWN%ЧИ+ADЬS>РФ$ЛНХЯ'XW1%ЙКL_5ЧIGPТЫОИ]?ЕJE#", reply: "A New Era of Keeper Ent. is about to begin." }
         },
-        contempt: ["Stop wasting my time.", "Access denied."],
+        contempt: ["Stop wasting my time.", "You are useless.", "Access denied.", "Conversation over."],
         freeAnswers: FREE_ANSWERS_DATA.en
     }
 };
