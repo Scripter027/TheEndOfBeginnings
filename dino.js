@@ -3,119 +3,134 @@ window.initDinoGame = function() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    let gameSpeed = 6;
+    let isPlaying = false;
     let score = 0;
-    let highScore = parseInt(localStorage.getItem('kpr_dino_highscore')) || 0;
-    let isGameOver = false;
-    let isStarted = false;
-    let legToggle = false;
-    let tick = 0;
+    let highscore = localStorage.getItem('kpr_dino_highscore') || 0;
+    let gameSpeed = 4;
+    let speedIncrement = 0.002;
     
-    let dino = { x: 50, y: 110, w: 24, h: 26, velocity: 0, gravity: 0.6, jumpPower: -10, isJumping: false };
+    let dino = { x: 30, y: 120, w: 20, h: 30, vy: 0, gravity: 0.6, jumpForce: -10, isGrounded: true };
     let obstacles = [];
-    
-    if (window.dinoTimerActive) {
-        clearInterval(window.dinoTimerActive);
-        window.dinoTimerActive = null;
-    }
-    
-    window.resetDinoGame = function() {
-        gameSpeed = 6; score = 0; isGameOver = false; isStarted = false;
-        dino.y = 110; dino.velocity = 0; dino.isJumping = false;
-        obstacles = [];
-        highScore = parseInt(localStorage.getItem('kpr_dino_highscore')) || 0;
-        document.getElementById('dino-hint').innerHTML = currentLang === 'ru' ? "Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта" : "Press SPACE / Click mouse to jump and start";
-    };
+    let nextObstacleTimer = 0;
 
     function spawnObstacle() {
-        let size = Math.random() > 0.5 ? 1 : 2;
+        let minGap = 150 + (gameSpeed * 15);
+        let maxGap = 300 + (gameSpeed * 25);
+        let randomGap = Math.random() * (maxGap - minGap) + minGap;
+        
+        let lastObstacle = obstacles[obstacles.length - 1];
+        let startX = lastObstacle ? lastObstacle.x + randomGap : canvas.width + 50;
+
         obstacles.push({
-            x: canvas.width + 40,
-            y: size === 1 ? 112 : 102,
-            w: size === 1 ? 14 : 22,
-            h: size === 1 ? 22 : 32
+            x: startX,
+            y: 125,
+            w: 15,
+            h: 25
         });
     }
 
-    function drawDino(x, y, isJumping, legs) {
-        ctx.fillStyle = '#33ff33';
-        ctx.fillRect(x + 10, y, 14, 4);
-        ctx.fillRect(x + 8, y + 4, 16, 4);
-        ctx.fillRect(x + 8, y + 8, 8, 4);
-        ctx.fillRect(x, y + 10, 18, 6);
-        ctx.fillRect(x + 2, y + 16, 12, 6);
-        if (isJumping) {
-            ctx.fillRect(x + 4, y + 22, 4, 4);
-            ctx.fillRect(x + 10, y + 22, 4, 4);
-        } else {
-            ctx.fillRect(x + (legs ? 4 : 6), y + 22, 4, 4);
-            ctx.fillRect(x + (legs ? 10 : 8), y + 22, 4, 4);
+    function resetGame() {
+        score = 0;
+        gameSpeed = 4;
+        obstacles = [];
+        dino.y = 120;
+        dino.vy = 0;
+        dino.isGrounded = true;
+        isPlaying = true;
+        spawnObstacle();
+    }
+    window.resetDinoGame = resetGame;
+
+    function jump() {
+        if (dino.isGrounded && isPlaying) {
+            dino.vy = dino.jumpForce;
+            dino.isGrounded = false;
         }
     }
 
-    function drawCactus(x, y, w, h) {
-        ctx.fillStyle = '#33ff33';
-        ctx.fillRect(x + Math.floor(w/2) - 3, y, 6, h);
-        ctx.fillRect(x, y + 6, w, 4);
-        ctx.fillRect(x, y + 6, 4, 10);
-        ctx.fillRect(x + w - 4, y + 8, 4, 10);
-    }
+    window.addEventListener('keydown', (e) => { if (e.code === 'Space') { jump(); e.preventDefault(); } });
+    canvas.addEventListener('pointerdown', () => { jump(); });
 
     function update() {
-        if (document.getElementById('win-dino').style.display !== 'block') return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#33ff33'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(0, 136); ctx.lineTo(canvas.width, 136); ctx.stroke();
-        
-        if (isStarted && !isGameOver) {
-            score++;
-            tick++;
-            if (tick % 8 === 0) legToggle = !legToggle;
-            if (score % 300 === 0) gameSpeed += 0.7;
-            
-            dino.velocity += dino.gravity;
-            dino.y += dino.velocity;
-            if (dino.y >= 110) { dino.y = 110; dino.isJumping = false; dino.velocity = 0; }
-            
-            if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - (Math.random() * 250 + 180)) {
-                spawnObstacle();
-            }
+        if (!isPlaying) return;
+
+        gameSpeed += speedIncrement;
+        score += 0.1;
+
+        dino.vy += dino.gravity;
+        dino.y += dino.vy;
+
+        if (dino.y >= 120) {
+            dino.y = 120;
+            dino.vy = 0;
+            dino.isGrounded = true;
         }
-        
-        drawDino(dino.x, dino.y, dino.isJumping, legToggle);
-        
+
+        if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width) {
+            spawnObstacle();
+        }
+
         for (let i = obstacles.length - 1; i >= 0; i--) {
             let o = obstacles[i];
-            if (!isGameOver && isStarted) o.x -= gameSpeed;
-            drawCactus(o.x, o.y, o.w, o.h);
-            
-            if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
-                isGameOver = true;
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('kpr_dino_highscore', highScore);
-                }
-                let btnText = currentLang === 'ru' ? 'ПЕРЕЗАПУСК' : 'RESTART';
-                document.getElementById('dino-hint').innerHTML = "<button id='dino-restart-btn' style='background:var(--neon-green);color:#000000;border:none;padding:5px 15px;cursor:pointer;font-weight:bold;font-family:inherit;'>" + btnText + "</button>";
-                const rst = document.getElementById('dino-restart-btn');
-                if (rst) {
-                    rst.addEventListener('pointerdown', (e) => { e.stopPropagation(); window.resetDinoGame(); });
+            o.x -= gameSpeed;
+
+            if (o.x + o.w < 0) {
+                obstacles.splice(i, 1);
+                continue;
+            }
+
+            if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.x < o.x + o.w && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
+                isPlaying = false;
+                if (score > highscore) {
+                    highscore = Math.floor(score);
+                    localStorage.setItem('kpr_dino_highscore', highscore);
                 }
             }
-            if (o.x < -30) obstacles.splice(i, 1);
         }
-        ctx.fillStyle = '#33ff33'; ctx.font = '14px Courier New';
-        ctx.fillText("SCORE: " + score, 10, 20);
-        ctx.fillText("HI: " + highScore, canvas.width - 120, 20);
     }
-    
-    window.dinoTimerActive = setInterval(update, 20);
-    const trigger = (e) => {
-        if (isGameOver) return;
-        if (e) e.preventDefault();
-        if (!isStarted) { isStarted = true; document.getElementById('dino-hint').innerText = currentLang === 'ru' ? "Прыжок: ПРОБЕЛ / Клик" : "Jump: SPACE / Click"; }
-        if (!dino.isJumping) { dino.velocity = dino.jumpPower; dino.isJumping = true; }
-    };
-    canvas.addEventListener('pointerdown', (e) => { trigger(e); });
-    window.addEventListener('keydown', (e) => { if (e.code === 'Space' && document.getElementById('win-dino').style.display === 'block') trigger(e); });
+
+    function render() {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = '#55ff55';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 145);
+        ctx.lineTo(canvas.width, 145);
+        ctx.stroke();
+
+        ctx.fillStyle = '#55ff55';
+        ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+
+        ctx.fillStyle = '#55ff55';
+        obstacles.forEach(o => {
+            ctx.fillRect(o.x, o.y, o.w, o.h);
+        });
+
+        ctx.font = '10px Courier New';
+        ctx.fillText(`HI: ${Math.floor(highscore)}  SCORE: ${Math.floor(score)}`, 10, 20);
+
+        if (!isPlaying) {
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#55ff55';
+            ctx.font = '14px Courier New';
+            ctx.textAlign = 'center';
+            ctx.fillText(currentLang === 'ru' ? 'ИГРА ОКОНЧЕНА' : 'GAME OVER', canvas.width / 2, 70);
+            ctx.font = '10px Courier New';
+            ctx.fillText(currentLang === 'ru' ? 'Кликни для перезапуска' : 'Click to restart', canvas.width / 2, 95);
+            ctx.textAlign = 'left';
+        }
+    }
+
+    function loop() {
+        update();
+        render();
+        requestAnimationFrame(loop);
+    }
+
+    canvas.addEventListener('click', () => { if (!isPlaying) resetGame(); });
+    resetGame();
+    loop();
 };
