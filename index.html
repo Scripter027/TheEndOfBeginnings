@@ -27,7 +27,7 @@
         body::before {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), var(--glass-glare);
-            z-index: 999; background-size: 100% 4px, 100% 100%; pointer-events: none;
+            z-index: 9999; background-size: 100% 4px, 100% 100%; pointer-events: none;
         }
         body.wrong-flash { color: var(--neon-red) !important; text-shadow: var(--glow-red) !important; }
         body.wrong-flash::before {
@@ -42,8 +42,8 @@
             background-color: rgba(51, 255, 51, 0.25) !important; border-color: var(--bright-green) !important;
             box-shadow: 0 0 25px rgba(51, 255, 51, 0.9) !important; color: var(--bright-green) !important;
         }
-        #boot-screen { display: none; position: absolute; top: 20px; left: 20px; font-size: 13px; line-height: 1.4; z-index: 10; font-weight: bold; max-width: 90%; height: 90%; overflow: hidden; }
-        #main-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; padding: 20px; position: relative; z-index: 5; }
+        #boot-screen { display: block; position: absolute; top: 20px; left: 20px; font-size: 13px; line-height: 1.4; z-index: 10; font-weight: bold; max-width: 90%; height: 90%; overflow: hidden; }
+        #main-container { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; padding: 20px; position: relative; z-index: 5; }
         .timer-wrapper { position: absolute; top: 6%; left: 50%; transform: translateX(-50%); text-align: center; cursor: pointer; padding: 10px 20px; border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: rgba(0, 0, 0, 0.6); min-width: 240px; transition: all 0.15s ease; }
         .timer-title { font-size: 11px; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; display: none; }
         .timer { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
@@ -61,21 +61,45 @@
         .lang-switch:hover { opacity: 1; }
         .lang-switch.rage-mode { color: var(--neon-red) !important; border: 1px dashed var(--neon-red); box-shadow: var(--glow-red); text-shadow: var(--glow-red); animation: pulse 0.5s infinite alternate; }
         .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: #000; padding: 25px; max-width: 600px; width: 100%; text-align: center; line-height: 1.6; font-size: 15px; white-space: pre-line; }
+        .modal-content { border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: #000000; padding: 25px; max-width: 600px; width: 100%; text-align: center; line-height: 1.6; font-size: 15px; white-space: pre-line; }
         .pwa-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; box-sizing: border-box; }
         .pwa-box { border: 2px solid var(--neon-green); padding: 20px; box-shadow: var(--glow-green); max-width: 450px; width: 100%; line-height: 1.6; font-size: 15px; }
         @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
         a { color: var(--neon-green); text-decoration: underline; cursor: pointer; pointer-events: auto; }
         @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; } .modal-content { font-size: 14px; } }
         @media (max-width: 480px) { #main-container { padding: 10px; } .timer-wrapper { top: 4%; width: 85%; min-width: 0; } .timer { font-size: 19px; } .secret-active .timer { font-size: 22px; } .terminal-box { margin-top: 80px; } .terminal-output { font-size: 15px; min-height: 120px; margin-bottom: 20px; } .input-group { flex-direction: column; gap: 8px; } .btn-submit { width: 100%; padding: 12px; } .terminal-input { padding: 12px; font-size: 15px; } .info-btn { bottom: 15px; left: 15px; } .lang-switch { bottom: 15px; right: 15px; } }
-        
-        .bb-game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; }
-        #bbBoard { display: grid; grid-template-columns: repeat(8, 35px); grid-template-rows: repeat(8, 35px); gap: 2px; background-color: var(--dark-green); border: 2px solid var(--neon-green); padding: 4px; box-shadow: var(--glow-green); }
-        #bbDock { display: flex; gap: 20px; min-height: 80px; justify-content: center; align-items: center; width: 100%; }
-        .bb-cell { width: 100%; height: 100%; border: 1px solid rgba(51, 255, 51, 0.1); background-color: rgba(0, 0, 0, 0.5); }
-        .bb-cell.filled { background-color: var(--neon-green); box-shadow: var(--glow-green); }
-        .bb-piece { display: grid; gap: 1px; padding: 2px; background: rgba(0, 20, 0, 0.3); border: 1px dashed rgba(51, 255, 51, 0.3); cursor: grab; }
-        #bb-score { font-size: 20px; font-weight: bold; }
+        .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: #55ff55; padding: 10px; user-select: none; text-shadow: 0 0 10px rgba(85, 255, 85, 0.5); overflow: hidden; }
+        .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
+        .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid #55ff55; width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border-radius: 0; touch-action: none; z-index: 2100; transition: background 0.15s ease, box-shadow 0.15s ease; }
+        .icon:hover { background: rgba(85, 255, 85, 0.3); border-color: #88ff88; box-shadow: 0 0 25px rgba(85, 255, 85, 0.9); color: #88ff88; }
+        .icon-pic { font-size: 24px; margin-bottom: 2px; pointer-events: none; }
+        .icon-name { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.1; pointer-events: none; }
+        .os-window { display: none; position: absolute; border: 2px solid #55ff55; background: rgba(0, 0, 0, 0.95); box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; box-sizing: border-box; }
+        .os-window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; height: calc(100vh - 44px) !important; max-width: 100vw !important; max-height: calc(100vh - 44px) !important; }
+        .window-header { background: #55ff55; color: #000000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
+        .window-controls { display: flex; gap: 6px; }
+        .window-btn { cursor: pointer; font-weight: bold; background: #000000; color: #55ff55; border: 2px solid #55ff55; padding: 4px 8px; font-size: 11px; text-align: center; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); }
+        .window-body { padding: 12px; font-size: 13px; height: calc(100% - 38px); overflow-y: auto; line-height: 1.5; text-transform: uppercase; }
+        .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 44px; background: rgba(0, 0, 0, 0.95); border-top: 2px solid #55ff55; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 4000; box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); }
+        .taskbar-left { display: flex; align-items: center; gap: 8px; max-width: 70%; }
+        .taskbar-start { font-weight: bold; border: 2px solid #55ff55; padding: 5px 8px; font-size: 11px; white-space: nowrap; }
+        .taskbar-lang, .taskbar-exit { font-weight: bold; border: 2px solid #55ff55; padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: #55ff55; }
+        .taskbar-apps { display: flex; gap: 4px; overflow-x: auto; }
+        .taskbar-app-btn { background: transparent; border: 2px solid #55ff55; padding: 3px 8px; font-size: 16px; cursor: pointer; color: #55ff55; }
+        .taskbar-app-btn.active { background: #55ff55; color: #000000; }
+        .taskbar-timer { font-weight: bold; font-size: 12px; letter-spacing: 0.5px; white-space: nowrap; }
+        .trash-controls { display: flex; gap: 10px; margin-bottom: 12px; }
+        .trash-btn { background: transparent; border: 2px solid #55ff55; color: #55ff55; padding: 6px 14px; cursor: pointer; font-size: 14px; }
+        .trash-list { border-top: 2px solid #55ff55; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .trash-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px; background: rgba(0,0,0,0.5); }
+        .zip-input-field { background: rgba(0, 0, 0, 0.6); border: 2px solid #55ff55; color: #55ff55; padding: 14px; font-size: 16px; outline: none; width: 100%; }
+        .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; position: relative; }
+        .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #000000; border: 2px solid #55ff55; padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; box-shadow: 0 0 15px rgba(85, 255, 85, 0.4); }
+        .bb-cell { width: 100%; height: 100%; border: 1px solid #003300; box-sizing: border-box; }
+        .bb-cell.filled { background: #55ff55 !important; box-shadow: 0 0 10px rgba(85, 255, 85, 0.8) !important; }
+        .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 2px solid #55ff55; background: rgba(0,0,0,0.4); padding: 6px; box-sizing: border-box; }
+        .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.6); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 2px dashed #55ff55; }
+        .bb-piece .bb-cell { width: 14px; height: 14px; }
     </style>
 </head>
 <body>
@@ -86,34 +110,89 @@
         </div>
     </div>
 
-    <div id="boot-screen"></div>
-
     <div id="main-container">
-        <div class="timer-wrapper">
-            <div class="timer-title">System Time</div>
-            <div class="timer" id="system-timer">00:00:00</div>
+        <div class="timer-wrapper" id="timer-toggle">
+            <div class="timer-title" id="timer-label">До момента x осталось:</div>
+            <div class="timer" id="countdown">00:00:00:00</div>
         </div>
-
-        <div class="terminal-box">
-            <div class="terminal-output" id="output-area"></div>
+        <div class="terminal-box" id="terminal-input-zone">
+            <div class="terminal-output" id="response-text">ВВЕДИТЕ ПАРОЛЬ</div>
             <div class="input-group">
-                <input type="text" id="user-input" class="terminal-input" autofocus autocomplete="off" spellcheck="false">
-                <button id="submit-btn" class="btn-submit" onclick="processTerminalInput()">ENTER</button>
+                <input type="text" id="user-input" class="terminal-input" autofocus autocomplete="off" placeholder="> ">
+                <button id="submit-btn" class="btn-submit">ВВОД</button>
+            </div>
+        </div>
+        <div class="info-btn" id="open-modal-btn">?</div>
+        <div class="lang-switch" id="lang-btn">EN</div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content" id="modal-text-content"></div>
+    </div>
+
+    <div id="desktop-env" class="desktop-env">
+        <div class="desktop-icons-container" id="desktopIconsContainer">
+            <div class="icon" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
+            <div class="icon" id="icon-win-explorer" data-id="win-explorer" data-title-ru="Проводник" data-title-en="Explorer" data-icon="🗁"><div class="icon-pic">🗁</div><div class="icon-name" id="label-win-explorer">Проводник</div></div>
+            <div class="icon" id="icon-win-store" data-id="win-store" data-title-ru="Магазин" data-title-en="Store" data-icon="🏪"><div class="icon-pic">🏪</div><div class="icon-name" id="label-win-store">Магазин</div></div>
+            <div class="icon" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
+            <div class="icon" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
+            <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
+            <div class="icon" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
+            <div class="icon" id="icon-win-tetris" data-id="win-tetris" data-title-ru="Тетрис" data-title-en="Tetris" data-icon="🕹️" style="display: none;"><div class="icon-pic">🕹️</div><div class="icon-name" id="label-win-tetris">Тетрис</div></div>
+            <div class="icon" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
+            <div class="icon" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
+            <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
+            <div class="icon" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
+            <div class="icon" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
+        </div>
+        <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
+            <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-trash')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
+            <div class="window-body">
+                <div class="trash-controls"><button class="trash-btn" id="btn-trash-clear" onclick="emptyTrash()">Очистить</button></div>
+                <div class="trash-list" id="trashListContainer"></div>
             </div>
         </div>
 
-        <div class="bb-game-container">
-            <div id="bb-score">SCORE: 0</div>
-            <div id="bbBoard"></div>
-            <div id="bbDock"></div>
+        <div id="win-explorer" class="os-window" style="width: 360px; height: 300px; top: 10%; left: 40px;">
+            <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-explorer')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
+            <div class="window-body" id="explorerListContainer"></div>
         </div>
 
-        <div class="info-btn" id="info-trigger">?</div>
-        <div class="lang-switch" id="lang-trigger">RU</div>
-    </div>
+        <div id="win-store" class="os-window" style="width: 360px; height: 320px; top: 15%; left: 60px;">
+            <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-store')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-store')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-store')">X</span></div></div>
+            <div class="window-body"><div class="store-list" id="storeListContainer"></div></div>
+        </div>
 
-    <div id="info-modal" class="modal-overlay">
-        <div class="modal-content" id="modal-text"></div>
+        <div id="win-settings" class="os-window" style="width: 340px; height: 220px; top: 20%; left: 80px;">
+            <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-settings')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-settings')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-settings')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
+                <p id="txt-settings-info" style="font-size:12px; text-align:center; line-height:1.4;"></p>
+                <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+
+        <div id="win-blocks" class="os-window" style="width: 320px; height: 460px; top: 2px; left: 2px;">
+            <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-blocks')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
+            <div class="window-body" style="overflow-y:auto;">
+                <div class="bb-container">
+                    <div style="font-size:14px; font-weight:bold;" id="bb-score">СЧЕТ: 0</div>
+                    <div id="bbBoard" class="bb-board"></div>
+                    <div id="bbDock" class="bb-dock"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
+                <button class="taskbar-lang" id="taskbar-lang-btn" onclick="toggleDesktopLanguage()">RU</button>
+                <button class="taskbar-lang" id="taskbar-settings-btn" onclick="window.openOSWindow('win-settings', '⚙', '⚙')" style="border-style:dashed;">⚙</button>
+                <button class="taskbar-exit" id="tb-exit-btn" onclick="exitToTerminal()">ВЫХОД</button>
+                <div id="taskbar-apps" class="taskbar-apps"></div>
+            </div>
+            <div id="taskbar-timer" class="taskbar-timer">00:00:00:00</div>
+        </div>
     </div>
 
     <script src="config.js"></script>
@@ -124,3 +203,8 @@
     <script src="messenger-logic.js"></script>
     <script src="search.js"></script>
     <script src="dino.js"></script>
+    <script src="blockblast.js"></script>
+    <script src="store.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>
