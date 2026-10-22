@@ -24,6 +24,7 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
     if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
     if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
+    if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
 };
 
 window.closeOSWindow = function(id) {
@@ -121,8 +122,9 @@ function updateDesktopTexts() {
 }
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
-    const isRu = (currentLang === 'ru'); const nextStep = step + 1;
-    const phrasesRu = ["ТЫ ИЗДЕВАЕШЬСЯ", "НЕ ОТКРЫВАЙ СКАЗАЛ", "ЛАДНО", "СМОТРИ РАЗ ХОЧЕШЬ", "ТАМ ПУСТО", "КОНЧАЙ ЭТО", "ГЛУБЖЕ СИСТЕМЫ", "ОШИБКА ДОСТУПА", "КОД КАТЕГОРИИ 404"];
+    const isRu = (currentLang === 'ru');
+    const nextStep = step + 1;
+    const phrasesRu = ["ТЫ ИЗДЕВАЕШЬСЯ", "НЕ ОТКРЫВАТЬ СКАЗАЛ", "ЛАДНО", "СМОТРИ РАЗ ХОЧЕШЬ", "ТАМ ПУСТО", "КОНЧАЙ ЭТО", "ГЛУБЖЕ СИСТЕМЫ", "ОШИБКА ДОСТУПА", "КОД КАТЕГОРИИ 404"];
     const phrasesEn = ["ARE YOU KIDDING ME", "I SAID DO NOT OPEN", "FINE", "LOOK IF YOU WANT", "IT IS EMPTY THERE", "STOP THIS", "DEEPER INTO SYSTEM", "ACCESS ERROR", "CATEGORY CODE 404"];
     let text = isRu ? phrasesRu[step % phrasesRu.length] : phrasesEn[step % phrasesEn.length];
     const randId = Math.floor(Math.random() * 100000);
@@ -159,30 +161,33 @@ function renderTrashList() {
     if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
 }
 
+window.currentExplorerTab = 'apps';
+window.switchExplorerTab = function(tabId) { window.currentExplorerTab = tabId; renderExplorerList(); };
+
 function renderExplorerList() {
     const container = document.getElementById('explorerListContainer'); if (!container) return;
     container.innerHTML = ''; const icons = document.querySelectorAll('.icon'); const isRu = (currentLang === 'ru');
-    const appTypes = { apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'], games: ['icon-win-dino', 'icon-win-blocks'], other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen'] };
-    const sections = [{ id: 'apps', ru: '--- ПРИЛОЖЕНИЯ ---', en: '--- APPLICATIONS ---' }, { id: 'games', ru: '--- ИГРЫ ---', en: '--- GAMES ---' }, { id: 'other', ru: '--- ПРОЧЕЕ ---', en: '--- OTHER ---' }];
-    sections.forEach(sec => {
-        const listHTML = [];
-        icons.forEach(icon => {
-            if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store') return;
-            if (trashedApps[icon.id]) return;
-            if (appTypes[sec.id].includes(icon.id)) {
-                const titleRu = icon.dataset.titleRu || icon.querySelector('.icon-name').innerText;
-                const titleEn = icon.dataset.titleEn || icon.querySelector('.icon-name').innerText;
-                const displayTitle = isRu ? titleRu : titleEn; const pic = icon.querySelector('.icon-pic').innerText;
-                listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${icon.dataset.id}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
-            }
-        });
-        if (listHTML.length > 0) {
-            const secTitle = document.createElement('div'); secTitle.style.cssText = "font-weight:bold; color:#88ff88; margin:10px 0 5px 0; font-size:12px; letter-spacing:1px;";
-            secTitle.innerText = isRu ? sec.ru : sec.en; container.appendChild(secTitle);
-            const itemsWrap = document.createElement('div'); itemsWrap.innerHTML = listHTML.join(''); container.appendChild(itemsWrap);
+    const appTypes = { apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'], games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris'], other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen'] };
+    const listHTML = [];
+    icons.forEach(icon => {
+        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
+        if (trashedApps[icon.id]) return;
+        if (appTypes[window.currentExplorerTab].includes(icon.id)) {
+            const titleRu = icon.dataset.titleRu || icon.querySelector('.icon-name').innerText;
+            const titleEn = icon.dataset.titleEn || icon.querySelector('.icon-name').innerText;
+            const displayTitle = isRu ? titleRu : titleEn; const pic = icon.querySelector('.icon-pic').innerText;
+            listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${icon.dataset.id}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
         }
     });
-    if (container.children.length === 0) container.innerHTML = isRu ? 'Проводник пуст' : 'Explorer is empty';
+    const contentWrap = document.createElement('div'); contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; margin-bottom:10px;";
+    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
+    const tabsWrap = document.createElement('div'); tabsWrap.className = "store-tabs-container";
+    const tabs = [{id:'apps', ru:'Приложения', en:'Apps'}, {id:'games', ru:'Игры', en:'Games'}, {id:'other', ru:'Прочее', en:'Other'}];
+    tabs.forEach(t => {
+        const btn = document.createElement('button'); btn.className = "store-tab-btn" + (window.currentExplorerTab === t.id ? " active" : "");
+        btn.innerText = isRu ? t.ru : t.en; btn.onclick = () => window.switchExplorerTab(t.id); tabsWrap.appendChild(btn);
+    });
+    container.appendChild(contentWrap); container.appendChild(tabsWrap);
 }
 window.checkZipPassword = function(winId) {
     const win = document.getElementById(winId); const input = win.querySelector('.zip-input-field');
@@ -202,17 +207,18 @@ window.clearAllOSData = function() {
         'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
         'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
         'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-zip': { left: '120px', top: '290px' },
-        'icon-win-zip2': { left: '220px', top: '20px' }, 'icon-win-zip3': { left: '220px', top: '110px' },
-        'icon-win-dontopen': { left: '220px', top: '200px' }, 'icon-win-bsod': { left: '220px', top: '290px' }
+        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
+        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
+        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
+        'icon-win-bsod': { left: '320px', top: '20px' }
     };
     localStorage.setItem('kpr_icon_positions', JSON.stringify(initialPositions));
     localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
     document.querySelectorAll('.icon').forEach(icon => {
-        const pos = initialPositions[icon.id]; icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex';
+        const pos = initialPositions[icon.id]; if(pos) { icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex'; }
     });
     if (window.resetDinoGame) window.resetDinoGame(); if (window.resetBlockBlastGame) window.resetBlockBlastGame();
-    updateDesktopTexts();
+    if (window.resetTetrisGame) window.resetTetrisGame(); updateDesktopTexts();
 };
 
 window.activateDesktopMode = function() {
@@ -223,9 +229,10 @@ window.activateDesktopMode = function() {
         'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
         'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
         'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-zip': { left: '120px', top: '290px' },
-        'icon-win-zip2': { left: '220px', top: '20px' }, 'icon-win-zip3': { left: '220px', top: '110px' },
-        'icon-win-dontopen': { left: '220px', top: '200px' }, 'icon-win-bsod': { left: '220px', top: '290px' }
+        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
+        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
+        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
+        'icon-win-bsod': { left: '320px', top: '20px' }
     };
     try {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
@@ -235,13 +242,13 @@ window.activateDesktopMode = function() {
             if (trashedApps[icon.id]) { icon.style.display = 'none'; }
             else {
                 const pos = savedPositions[icon.id] || initialPositions[icon.id];
-                icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex';
+                if(pos) { icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex'; }
             }
         });
     } catch(e) {}
     if (window.initDinoGame) window.initDinoGame(); if (window.initBlockBlast) window.initBlockBlast();
     if (window.initMessenger) window.initMessenger(); if (window.initKeeperStore) window.initKeeperStore();
-    updateDesktopTexts();
+    if (window.initTetrisGame) window.initTetrisGame(); updateDesktopTexts();
 };
 
 document.querySelectorAll('.icon').forEach(icon => {
