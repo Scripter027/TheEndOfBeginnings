@@ -53,7 +53,6 @@ function renderTaskbarApps() {
         container.appendChild(btn);
     }
 }
-
 window.exitToTerminal = function() {
     document.getElementById('desktop-env').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
@@ -74,6 +73,7 @@ window.toggleDesktopLanguage = function() {
     if (langBtn) langBtn.innerText = currentLang.toUpperCase();
     updateDesktopTexts();
 };
+
 function updateDesktopTexts() {
     const isRu = (currentLang === 'ru');
     document.getElementById('tb-exit-btn').innerText = isRu ? "ВЫХОД" : "EXIT";
@@ -110,7 +110,6 @@ function updateDesktopTexts() {
     if(window.renderStoreList) window.renderStoreList();
     if(window.renderMessengerUsers) window.renderMessengerUsers();
 }
-
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     const isRu = (currentLang === 'ru');
@@ -120,6 +119,7 @@ window.advanceNestedFolder = function(step) {
     else if (step === 4) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 ' + (isRu ? 'СМОТРИ РАЗ ХОЧЕШЬ' : 'LOOK IF YOU WANT') + '</span>';
     else if (step === 5) body.innerHTML = '<p style="color:var(--bright-green)">' + (isRu ? '[Здесь абсолютно пусто...]' : '[It is absolutely empty here...]') + '</p>';
 };
+
 window.emptyTrash = function() {
     trashedApps = {}; localStorage.removeItem('kpr_trashed_apps');
     renderTrashList(); if(window.renderStoreList) window.renderStoreList();
@@ -180,7 +180,6 @@ window.clearAllOSData = function() {
     localStorage.removeItem('kpr_dino_highscore'); localStorage.removeItem('kpr_bb_highscore');
     localStorage.removeItem('kpr_icon_positions'); localStorage.removeItem('kpr_trashed_apps');
     trashedApps = {}; window.closeOSWindow('win-settings');
-    document.querySelectorAll('.icon').forEach(icon => { icon.style.display = 'flex'; icon.style.left = '0px'; icon.style.top = '0px'; });
     const initialPositions = {
         'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
         'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
@@ -189,14 +188,15 @@ window.clearAllOSData = function() {
         'icon-win-zip2': { left: '220px', top: '20px' }, 'icon-win-zip3': { left: '220px', top: '110px' },
         'icon-win-dontopen': { left: '220px', top: '200px' }, 'icon-win-bsod': { left: '220px', top: '290px' }
     };
+    localStorage.setItem('kpr_icon_positions', JSON.stringify(initialPositions));
+    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
     document.querySelectorAll('.icon').forEach(icon => {
-        const pos = initialPositions[icon.id] || { left: '20px', top: '20px' };
-        icon.style.left = pos.left; icon.style.top = pos.top;
+        const pos = initialPositions[icon.id]; icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex';
     });
-    if (window.resetDinoGame) window.resetDinoGame();
-    if (window.resetBlockBlastGame) window.resetBlockBlastGame();
+    if (window.resetDinoGame) window.resetDinoGame(); if (window.resetBlockBlastGame) window.resetBlockBlastGame();
     updateDesktopTexts();
 };
+
 window.activateDesktopMode = function() {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('boot-screen').style.display = 'none';
@@ -213,13 +213,11 @@ window.activateDesktopMode = function() {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
         trashedApps = savedTrash;
-        document.querySelectorAll('.icon').forEach(icon => { icon.style.display = 'flex'; icon.style.left = '0px'; icon.style.top = '0px'; });
         document.querySelectorAll('.icon').forEach(icon => {
             if (trashedApps[icon.id]) { icon.style.display = 'none'; }
-            else if (savedPositions[icon.id]) { icon.style.left = savedPositions[icon.id].left; icon.style.top = savedPositions[icon.id].top; }
             else {
-                icon.style.display = 'none'; const slot = window.getFirstAvailableSlot();
-                icon.style.left = slot.left; icon.style.top = slot.top; icon.style.display = 'flex';
+                const pos = savedPositions[icon.id] || initialPositions[icon.id];
+                icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex';
             }
         });
     } catch(e) {}
@@ -227,6 +225,7 @@ window.activateDesktopMode = function() {
     if (window.initMessenger) window.initMessenger(); if (window.initKeeperStore) window.initKeeperStore();
     updateDesktopTexts();
 };
+
 document.querySelectorAll('.icon').forEach(icon => {
     icon.addEventListener('dblclick', () => { if(icon.style.display !== 'none') window.openOSWindow(icon.dataset.id, currentLang==='ru'?icon.dataset.titleRu:icon.dataset.titleEn, icon.dataset.icon); });
     let lastTap = 0;
@@ -252,7 +251,7 @@ document.querySelectorAll('.icon').forEach(icon => {
         document.addEventListener('pointermove', onPointerMove);
         document.addEventListener('pointerup', function onUp(ev) {
             icon.style.zIndex = "auto"; document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp);
-            let curX = icon.offsetLeft, curY = icon.offsetTop; let snap = window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY); const trashIcon = document.getElementById('icon-win-trash');
+            let snap = window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY); const trashIcon = document.getElementById('icon-win-trash');
             if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
                 icon.style.display = 'none'; window.closeOSWindow(icon.dataset.id);
                 trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn }; localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
