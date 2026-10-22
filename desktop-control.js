@@ -16,6 +16,7 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
     if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
+    if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
 };
 
 window.closeOSWindow = function(id) {
@@ -109,6 +110,7 @@ function updateDesktopTexts() {
     renderTrashList(); renderExplorerList();
     if(window.renderStoreList) window.renderStoreList();
     if(window.renderMessengerUsers) window.renderMessengerUsers();
+    if(window.initSearchBrowser && document.getElementById('win-search').style.display === 'block') window.initSearchBrowser();
 }
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
