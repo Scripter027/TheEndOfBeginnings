@@ -60,7 +60,7 @@ document.querySelectorAll('.icon').forEach(icon => {
                 icon.style.display = 'none'; 
                 window.closeOSWindow(icon.dataset.id);
                 if (typeof trashedApps !== 'undefined') {
-                    trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn }; 
+                    trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' }; 
                     localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
                 }
                 if (typeof renderTrashList === 'function') renderTrashList(); 
@@ -90,6 +90,8 @@ document.querySelectorAll('.icon').forEach(icon => {
                 positions[icon.id] = { left: icon.style.left, top: icon.style.top }; 
                 localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
             } catch(err) {}
+            if (typeof renderExplorerList === 'function') renderExplorerList();
+            if (window.renderStoreList) window.renderStoreList();
         });
     });
 });
@@ -118,6 +120,7 @@ document.querySelectorAll('.os-window').forEach(win => {
         });
     });
 });
+
 function updateTaskbarTimer() {
     if (typeof targetDate === 'undefined') return;
     const distance = targetDate - new Date().getTime(); 
