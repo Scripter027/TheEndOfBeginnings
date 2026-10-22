@@ -251,24 +251,49 @@ function renderExplorerList() {
             const displayTitle = isRu ? titleRu : titleEn;
             const pic = icon.querySelector('.icon-pic') ? icon.querySelector('.icon-pic').innerText : '📦';
             const targetId = icon.dataset.id || '';
-            listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
+            listHTML.push(`
+                <div class="store-item">
+                    <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
+                        <span>${pic}</span>
+                        <span>${displayTitle}</span>
+                    </div>
+                    <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button>
+                </div>
+            `);
         }
     });
+    
     const contentWrap = document.createElement('div');
-    contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; margin-bottom:10px;";
+    contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:6px;";
     contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
+    
     const tabsWrap = document.createElement('div');
     tabsWrap.className = "store-tabs-container";
-    const tabs = [{id:'apps', ru:'Приложения', en:'Apps'}, {id:'games', ru:'Игры', en:'Games'}, {id:'other', ru:'Прочее', en:'Other'}];
-    tabs.forEach(t => {
+    tabsWrap.style.cssText = "height:40px; border-top:2px solid #55ff55; display:flex; background:rgba(0,0,0,0.85); width:100%;";
+    
+    const tabs = [{id:'apps', ru:'APPS', en:'APPS'}, {id:'games', ru:'GAMES', en:'GAMES'}, {id:'other', ru:'OTHER', en:'OTHER'}];
+    tabs.forEach((t, index) => {
         const btn = document.createElement('button');
-        btn.className = "store-tab-btn" + (window.currentExplorerTab === t.id ? " active" : "");
+        btn.id = `explorer-tab-${t.id}`;
+        btn.style.cssText = "flex:1; background:transparent; border:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;";
+        if (index > 0) btn.style.borderLeft = "2px solid #55ff55";
         btn.innerText = isRu ? t.ru : t.en;
+        if (window.currentExplorerTab === t.id) {
+            btn.style.background = "#55ff55";
+            btn.style.color = "#000000";
+        }
         btn.onclick = () => window.switchExplorerTab(t.id);
         tabsWrap.appendChild(btn);
     });
-    container.appendChild(contentWrap);
-    container.appendChild(tabsWrap);
+    
+    const mainWrap = document.createElement('div');
+    mainWrap.style.cssText = "display:flex; flex-direction:column; height:100%; width:100%; justify-content:space-between;";
+    mainWrap.appendChild(contentWrap);
+    mainWrap.appendChild(tabsWrap);
+    
+    container.innerHTML = '';
+    container.style.padding = '0';
+    container.appendChild(mainWrap);
 }
 
 window.checkZipPassword = function(winId) {
@@ -361,3 +386,4 @@ window.activateDesktopMode = function() {
     try { if (window.initTetrisGame) window.initTetrisGame(); } catch (e) {}
     if (typeof updateDesktopTexts === 'function') updateDesktopTexts();
 };
+
