@@ -19,9 +19,14 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
 };
 
+window.maximizeOSWindow = function(id) {
+    const win = document.getElementById(id);
+    if (win) win.classList.toggle('maximized');
+};
+
 window.closeOSWindow = function(id) {
     const win = document.getElementById(id);
-    if (win) win.style.display = 'none';
+    if (win) { win.style.display = 'none'; win.classList.remove('maximized'); }
     delete window.openWindowsTrack[id];
     renderTaskbarApps();
 };
@@ -274,7 +279,7 @@ document.querySelectorAll('.icon').forEach(icon => {
 
 document.querySelectorAll('.os-window').forEach(win => {
     win.querySelector('.window-header').addEventListener('pointerdown', function(e) {
-        if (e.target.classList.contains('window-btn')) return;
+        if (e.target.classList.contains('window-btn') || win.classList.contains('maximized')) return;
         win.style.zIndex = ++window.osZIndex; let shiftX = e.clientX - win.getBoundingClientRect().left; let shiftY = e.clientY - win.getBoundingClientRect().top;
         function moveAt(pageX, pageY) { let top = pageY - shiftY; if (top < 0) top = 0; win.style.left = (pageX - shiftX) + 'px'; win.style.top = top + 'px'; }
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
