@@ -1,24 +1,19 @@
 const osStyles = document.createElement('style');
 osStyles.innerHTML = `
     * { font-family: 'Courier New', Courier, monospace !important; }
-    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000 !important; z-index: 2000; color: var(--neon-green) !important; padding: 10px; box-sizing: border-box; user-select: none; text-shadow: var(--glow-green) !important; overflow: hidden; }
-    .desktop-env::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.4) 100%) !important; z-index: 9999; background-size: 100% 4px, 100% 100%; pointer-events: none; }
-    .desktop-env.rage-active { --neon-green: #ff3333 !important; --bright-green: #ff8888 !important; --dark-green: #220000 !important; --glow-green: 0 0 10px rgba(255, 51, 51, 0.6) !important; color: var(--neon-red) !important; text-shadow: var(--glow-red) !important; }
-    .desktop-env.rage-active::before { background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.05) 0%, rgba(255, 50, 50, 0.01) 40%, rgba(0, 0, 0, 0.5) 100%) !important; background-size: 100% 4px, 100% 100%; }
-    .desktop-env.rage-active .window-header { background: var(--neon-red) !important; color: #000000 !important; }
-    .desktop-env.rage-active .window-btn { border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
-    .desktop-env.rage-active .taskbar { border-top-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; background: rgba(34, 0, 0, 0.8) !important; }
+    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 2000; color: var(--neon-green); padding: 10px; box-sizing: border-box; user-select: none; text-shadow: var(--glow-green); overflow: hidden; }
+    .desktop-env.rage-active { --neon-green: #ff3333 !important; --bright-green: #ff8888 !important; --dark-green: #220000 !important; --glow-green: 0 0 10px rgba(255, 51, 51, 0.6) !important; color: var(--neon-green) !important; text-shadow: var(--glow-green) !important; }
+    .desktop-env.rage-active .window-header { background: var(--neon-green) !important; color: #000000 !important; }
+    .desktop-env.rage-active .window-btn { border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
+    .desktop-env.rage-active .taskbar { border-top-color: var(--neon-green) !important; box-shadow: var(--glow-green) !important; background: rgba(34, 0, 0, 0.8) !important; }
     .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
     .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 4px; border: 1px dashed var(--neon-green); width: 80px; height: 75px; box-shadow: var(--glow-green); background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); box-sizing: border-box; touch-action: none; z-index: 2100; }
     .icon:hover, .icon:active { background: rgba(51, 255, 51, 0.2); border-style: solid; border-color: var(--neon-green); box-shadow: 0 0 15px rgba(51, 255, 51, 0.8); }
-`;
-osStyles.innerHTML += `
-    .desktop-env.rage-active .icon { border-color: var(--neon-red) !important; background: rgba(0, 0, 0, 0.7); box-shadow: var(--glow-red) !important; color: var(--neon-red) !important; }
-    .desktop-env.rage-active .icon:hover, .desktop-env.rage-active .icon:active { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 15px rgba(255, 51, 51, 0.8) !important; }
+    .desktop-env.rage-active .icon { border-color: var(--neon-red) !important; background: rgba(0, 0, 0, 0.7); }
+    .desktop-env.rage-active .icon:hover, .desktop-env.rage-active .icon:active { background: rgba(255, 51, 51, 0.2); }
     .icon-pic { font-size: 24px; margin-bottom: 2px; pointer-events: none; }
     .icon-name { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.1; pointer-events: none; }
     .os-window { display: none; position: absolute; border: 2px solid var(--neon-green); background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); box-shadow: 0 0 20px rgba(51, 255, 51, 0.3); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; text-shadow: var(--glow-green); box-sizing: border-box; }
-    .desktop-env.rage-active .os-window { border-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; color: var(--neon-red) !important; }
     .window-header { background: var(--neon-green); color: #000000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
     .window-controls { display: flex; gap: 8px; }
     .window-btn { cursor: pointer; font-weight: bold; background: #000000; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 4px 10px; font-size: 12px; border-radius: 0; min-width: 28px; text-align: center; box-shadow: var(--glow-green); }
@@ -60,7 +55,7 @@ osStyles.innerHTML += `
     .explorer-item:hover, .store-item:hover { border-color: var(--neon-green); background: rgba(51, 255, 51, 0.05); }
     .explorer-item-left, .store-item-left { display: flex; align-items: center; gap: 8px; }
     @media (max-width: 600px) { .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; } .window-header { padding: 8px; } .window-btn { padding: 6px 12px; font-size: 14px; } .taskbar-start { display: none; } }
-\`;
+`;
 document.head.appendChild(osStyles);
 const desktopHTML = `
     <div id="desktop-env" class="desktop-env">
