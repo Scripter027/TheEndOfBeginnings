@@ -3,6 +3,13 @@ window.openWindowsTrack = {};
 let desktopLangClicks = 0;
 let trashedApps = {};
 
+window.toggleMaximize = function(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    win.classList.toggle('maximized');
+    if (id === 'win-msg' && window.initMessenger) window.initMessenger();
+};
+
 window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-bsod') { document.getElementById('bsodScreen').style.display = 'block'; return; }
     const win = document.getElementById(id);
@@ -17,11 +24,6 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
     if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
     if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
-};
-
-window.maximizeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) win.classList.toggle('maximized');
 };
 
 window.closeOSWindow = function(id) {
