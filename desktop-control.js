@@ -17,6 +17,7 @@ window.openOSWindow = function(id, title, iconStr) {
     }
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
+    if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
 };
 
 window.closeOSWindow = function(id) {
@@ -81,6 +82,7 @@ function updateDesktopTexts() {
     document.getElementById('btn-trash-clear').innerText = isRu ? "Очистить" : "Clear";
     document.getElementById('label-win-trash').innerText = isRu ? "Корзина" : "Trash";
     document.getElementById('label-win-explorer').innerText = isRu ? "Проводник" : "Explorer";
+    document.getElementById('label-win-store').innerText = isRu ? "Магазин" : "Store";
     document.getElementById('label-win-msg').innerText = isRu ? "KPR-Связь" : "KPR-Chat";
     document.getElementById('label-win-search').innerText = isRu ? "Поисковик" : "Search";
     document.getElementById('label-win-dino').innerText = isRu ? "Динозавр" : "Dino";
@@ -89,6 +91,7 @@ function updateDesktopTexts() {
     document.getElementById('label-win-bsod').innerText = isRu ? "Экран Смерти" : "BSOD Screen";
     document.getElementById('head-trash').innerText = isRu ? "КОРЗИНА" : "TRASH";
     document.getElementById('head-explorer').innerText = isRu ? "ПРОВОДНИК" : "EXPLORER";
+    document.getElementById('head-store').innerText = isRu ? "KEEPER STORE" : "KEEPER STORE";
     document.getElementById('head-zip').innerText = isRu ? "АРХИВАТОР - SECRET.ZIP" : "ARCHIVER - SECRET.ZIP";
     document.getElementById('head-zip2').innerText = isRu ? "АРХИВАТОР - SECRET1.ZIP" : "ARCHIVER - SECRET1.ZIP";
     document.getElementById('head-zip3').innerText = isRu ? "АРХИВАТОР - SECRET2.ZIP" : "ARCHIVER - SECRET2.ZIP";
@@ -102,6 +105,7 @@ function updateDesktopTexts() {
     });
     renderTrashList();
     renderExplorerList();
+    if(window.renderStoreList) window.renderStoreList();
     if(window.renderMessengerUsers) window.renderMessengerUsers();
 }
 window.advanceNestedFolder = function(step) {
@@ -118,6 +122,7 @@ window.emptyTrash = function() {
     trashedApps = {};
     localStorage.removeItem('kpr_trashed_apps');
     renderTrashList();
+    if(window.renderStoreList) window.renderStoreList();
 };
 
 function getFirstAvailableSlot() {
@@ -147,6 +152,7 @@ function getFirstAvailableSlot() {
     }
     return { left: '20px', top: '20px' };
 }
+window.getFirstAvailableSlot = getFirstAvailableSlot;
 
 window.restoreApp = function(id) {
     const icon = document.getElementById(id);
@@ -162,6 +168,7 @@ window.restoreApp = function(id) {
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
         renderTrashList();
         renderExplorerList();
+        if(window.renderStoreList) window.renderStoreList();
     }
 };
 
@@ -187,7 +194,7 @@ function renderExplorerList() {
     const icons = document.querySelectorAll('.icon');
     let hasItems = false;
     icons.forEach(icon => {
-        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash') return;
+        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store') return;
         if (trashedApps[icon.id]) return;
         hasItems = true;
         const item = document.createElement('div');
@@ -213,7 +220,7 @@ window.checkZipPassword = function(winId) {
         } else if (winId === 'win-zip2') {
             body.innerHTML = isRu ? "<p>Локальные метаданные KPR-OS.</p><p style='color:var(--bright-green);margin-top:10px;'>Статус: Архив поврежден временным сдвигом.</p>" : "<p>Local KPR-OS metadata.</p><p style='color:var(--bright-green);margin-top:10px;'>Status: Archive damaged by time shift.</p>";
         } else if (winId === 'win-zip3') {
-            body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте терминальные ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
+            body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте terminal ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
         }
     } else {
         alert(isRu ? 'НЕВЕРНЫЙ ПАРОЛЬ' : 'INVALID PASSWORD');
@@ -228,15 +235,16 @@ window.activateDesktopMode = function() {
     const initialPositions = {
         'icon-win-trash': { left: '20px', top: '20px' },
         'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-msg': { left: '20px', top: '200px' },
-        'icon-win-search': { left: '20px', top: '290px' },
-        'icon-win-dino': { left: '120px', top: '20px' },
-        'icon-win-blocks': { left: '120px', top: '110px' },
+        'icon-win-store': { left: '20px', top: '200px' },
+        'icon-win-msg': { left: '20px', top: '290px' },
+        'icon-win-search': { left: '120px', top: '20px' },
+        'icon-win-dino': { left: '120px', top: '110px' },
+        'icon-win-blocks': { left: '120px', top: '200px' },
         'icon-win-zip': { left: '220px', top: '20px' },
         'icon-win-zip2': { left: '220px', top: '110px' },
         'icon-win-zip3': { left: '220px', top: '200px' },
-        'icon-win-dontopen': { left: '120px', top: '200px' },
-        'icon-win-bsod': { left: '120px', top: '290px' }
+        'icon-win-dontopen': { left: '120px', top: '290px' },
+        'icon-win-bsod': { left: '220px', top: '290px' }
     };
 
     try {
@@ -257,6 +265,7 @@ window.activateDesktopMode = function() {
     if (window.initDinoGame) window.initDinoGame();
     if (window.initBlockBlast) window.initBlockBlast();
     if (window.initMessenger) window.initMessenger();
+    if (window.initKeeperStore) window.initKeeperStore();
     updateDesktopTexts();
 };
 
@@ -270,7 +279,7 @@ document.querySelectorAll('.icon').forEach(icon => {
     });
     icon.addEventListener('pointerdown', function(e) {
         if (icon.style.display === 'none') return;
-        if (icon.id === 'icon-win-trash' || icon.id === 'icon-win-explorer') {
+        if (icon.id === 'icon-win-trash' || icon.id === 'icon-win-explorer' || icon.id === 'icon-win-store') {
             let initialTop = icon.offsetTop, initialLeft = icon.offsetLeft;
             setTimeout(() => { if(icon.offsetTop === initialTop && icon.offsetLeft === initialLeft && icon.style.display !== 'none') window.openOSWindow(icon.dataset.id, currentLang==='ru'?icon.dataset.titleRu:icon.dataset.titleEn, icon.dataset.icon); }, 200);
         }
@@ -293,12 +302,14 @@ document.querySelectorAll('.icon').forEach(icon => {
             let snapX = Math.round(curX / GRID_X) * GRID_X;
             let snapY = Math.round(curY / GRID_Y) * GRID_Y;
             const trashIcon = document.getElementById('icon-win-trash');
-            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && trashIcon && snapX === trashIcon.offsetLeft && snapY === trashIcon.offsetTop) {
+            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snapX === trashIcon.offsetLeft && snapY === trashIcon.offsetTop) {
                 icon.style.display = 'none';
+                window.closeOSWindow(icon.dataset.id);
                 trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
                 localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
                 renderTrashList();
                 renderExplorerList();
+                if(window.renderStoreList) window.renderStoreList();
                 icon.style.left = oldLeft; icon.style.top = oldTop;
                 return;
             }
