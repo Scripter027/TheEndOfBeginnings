@@ -1,14 +1,48 @@
+window.activeStoreTab = 'apps';
+
 window.initKeeperStore = function() {
-    const listEl = document.getElementById('storeListContainer');
-    if (listEl) listEl.innerHTML = '';
+    renderStoreLayout();
     updateStoreTexts();
+};
+
+function renderStoreLayout() {
+    const win = document.getElementById('win-store');
+    if (!win) return;
+    let body = win.querySelector('.window-body');
+    if (body.querySelector('.store-tab-container')) return;
+
+    body.style.padding = '0';
+    body.innerHTML = `
+        <div id="storeListContainer" style="height: calc(100% - 40px); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px;"></div>
+        <div class="store-tab-container" style="height: 40px; border-top: 2px solid #55ff55; display: flex; background: rgba(0,0,0,0.85);">
+            <button id="store-tab-apps" onclick="switchStoreTab('apps')" style="flex:1; background:transparent; border:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">APPS</button>
+            <button id="store-tab-games" onclick="switchStoreTab('games')" style="flex:1; background:transparent; border-left: 2px solid #55ff55; border-top:none; border-right:none; border-bottom:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">GAMES</button>
+        </div>
+    `;
+}
+
+window.switchStoreTab = function(tabId) {
+    window.activeStoreTab = tabId;
+    const btnApps = document.getElementById('store-tab-apps');
+    const btnGames = document.getElementById('store-tab-games');
+    if (btnApps && btnGames) {
+        btnApps.style.background = tabId === 'apps' ? '#55ff55' : 'transparent';
+        btnApps.style.color = tabId === 'apps' ? '#000000' : '#55ff55';
+        btnGames.style.background = tabId === 'games' ? '#55ff55' : 'transparent';
+        btnGames.style.color = tabId === 'games' ? '#000000' : '#55ff55';
+    }
+    renderStoreList();
 };
 
 function updateStoreTexts() {
     const isRu = (currentLang === 'ru');
     const head = document.getElementById('head-store');
     if (head) head.innerText = isRu ? "KEEPER STORE" : "KEEPER STORE";
-    renderStoreList();
+    const btnApps = document.getElementById('store-tab-apps');
+    const btnGames = document.getElementById('store-tab-games');
+    if (btnApps) btnApps.innerText = isRu ? "ПРИЛОЖЕНИЯ" : "APPS";
+    if (btnGames) btnGames.innerText = isRu ? "ИГРЫ" : "GAMES";
+    window.switchStoreTab(window.activeStoreTab);
 }
 
 function renderStoreList() {
@@ -17,51 +51,35 @@ function renderStoreList() {
     container.innerHTML = '';
     
     const isRu = (currentLang === 'ru');
-    const categories = [
-        {
-            titleRu: "--- ПРИЛОЖЕНИЯ ---",
-            titleEn: "--- APPLICATIONS ---",
-            apps: [
-                { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟' },
-                { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐' },
-                { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀' }
-            ]
-        },
-        {
-            titleRu: "--- ИГРЫ ---",
-            titleEn: "--- GAMES ---",
-            apps: [
-                { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖' },
-                { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱' }
-            ]
-        }
+    const storeApps = [
+        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟', type: 'apps' },
+        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐', type: 'apps' },
+        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀', type: 'apps' },
+        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', type: 'games' },
+        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', type: 'games' },
+        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games' }
     ];
 
-    categories.forEach(cat => {
-        const catHeader = document.createElement('div');
-        catHeader.style.cssText = "font-weight:bold; color:#88ff88; margin:10px 0 5px 0; font-size:12px; letter-spacing:1px;";
-        catHeader.innerText = isRu ? cat.titleRu : cat.titleEn;
-        container.appendChild(catHeader);
+    storeApps.forEach(app => {
+        if (app.type !== window.activeStoreTab) return;
 
-        cat.apps.forEach(app => {
-            const item = document.createElement('div');
-            item.className = 'store-item';
-            
-            const displayTitle = isRu ? app.ru : app.en;
-            const iconEl = document.getElementById(app.id);
-            const isInstalled = iconEl && iconEl.style.display !== 'none' && !trashedApps[app.id];
-            
-            let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
+        const item = document.createElement('div');
+        item.className = 'store-item';
+        
+        const displayTitle = isRu ? app.ru : app.en;
+        const iconEl = document.getElementById(app.id);
+        const isInstalled = iconEl && iconEl.style.display !== 'none' && !trashedApps[app.id];
+        
+        let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
 
-            item.innerHTML = `
-                <div class="store-item-left">
-                    <span>${app.icon}</span>
-                    <span>${displayTitle}</span>
-                </div>
-                <button class="explorer-btn" onclick="toggleAppInstallation('${app.id}', ${isInstalled})">${btnText}</button>
-            `;
-            container.appendChild(item);
-        });
+        item.innerHTML = `
+            <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
+                <span>${app.icon}</span>
+                <span>${displayTitle}</span>
+            </div>
+            <button class="explorer-btn" onclick="toggleAppInstallation('${app.id}', ${isInstalled})">${btnText}</button>
+        `;
+        container.appendChild(item);
     });
 }
 
@@ -76,18 +94,13 @@ window.toggleAppInstallation = function(id, isInstalled) {
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
     } else {
         const slot = window.getFirstAvailableSlot ? window.getFirstAvailableSlot() : { left: '20px', top: '20px' };
-        icon.style.left = slot.left;
-        icon.style.top = slot.top;
-        icon.style.display = 'flex';
+        icon.style.left = slot.left; icon.style.top = slot.top; icon.style.display = 'flex';
         
         let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         positions[id] = { left: slot.left, top: slot.top };
         localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
         
-        if (trashedApps[id]) {
-            delete trashedApps[id];
-            localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        }
+        if (trashedApps[id]) { delete trashedApps[id]; localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps)); }
     }
 
     if (window.updateDesktopTexts) window.updateDesktopTexts();
