@@ -43,7 +43,7 @@
             box-shadow: 0 0 25px rgba(51, 255, 51, 0.9) !important; color: var(--bright-green) !important;
         }
         #boot-screen { display: none; position: absolute; top: 20px; left: 20px; font-size: 13px; line-height: 1.4; z-index: 10; font-weight: bold; max-width: 90%; height: 90%; overflow: hidden; }
-        #main-container { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; padding: 20px; position: relative; z-index: 5; }
+        #main-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; padding: 20px; position: relative; z-index: 5; }
         .timer-wrapper { position: absolute; top: 6%; left: 50%; transform: translateX(-50%); text-align: center; cursor: pointer; padding: 10px 20px; border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: rgba(0, 0, 0, 0.6); min-width: 240px; transition: all 0.15s ease; }
         .timer-title { font-size: 11px; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; display: none; }
         .timer { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
@@ -68,6 +68,14 @@
         a { color: var(--neon-green); text-decoration: underline; cursor: pointer; pointer-events: auto; }
         @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; } .modal-content { font-size: 14px; } }
         @media (max-width: 480px) { #main-container { padding: 10px; } .timer-wrapper { top: 4%; width: 85%; min-width: 0; } .timer { font-size: 19px; } .secret-active .timer { font-size: 22px; } .terminal-box { margin-top: 80px; } .terminal-output { font-size: 15px; min-height: 120px; margin-bottom: 20px; } .input-group { flex-direction: column; gap: 8px; } .btn-submit { width: 100%; padding: 12px; } .terminal-input { padding: 12px; font-size: 15px; } .info-btn { bottom: 15px; left: 15px; } .lang-switch { bottom: 15px; right: 15px; } }
+        
+        .bb-game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; }
+        #bbBoard { display: grid; grid-template-columns: repeat(8, 35px); grid-template-rows: repeat(8, 35px); gap: 2px; background-color: var(--dark-green); border: 2px solid var(--neon-green); padding: 4px; box-shadow: var(--glow-green); }
+        #bbDock { display: flex; gap: 20px; min-height: 80px; justify-content: center; align-items: center; width: 100%; }
+        .bb-cell { width: 100%; height: 100%; border: 1px solid rgba(51, 255, 51, 0.1); background-color: rgba(0, 0, 0, 0.5); }
+        .bb-cell.filled { background-color: var(--neon-green); box-shadow: var(--glow-green); }
+        .bb-piece { display: grid; gap: 1px; padding: 2px; background: rgba(0, 20, 0, 0.3); border: 1px dashed rgba(51, 255, 51, 0.3); cursor: grab; }
+        #bb-score { font-size: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -77,15 +85,35 @@
             <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
+
+    <div id="boot-screen"></div>
+
     <div id="main-container">
-        <div id="terminal-zone">
-            <div id="output-area"></div>
+        <div class="timer-wrapper">
+            <div class="timer-title">System Time</div>
+            <div class="timer" id="system-timer">00:00:00</div>
         </div>
-        <div id="input-zone">
-            <span id="prompt">></span>
-            <input type="text" id="user-input" autofocus autocomplete="off" spellcheck="false">
-            <button id="submit-btn" onclick="processTerminalInput()">ENTER</button>
+
+        <div class="terminal-box">
+            <div class="terminal-output" id="output-area"></div>
+            <div class="input-group">
+                <input type="text" id="user-input" class="terminal-input" autofocus autocomplete="off" spellcheck="false">
+                <button id="submit-btn" class="btn-submit" onclick="processTerminalInput()">ENTER</button>
+            </div>
         </div>
+
+        <div class="bb-game-container">
+            <div id="bb-score">SCORE: 0</div>
+            <div id="bbBoard"></div>
+            <div id="bbDock"></div>
+        </div>
+
+        <div class="info-btn" id="info-trigger">?</div>
+        <div class="lang-switch" id="lang-trigger">RU</div>
+    </div>
+
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content" id="modal-text"></div>
     </div>
 
     <script src="config.js"></script>
@@ -96,8 +124,3 @@
     <script src="messenger-logic.js"></script>
     <script src="search.js"></script>
     <script src="dino.js"></script>
-    <script src="blockblast.js"></script>
-    <script src="store.js"></script>
-    <script src="tetris.js"></script>
-</body>
-</html>
