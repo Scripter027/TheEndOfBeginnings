@@ -56,6 +56,9 @@ osStyles.innerHTML = `
     .explorer-item-left, .store-item-left { display: flex; align-items: center; gap: 8px; }
     .zip-input-field { background: rgba(0, 0, 0, 0.6); border: 2px solid #55ff55; color: #55ff55; padding: 14px; font-size: 16px; outline: none; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; -webkit-appearance: none; width: 100%; }
     .zip-input-field:focus { border-color: #88ff88; box-shadow: 0 0 25px rgba(85, 255, 85, 0.8); color: #88ff88; }
+    .store-tabs-container { display: flex; gap: 4px; width: 100%; border-top: 2px solid #55ff55; padding-top: 6px; }
+    .store-tab-btn { flex: 1; background: transparent; border: 2px solid #55ff55; color: #55ff55; padding: 6px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; transition: all 0.15s ease; }
+    .store-tab-btn:hover, .store-tab-btn.active { background: #55ff55; color: #000000; }
     @media (max-width: 600px) { .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; } .window-header { padding: 8px; } .window-btn { padding: 6px 12px; font-size: 14px; } .taskbar-start { display: none; } }
 `;
 document.head.appendChild(osStyles);
@@ -79,6 +82,7 @@ const desktopHTML = `
             <div class="icon" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
             <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
             <div class="icon" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
+            <div class="icon" id="icon-win-tetris" data-id="win-tetris" data-title-ru="Тетрис" data-title-en="Tetris" data-icon="🕹️" style="display: none;"><div class="icon-pic">🕹️</div><div class="icon-name" id="label-win-tetris">Тетрис</div></div>
             <div class="icon" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
             <div class="icon" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
             <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
@@ -98,9 +102,7 @@ const desktopHTML = `
 
         <div id="win-explorer" class="os-window" style="width: 360px; height: 300px; top: 10%; left: 40px;">
             <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-explorer')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
-            <div class="window-body">
-                <div class="explorer-list" id="explorerListContainer"></div>
-            </div>
+            <div class="window-body" id="explorerListContainer"></div>
         </div>
 `;
 const desktopHTMLContent3 = `
@@ -116,6 +118,20 @@ const desktopHTMLContent3 = `
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
                 <p id="txt-settings-info" style="font-size:12px; text-align:center; line-height:1.4;"></p>
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+
+        <div id="win-tetris" class="os-window" style="width: 300px; height: 360px; top: 8%; left: 15px;">
+            <div class="window-header"><span id="head-tetris">TETRIS.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tetris')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tetris')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tetris')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:calc(100% - 38px); padding:8px;">
+                <div id="tetris-score" style="font-size:14px; font-weight:bold; color:#55ff55; margin-bottom:4px;">СЧЕТ: 0</div>
+                <canvas id="tetrisCanvas" style="background:#000; border:2px solid #55ff55; display:block; max-height:220px; aspect-ratio:10/20;"></canvas>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%; margin-top:6px;">
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('left')">◀</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('rotate')">🔄</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('right')">▶</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px; grid-column:span 3;" onclick="controlTetris('down')">▼ СКОРОСТЬ</button>
+                </div>
             </div>
         </div>
 
@@ -136,7 +152,8 @@ const desktopHTMLContent3 = `
                 <button class="trash-btn" onclick="checkZipPassword('win-zip2')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
-
+`;
+const desktopHTMLContent3_Part2 = `
         <div id="win-zip3" class="os-window" style="width: 330px; height: 200px; top: 30%; left: 25px;">
             <div class="window-header"><span id="head-zip3">АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip3')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
             <div class="window-body" id="win-zip3-body">
@@ -202,5 +219,5 @@ const desktopHTMLContent3 = `
 `;
 
 const divMock = document.createElement('div');
-divMock.innerHTML = desktopHTML + desktopHTMLContent3;
+divMock.innerHTML = desktopHTML + desktopHTMLContent3 + desktopHTMLContent3_Part2;
 document.body.appendChild(divMock.firstElementChild);
