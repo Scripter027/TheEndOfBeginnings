@@ -126,16 +126,20 @@ function getFirstAvailableSlot() {
     const cols = Math.floor(bounds.width / GRID_X) || 1;
     const rows = Math.floor(bounds.height / GRID_Y) || 1;
     const icons = document.querySelectorAll('.icon');
+    
     for (let c = 0; c < cols; c++) {
         for (let r = 0; r < rows; r++) {
             const testX = c * GRID_X + 20;
             const testY = r * GRID_Y + 20;
             let occupied = false;
+            
             icons.forEach(icon => {
                 if (icon.style.display !== 'none') {
-                    const iconX = parseInt(icon.style.left);
-                    const iconY = parseInt(icon.style.top);
-                    if (Math.abs(iconX - testX) < 10 && Math.abs(iconY - testY) < 10) occupied = true;
+                    const iconX = parseInt(icon.style.left) || 0;
+                    const iconY = parseInt(icon.style.top) || 0;
+                    if (Math.abs(iconX - testX) < 15 && Math.abs(iconY - testY) < 15) {
+                        occupied = true;
+                    }
                 }
             });
             if (!occupied) return { left: testX + 'px', top: testY + 'px' };
@@ -220,15 +224,29 @@ window.activateDesktopMode = function() {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('boot-screen').style.display = 'none';
     document.getElementById('desktop-env').style.display = 'block';
+    
+    const initialPositions = {
+        'icon-win-trash': { left: '20px', top: '20px' },
+        'icon-win-explorer': { left: '20px', top: '110px' },
+        'icon-win-msg': { left: '20px', top: '200px' },
+        'icon-win-search': { left: '20px', top: '290px' },
+        'icon-win-dino': { left: '120px', top: '20px' },
+        'icon-win-blocks': { left: '120px', top: '110px' },
+        'icon-win-zip': { left: '220px', top: '20px' },
+        'icon-win-zip2': { left: '220px', top: '110px' },
+        'icon-win-zip3': { left: '220px', top: '200px' },
+        'icon-win-dontopen': { left: '120px', top: '200px' },
+        'icon-win-bsod': { left: '120px', top: '290px' }
+    };
+
     try {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
         trashedApps = savedTrash;
         document.querySelectorAll('.icon').forEach(icon => {
-            if (savedPositions[icon.id]) {
-                icon.style.left = savedPositions[icon.id].left;
-                icon.style.top = savedPositions[icon.id].top;
-            }
+            const pos = savedPositions[icon.id] || initialPositions[icon.id] || { left: '20px', top: '20px' };
+            icon.style.left = pos.left;
+            icon.style.top = pos.top;
             if (trashedApps[icon.id]) {
                 icon.style.display = 'none';
             } else {
