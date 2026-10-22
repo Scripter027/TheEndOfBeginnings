@@ -1,315 +1,145 @@
-window.osZIndex = 3000;
-window.openWindowsTrack = {};
-let desktopLangClicks = 0;
-let trashedApps = {};
-
-window.toggleMaximize = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.classList.toggle('maximized');
-    if (id === 'win-msg' && window.initMessenger) window.initMessenger();
-};
-
-window.openOSWindow = function(id, title, iconStr) {
-    if (id === 'win-bsod') { document.getElementById('bsodScreen').style.display = 'block'; return; }
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.style.display = 'block'; win.style.zIndex = ++window.osZIndex;
-    if (window.innerWidth < 600) { win.style.left = '4vw'; win.style.top = '10vh'; }
-    if (!window.openWindowsTrack[id]) {
-        window.openWindowsTrack[id] = iconStr || '📦';
-        renderTaskbarApps();
-    }
-    if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
-    if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
-    if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
-    if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
-    if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
-};
-
-window.closeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) { win.style.display = 'none'; win.classList.remove('maximized'); }
-    delete window.openWindowsTrack[id];
-    renderTaskbarApps();
-};
-
-window.minimizeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) win.style.display = 'none';
-    renderTaskbarApps();
-};
-
-window.toggleWindowFromTaskbar = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    if (win.style.display === 'block') { win.style.display = 'none'; }
-    else { win.style.display = 'block'; win.style.zIndex = ++window.osZIndex; }
-    renderTaskbarApps();
-};
-
-function renderTaskbarApps() {
-    const container = document.getElementById('taskbar-apps');
-    if (!container) return;
-    container.innerHTML = '';
-    for (const id in window.openWindowsTrack) {
-        const btn = document.createElement('button');
-        btn.className = 'taskbar-app-btn';
-        const win = document.getElementById(id);
-        if (win && win.style.display === 'block') btn.classList.add('active');
-        btn.innerText = window.openWindowsTrack[id];
-        btn.onclick = () => window.toggleWindowFromTaskbar(id);
-        container.appendChild(btn);
-    }
-}
-window.exitToTerminal = function() {
-    document.getElementById('desktop-env').style.display = 'none';
-    document.getElementById('main-container').style.display = 'flex';
-    document.getElementById('response-text').innerText = langData[currentLang].defaultPrompt;
-    document.getElementById('user-input').focus();
-};
-
-window.toggleDesktopLanguage = function() {
-    desktopLangClicks++;
-    if (desktopLangClicks >= 10) {
-        const env = document.getElementById('desktop-env');
-        const banner = document.getElementById('rageBanner');
-        env.classList.add('rage-active'); banner.style.display = 'block';
-        setTimeout(() => { env.classList.remove('rage-active'); banner.style.display = 'none'; desktopLangClicks = 0; }, 10000);
-    }
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    const langBtn = document.getElementById('taskbar-lang-btn');
-    if (langBtn) langBtn.innerText = currentLang.toUpperCase();
-    updateDesktopTexts();
-};
-
-function updateDesktopTexts() {
-    const isRu = (currentLang === 'ru');
-    document.getElementById('tb-exit-btn').innerText = isRu ? "ВЫХОД" : "EXIT";
-    document.getElementById('btn-trash-clear').innerText = isRu ? "Очистить" : "Clear";
-    document.getElementById('label-win-trash').innerText = isRu ? "Корзина" : "Trash";
-    document.getElementById('label-win-explorer').innerText = isRu ? "Проводник" : "Explorer";
-    document.getElementById('label-win-store').innerText = isRu ? "Магазин" : "Store";
-    document.getElementById('label-win-msg').innerText = isRu ? "KPR-Связь" : "KPR-Chat";
-    document.getElementById('label-win-search').innerText = isRu ? "Поисковик" : "Search";
-    document.getElementById('label-win-dino').innerText = isRu ? "Динозавр" : "Dino";
-    document.getElementById('label-win-blocks').innerText = isRu ? "Блок Бласт" : "Block Blast";
-    document.getElementById('label-win-dontopen').innerText = isRu ? "НЕ ОТКРЫВАТЬ" : "DO NOT OPEN";
-    document.getElementById('label-win-bsod').innerText = isRu ? "Экран Смерти" : "BSOD Screen";
-    document.getElementById('head-trash').innerText = isRu ? "КОРЗИНА" : "TRASH";
-    document.getElementById('head-explorer').innerText = isRu ? "ПРОВОДНИК" : "EXPLORER";
-    document.getElementById('head-store').innerText = isRu ? "KEEPER STORE" : "KEEPER STORE";
-    document.getElementById('head-settings').innerText = isRu ? "НАСТРОЙКИ" : "SETTINGS";
-    document.getElementById('head-zip').innerText = isRu ? "АРХИВАТОР - SECRET.ZIP" : "ARCHIVER - SECRET.ZIP";
-    document.getElementById('head-zip2').innerText = isRu ? "АРХИВАТОР - SECRET1.ZIP" : "ARCHIVER - SECRET1.ZIP";
-    document.getElementById('head-zip3').innerText = isRu ? "АРХИВАТОР - SECRET2.ZIP" : "ARCHIVER - SECRET2.ZIP";
-    document.getElementById('head-dontopen').innerText = isRu ? "НЕ ОТКРЫВАТЬ" : "DO NOT OPEN";
-    document.getElementById('head-msg').innerText = isRu ? "МЕССЕНДЖЕР v1.02" : "MESSENGER v1.02";
-    document.getElementById('head-search').innerText = isRu ? "БРАУЗЕР 'ПРИЗРАК'" : "BROWSER 'GHOST'";
-    document.getElementById('head-dino').innerText = isRu ? "DINO_RUN.EXE" : "DINO_RUN.EXE";
-    document.getElementById('head-blocks').innerText = isRu ? "BLOCK_BLAST.EXE" : "BLOCK_BLAST.EXE";
-    const txtInfo = document.getElementById('txt-settings-info');
-    if (txtInfo) txtInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will clear highscores and restore default icons.";
-    const btnReset = document.getElementById('btn-reset-all');
-    if (btnReset) btnReset.innerText = isRu ? "СТЕРЕТЬ ДАННЫЕ" : "WIPE ALL DATA";
-    document.querySelectorAll('.txt-zip-locked').forEach(el => {
-        el.innerText = isRu ? "Файл зашифрован ключом AES-256." : "The file is encrypted with an AES-256 key.";
-    });
-    renderTrashList(); renderExplorerList();
-    if(window.renderStoreList) window.renderStoreList();
-    if(window.renderMessengerUsers) window.renderMessengerUsers();
-    if(window.initSearchBrowser && document.getElementById('win-search').style.display === 'block') window.initSearchBrowser();
-}
-window.advanceNestedFolder = function(step) {
-    const body = document.getElementById('nestedFolderBody');
-    const isRu = (currentLang === 'ru');
-    const nextStep = step + 1;
-    const phrasesRu = ["ТЫ ИЗДЕВАЕШЬСЯ", "НЕ ОТКРЫВАТЬ СКАЗАЛ", "ЛАДНО", "СМОТРИ РАЗ ХОЧЕШЬ", "ТАМ ПУСТО", "КОНЧАЙ ЭТО", "ГЛУБЖЕ СИСТЕМЫ", "ОШИБКА ДОСТУПА", "КОД КАТЕГОРИИ 404"];
-    const phrasesEn = ["ARE YOU KIDDING ME", "I SAID DO NOT OPEN", "FINE", "LOOK IF YOU WANT", "IT IS EMPTY THERE", "STOP THIS", "DEEPER INTO SYSTEM", "ACCESS ERROR", "CATEGORY CODE 404"];
-    let text = isRu ? phrasesRu[step % phrasesRu.length] : phrasesEn[step % phrasesEn.length];
-    const randId = Math.floor(Math.random() * 100000);
-    body.innerHTML = `<div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" id="nested-link-${randId}" onclick="advanceNestedFolder(${nextStep})">📁 ${text}</span></div>`;
-};
-
-window.emptyTrash = function() {
-    trashedApps = {}; localStorage.removeItem('kpr_trashed_apps');
-    renderTrashList(); if(window.renderStoreList) window.renderStoreList();
-};
-
-window.restoreApp = function(id) {
-    const icon = document.getElementById(id);
-    if (icon) {
-        const slot = window.getFirstAvailableSlot();
-        icon.style.left = slot.left; icon.style.top = slot.top; icon.style.display = 'flex';
-        let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-        positions[id] = { left: slot.left, top: slot.top };
-        localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-        delete trashedApps[id]; localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        renderTrashList(); renderExplorerList(); if(window.renderStoreList) window.renderStoreList();
-    }
-};
-
-function renderTrashList() {
-    const container = document.getElementById('trashListContainer'); if (!container) return;
-    container.innerHTML = ''; let hasItems = false;
-    for (const id in trashedApps) {
-        hasItems = true; const item = document.createElement('div'); item.className = 'trash-item';
-        const displayTitle = currentLang === 'ru' ? trashedApps[id].ru : trashedApps[id].en;
-        item.innerHTML = `<span>${displayTitle}</span><button class="trash-btn" onclick="restoreApp('${id}')">${currentLang==='ru'?'Вернуть':'Restore'}</button>`;
-        container.appendChild(item);
-    }
-    if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
-}
-
-window.currentExplorerTab = 'apps';
-window.switchExplorerTab = function(tabId) { window.currentExplorerTab = tabId; renderExplorerList(); };
-
-function renderExplorerList() {
-    const container = document.getElementById('explorerListContainer'); if (!container) return;
-    container.innerHTML = ''; const icons = document.querySelectorAll('.icon'); const isRu = (currentLang === 'ru');
-    const appTypes = { apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'], games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris'], other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen'] };
-    const listHTML = [];
-    icons.forEach(icon => {
-        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
-        if (trashedApps[icon.id]) return;
-        if (appTypes[window.currentExplorerTab].includes(icon.id)) {
-            const titleRu = icon.dataset.titleRu || icon.querySelector('.icon-name').innerText;
-            const titleEn = icon.dataset.titleEn || icon.querySelector('.icon-name').innerText;
-            const displayTitle = isRu ? titleRu : titleEn; const pic = icon.querySelector('.icon-pic').innerText;
-            listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${icon.dataset.id}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
+document.querySelectorAll('.icon').forEach(icon => {
+    icon.addEventListener('dblclick', () => { 
+        if(icon.style.display !== 'none') {
+            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
         }
     });
-    const contentWrap = document.createElement('div'); contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; margin-bottom:10px;";
-    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
-    const tabsWrap = document.createElement('div'); tabsWrap.className = "store-tabs-container";
-    const tabs = [{id:'apps', ru:'Приложения', en:'Apps'}, {id:'games', ru:'Игры', en:'Games'}, {id:'other', ru:'Прочее', en:'Other'}];
-    tabs.forEach(t => {
-        const btn = document.createElement('button'); btn.className = "store-tab-btn" + (window.currentExplorerTab === t.id ? " active" : "");
-        btn.innerText = isRu ? t.ru : t.en; btn.onclick = () => window.switchExplorerTab(t.id); tabsWrap.appendChild(btn);
-    });
-    container.appendChild(contentWrap); container.appendChild(tabsWrap);
-}
-window.checkZipPassword = function(winId) {
-    const win = document.getElementById(winId); const input = win.querySelector('.zip-input-field');
-    const body = win.querySelector('.window-body'); const isRu = (currentLang === 'ru');
-    if (input.value === '246' || input.value === '!!!!!') {
-        if (winId === 'win-zip') body.innerHTML = isRu ? "<p>Доступ открыт. Ключевой лог: [STAGE-1-COMPLETE]</p>" : "<p>Access granted. Key log: [STAGE-1-COMPLETE]</p>";
-        else if (winId === 'win-zip2') body.innerHTML = isRu ? "<p>Локальные метаданные KPR-OS.</p><p style='color:var(--bright-green);margin-top:10px;'>Статус: Архив поврежден временным сдвигом.</p>" : "<p>Local KPR-OS metadata.</p><p style='color:var(--bright-green);margin-top:10px;'>Status: Archive damaged by time shift.</p>";
-        else if (winId === 'win-zip3') body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте терминальные ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
-    } else { alert(isRu ? 'НЕВЕРНЫЙ ПАРОЛЬ' : 'INVALID PASSWORD'); }
-};
-
-window.clearAllOSData = function() {
-    localStorage.removeItem('kpr_dino_highscore'); localStorage.removeItem('kpr_bb_highscore');
-    localStorage.removeItem('kpr_icon_positions'); localStorage.removeItem('kpr_trashed_apps');
-    trashedApps = {}; window.closeOSWindow('win-settings');
-    const initialPositions = {
-        'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
-        'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
-        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
-        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
-        'icon-win-bsod': { left: '320px', top: '20px' }
-    };
-    localStorage.setItem('kpr_icon_positions', JSON.stringify(initialPositions));
-    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-    document.querySelectorAll('.icon').forEach(icon => {
-        const pos = initialPositions[icon.id]; if(pos) { icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex'; }
-    });
-    if (window.resetDinoGame) window.resetDinoGame(); if (window.resetBlockBlastGame) window.resetBlockBlastGame();
-    if (window.resetTetrisGame) window.resetTetrisGame(); updateDesktopTexts();
-};
-
-window.activateDesktopMode = function() {
-    document.getElementById('main-container').style.display = 'none';
-    document.getElementById('boot-screen').style.display = 'none';
-    document.getElementById('desktop-env').style.display = 'block';
-    const initialPositions = {
-        'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
-        'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
-        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
-        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
-        'icon-win-bsod': { left: '320px', top: '20px' }
-    };
-    try {
-        const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-        const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
-        trashedApps = savedTrash;
-        document.querySelectorAll('.icon').forEach(icon => {
-            if (trashedApps[icon.id]) { icon.style.display = 'none'; }
-            else {
-                const pos = savedPositions[icon.id] || initialPositions[icon.id];
-                if(pos) { icon.style.left = pos.left; icon.style.top = pos.top; icon.style.display = 'flex'; }
-            }
-        });
-    } catch(e) {}
-    if (window.initDinoGame) window.initDinoGame(); if (window.initBlockBlast) window.initBlockBlast();
-    if (window.initMessenger) window.initMessenger(); if (window.initKeeperStore) window.initKeeperStore();
-    if (window.initTetrisGame) window.initTetrisGame(); updateDesktopTexts();
-};
-
-document.querySelectorAll('.icon').forEach(icon => {
-    icon.addEventListener('dblclick', () => { if(icon.style.display !== 'none') window.openOSWindow(icon.dataset.id, currentLang==='ru'?icon.dataset.titleRu:icon.dataset.titleEn, icon.dataset.icon); });
+    
     let lastTap = 0;
     icon.addEventListener('touchend', (e) => {
-        let currentTime = new Date().getTime(); let tapLength = currentTime - lastTap;
-        if (tapLength < 300 && tapLength > 0 && icon.style.display !== 'none') { e.preventDefault(); window.openOSWindow(icon.dataset.id, currentLang==='ru'?icon.dataset.titleRu:icon.dataset.titleEn, icon.dataset.icon); }
+        let currentTime = new Date().getTime(); 
+        let tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0 && icon.style.display !== 'none') { 
+            e.preventDefault(); 
+            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
+        }
         lastTap = currentTime;
     });
+
     icon.addEventListener('pointerdown', function(e) {
         if (icon.style.display === 'none') return;
+        
         if (icon.id === 'icon-win-trash' || icon.id === 'icon-win-explorer' || icon.id === 'icon-win-store') {
-            let initialTop = icon.offsetTop, initialLeft = icon.offsetLeft;
-            setTimeout(() => { if(icon.offsetTop === initialTop && icon.offsetLeft === initialLeft && icon.style.display !== 'none') window.openOSWindow(icon.dataset.id, currentLang==='ru'?icon.dataset.titleRu:icon.dataset.titleEn, icon.dataset.icon); }, 200);
+            let initialTop = icon.offsetTop;
+            let initialLeft = icon.offsetLeft;
+            setTimeout(() => { 
+                if(icon.offsetTop === initialTop && icon.offsetLeft === initialLeft && icon.style.display !== 'none') {
+                    window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
+                }
+            }, 200);
         }
-        icon.style.zIndex = "5000"; let shiftX = e.clientX - icon.getBoundingClientRect().left; let shiftY = e.clientY - icon.getBoundingClientRect().top;
-        let oldTop = icon.style.top, oldLeft = icon.style.left;
+        
+        icon.style.zIndex = "5000"; 
+        let shiftX = e.clientX - icon.getBoundingClientRect().left; 
+        let shiftY = e.clientY - icon.getBoundingClientRect().top;
+        let oldTop = icon.style.top;
+        let oldLeft = icon.style.left;
+        
         function moveAt(pageX, pageY) {
-            let container = document.getElementById('desktopIconsContainer').getBoundingClientRect();
-            let x = pageX - container.left - shiftX; let y = pageY - container.top - shiftY;
-            icon.style.left = x + 'px'; icon.style.top = y + 'px';
+            let containerEl = document.getElementById('desktopIconsContainer');
+            if (!containerEl) return;
+            let container = containerEl.getBoundingClientRect();
+            let x = pageX - container.left - shiftX; 
+            let y = pageY - container.top - shiftY;
+            icon.style.left = x + 'px'; 
+            icon.style.top = y + 'px';
         }
+        
         function onPointerMove(ev) { moveAt(ev.clientX, ev.clientY); }
         document.addEventListener('pointermove', onPointerMove);
+        
         document.addEventListener('pointerup', function onUp(ev) {
-            icon.style.zIndex = "auto"; document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp);
-            let snap = window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY); const trashIcon = document.getElementById('icon-win-trash');
+            icon.style.zIndex = "auto"; 
+            document.removeEventListener('pointermove', onPointerMove); 
+            document.removeEventListener('pointerup', onUp);
+            
+            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : { x: ev.clientX - shiftX, y: ev.clientY - shiftY }; 
+            const trashIcon = document.getElementById('icon-win-trash');
+            
             if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
-                icon.style.display = 'none'; window.closeOSWindow(icon.dataset.id);
-                trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn }; localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-                renderTrashList(); renderExplorerList(); if(window.renderStoreList) window.renderStoreList();
-                icon.style.left = oldLeft; icon.style.top = oldTop; return;
+                icon.style.display = 'none'; 
+                window.closeOSWindow(icon.dataset.id);
+                if (typeof trashedApps !== 'undefined') {
+                    trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn }; 
+                    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+                }
+                if (typeof renderTrashList === 'function') renderTrashList(); 
+                if (typeof renderExplorerList === 'function') renderExplorerList(); 
+                if (window.renderStoreList) window.renderStoreList();
+                icon.style.left = oldLeft; 
+                icon.style.top = oldTop; 
+                return;
             }
+            
             let overlap = false;
-            document.querySelectorAll('.icon').forEach(other => { if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true; });
-            if (overlap) { icon.style.left = oldLeft; icon.style.top = oldTop; return; }
-            icon.style.left = snap.x + 'px'; icon.style.top = snap.y + 'px';
+            document.querySelectorAll('.icon').forEach(other => { 
+                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true; 
+            });
+            
+            if (overlap) { 
+                icon.style.left = oldLeft; 
+                icon.style.top = oldTop; 
+                return; 
+            }
+            
+            icon.style.left = snap.x + 'px'; 
+            icon.style.top = snap.y + 'px';
+            
             try {
                 let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-                positions[icon.id] = { left: icon.style.left, top: icon.style.top }; localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+                positions[icon.id] = { left: icon.style.left, top: icon.style.top }; 
+                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
             } catch(err) {}
         });
     });
 });
 
 document.querySelectorAll('.os-window').forEach(win => {
-    win.querySelector('.window-header').addEventListener('pointerdown', function(e) {
+    let header = win.querySelector('.window-header');
+    if (!header) return;
+    header.addEventListener('pointerdown', function(e) {
         if (e.target.classList.contains('window-btn') || win.classList.contains('maximized')) return;
-        win.style.zIndex = ++window.osZIndex; let shiftX = e.clientX - win.getBoundingClientRect().left; let shiftY = e.clientY - win.getBoundingClientRect().top;
-        function moveAt(pageX, pageY) { let top = pageY - shiftY; if (top < 0) top = 0; win.style.left = (pageX - shiftX) + 'px'; win.style.top = top + 'px'; }
+        win.style.zIndex = ++window.osZIndex; 
+        let shiftX = e.clientX - win.getBoundingClientRect().left; 
+        let shiftY = e.clientY - win.getBoundingClientRect().top;
+        
+        function moveAt(pageX, pageY) { 
+            let top = pageY - shiftY; 
+            if (top < 0) top = 0; 
+            win.style.left = (pageX - shiftX) + 'px'; 
+            win.style.top = top + 'px'; 
+        }
+        
         function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
         document.addEventListener('pointermove', onPointerMove);
-        document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
+        document.addEventListener('pointerup', function onUp() { 
+            document.removeEventListener('pointermove', onPointerMove); 
+            document.removeEventListener('pointerup', onUp); 
+        });
     });
 });
-
 function updateTaskbarTimer() {
-    const distance = targetDate - new Date().getTime(); const tbLabel = document.getElementById('taskbar-timer'); if (!tbLabel) return;
-    if (distance < 0) { tbLabel.innerHTML = "00:00:00:00"; return; }
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    tbLabel.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    if (typeof targetDate === 'undefined') return;
+    const distance = targetDate - new Date().getTime(); 
+    const tbLabel = document.getElementById('taskbar-timer'); 
+    if (!tbLabel) return;
+    if (distance < 0) { 
+        tbLabel.innerHTML = "00:00:00:00"; 
+        return; 
+    }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    const dStr = days < 10 ? '0' + days : days;
+    const hStr = hours < 10 ? '0' + hours : hours;
+    const mStr = minutes < 10 ? '0' + minutes : minutes;
+    const sStr = seconds < 10 ? '0' + seconds : seconds;
+    
+    window.requestAnimationFrame(() => {
+        if (tbLabel) tbLabel.innerHTML = dStr + ':' + hStr + ':' + mStr + ':' + sStr;
+    });
 }
 setInterval(updateTaskbarTimer, 1000);
+updateTaskbarTimer();
