@@ -100,6 +100,12 @@
         .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 2px solid #55ff55; background: rgba(0,0,0,0.4); padding: 6px; box-sizing: border-box; }
         .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.6); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 2px dashed #55ff55; }
         .bb-piece .bb-cell { width: 14px; height: 14px; }
+        .msg-container { display: flex; height: 100%; width: 100%; border: 2px solid #55ff55; background: #000000; min-height: 180px; }
+        .msg-left { width: 35%; border-right: 2px solid #55ff55; padding: 4px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; height: 100%; }
+        .msg-user-item { padding: 6px; border: 2px solid transparent; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .msg-user-item:hover { border-color: #55ff55; background: rgba(85, 255, 85, 0.15); }
+        .msg-right { width: 65%; display: flex; flex-direction: column; height: 100%; background: rgba(0,0,0,0.2); }
+        .dino-canvas { background: #000000; border: 2px solid #55ff55; display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.4); }
     </style>
 </head>
 <body>
@@ -169,6 +175,76 @@
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
                 <p id="txt-settings-info" style="font-size:12px; text-align:center; line-height:1.4;"></p>
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+
+        <div id="win-tetris" class="os-window" style="width: 300px; height: 360px; top: 8%; left: 15px;">
+            <div class="window-header"><span id="head-tetris">TETRIS.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tetris')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tetris')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tetris')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:calc(100% - 38px); padding:8px;">
+                <div id="tetris-score" style="font-size:14px; font-weight:bold; color:#55ff55; margin-bottom:4px;">СЧЕТ: 0</div>
+                <canvas id="tetrisCanvas" style="background:#000; border:2px solid #55ff55; display:block; max-height:220px; aspect-ratio:10/20;"></canvas>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%; margin-top:6px;">
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('left')">◀</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('rotate')">🔄</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('right')">▶</button>
+                    <button class="trash-btn" style="padding:6px; font-size:11px; grid-column:span 3;" onclick="controlTetris('down')">▼ СКОРОСТЬ</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
+            <div class="window-header"><span id="head-zip">SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
+            <div class="window-body">
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="...">
+                <button class="trash-btn" onclick="checkZipPassword('win-zip')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+            </div>
+        </div>
+        <div id="win-zip2" class="os-window" style="width: 330px; height: 200px; top: 25%; left: 20px;">
+            <div class="window-header"><span id="head-zip2">SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip2')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
+            <div class="window-body">
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="...">
+                <button class="trash-btn" onclick="checkZipPassword('win-zip2')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+            </div>
+        </div>
+
+        <div id="win-zip3" class="os-window" style="width: 330px; height: 200px; top: 30%; left: 25px;">
+            <div class="window-header"><span id="head-zip3">SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip3')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
+            <div class="window-body">
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="...">
+                <button class="trash-btn" onclick="checkZipPassword('win-zip3')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+            </div>
+        </div>
+
+        <div id="win-dontopen" class="os-window" style="width: 320px; height: 200px; top: 20%; left: 30px;">
+            <div class="window-header"><span id="head-dontopen">НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dontopen')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
+            <div class="window-body" id="nestedFolderBody">
+                <span class="nested-folder-link" id="nested-link-0" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span>
+            </div>
+        </div>
+
+        <div id="win-msg" class="os-window" style="width: 380px; height: 260px; top: 12%; left: 12px;">
+            <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-msg')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
+            <div class="window-body" style="padding:0; height:calc(100% - 38px);">
+                <div class="msg-container">
+                    <div class="msg-left" id="msg-user-list"></div>
+                    <div class="msg-right" id="msg-chat-zone"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-search" class="os-window" style="width: 330px; height: 180px; top: 40%; left: 8px;">
+            <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-search')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
+            <div class="window-body" id="search-browser-body"></div>
+        </div>
+
+        <div id="win-dino" class="os-window" style="width: 360px; height: 240px; top: 5%; left: 5px;">
+            <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dino')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
+            <div class="window-body" style="text-align:center; overflow:hidden;">
+                <canvas id="dinoCanvas" class="dino-canvas" width="580" height="150"></canvas>
+                <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(85,255,85,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
             </div>
         </div>
 
