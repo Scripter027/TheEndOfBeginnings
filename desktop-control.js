@@ -2,8 +2,6 @@ window.osZIndex = 3000;
 window.openWindowsTrack = {};
 let desktopLangClicks = 0;
 let trashedApps = {};
-const GRID_X = 100;
-const GRID_Y = 90;
 
 window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-bsod') { document.getElementById('bsodScreen').style.display = 'block'; return; }
@@ -40,6 +38,7 @@ window.toggleWindowFromTaskbar = function(id) {
     else { win.style.display = 'block'; win.style.zIndex = ++window.osZIndex; }
     renderTaskbarApps();
 };
+
 function renderTaskbarApps() {
     const container = document.getElementById('taskbar-apps');
     if (!container) return;
@@ -54,7 +53,6 @@ function renderTaskbarApps() {
         container.appendChild(btn);
     }
 }
-
 window.exitToTerminal = function() {
     document.getElementById('desktop-env').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
@@ -108,6 +106,7 @@ function updateDesktopTexts() {
     if(window.renderStoreList) window.renderStoreList();
     if(window.renderMessengerUsers) window.renderMessengerUsers();
 }
+
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     const isRu = (currentLang === 'ru');
@@ -125,39 +124,10 @@ window.emptyTrash = function() {
     if(window.renderStoreList) window.renderStoreList();
 };
 
-function getFirstAvailableSlot() {
-    const container = document.getElementById('desktopIconsContainer');
-    const bounds = container.getBoundingClientRect();
-    const cols = Math.floor(bounds.width / GRID_X) || 1;
-    const rows = Math.floor(bounds.height / GRID_Y) || 1;
-    const icons = document.querySelectorAll('.icon');
-    
-    for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < rows; r++) {
-            const testX = c * GRID_X + 20;
-            const testY = r * GRID_Y + 20;
-            let occupied = false;
-            
-            icons.forEach(icon => {
-                if (icon.style.display !== 'none') {
-                    const iconX = parseInt(icon.style.left) || 0;
-                    const iconY = parseInt(icon.style.top) || 0;
-                    if (Math.abs(iconX - testX) < 15 && Math.abs(iconY - testY) < 15) {
-                        occupied = true;
-                    }
-                }
-            });
-            if (!occupied) return { left: testX + 'px', top: testY + 'px' };
-        }
-    }
-    return { left: '20px', top: '20px' };
-}
-window.getFirstAvailableSlot = getFirstAvailableSlot;
-
 window.restoreApp = function(id) {
     const icon = document.getElementById(id);
     if (icon) {
-        const slot = getFirstAvailableSlot();
+        const slot = window.getFirstAvailableSlot();
         icon.style.left = slot.left;
         icon.style.top = slot.top;
         icon.style.display = 'flex';
@@ -171,7 +141,6 @@ window.restoreApp = function(id) {
         if(window.renderStoreList) window.renderStoreList();
     }
 };
-
 function renderTrashList() {
     const container = document.getElementById('trashListContainer');
     if (!container) return;
@@ -187,6 +156,7 @@ function renderTrashList() {
     }
     if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
 }
+
 function renderExplorerList() {
     const container = document.getElementById('explorerListContainer');
     if (!container) return;
@@ -215,13 +185,9 @@ window.checkZipPassword = function(winId) {
     const body = win.querySelector('.window-body');
     const isRu = (currentLang === 'ru');
     if (input.value === '246' || input.value === '!!!!!') {
-        if (winId === 'win-zip') {
-            body.innerHTML = isRu ? "<p>Доступ открыт. Ключевой лог: [STAGE-1-COMPLETE]</p>" : "<p>Access granted. Key log: [STAGE-1-COMPLETE]</p>";
-        } else if (winId === 'win-zip2') {
-            body.innerHTML = isRu ? "<p>Локальные метаданные KPR-OS.</p><p style='color:var(--bright-green);margin-top:10px;'>Статус: Архив поврежден временным сдвигом.</p>" : "<p>Local KPR-OS metadata.</p><p style='color:var(--bright-green);margin-top:10px;'>Status: Archive damaged by time shift.</p>";
-        } else if (winId === 'win-zip3') {
-            body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте terminal ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
-        }
+        if (winId === 'win-zip') body.innerHTML = isRu ? "<p>Доступ открыт. Ключевой лог: [STAGE-1-COMPLETE]</p>" : "<p>Access granted. Key log: [STAGE-1-COMPLETE]</p>";
+        else if (winId === 'win-zip2') body.innerHTML = isRu ? "<p>Локальные метаданные KPR-OS.</p><p style='color:var(--bright-green);margin-top:10px;'>Статус: Архив поврежден временным сдвигом.</p>" : "<p>Local KPR-OS metadata.</p><p style='color:var(--bright-green);margin-top:10px;'>Status: Archive damaged by time shift.</p>";
+        else if (winId === 'win-zip3') body.innerHTML = isRu ? "<p>Манифест: 'Новая Эра близко. Подготовьте терминальные ключи шлюза.'</p>" : "<p>Manifest: 'A New Era is close. Prepare terminal gateway keys.'</p>";
     } else {
         alert(isRu ? 'НЕВЕРНЫЙ ПАРОЛЬ' : 'INVALID PASSWORD');
     }
@@ -240,10 +206,10 @@ window.activateDesktopMode = function() {
         'icon-win-search': { left: '120px', top: '20px' },
         'icon-win-dino': { left: '120px', top: '110px' },
         'icon-win-blocks': { left: '120px', top: '200px' },
-        'icon-win-zip': { left: '220px', top: '20px' },
-        'icon-win-zip2': { left: '220px', top: '110px' },
-        'icon-win-zip3': { left: '220px', top: '200px' },
-        'icon-win-dontopen': { left: '120px', top: '290px' },
+        'icon-win-zip': { left: '120px', top: '290px' },
+        'icon-win-zip2': { left: '220px', top: '20px' },
+        'icon-win-zip3': { left: '220px', top: '110px' },
+        'icon-win-dontopen': { left: '220px', top: '200px' },
         'icon-win-bsod': { left: '220px', top: '290px' }
     };
 
@@ -255,11 +221,8 @@ window.activateDesktopMode = function() {
             const pos = savedPositions[icon.id] || initialPositions[icon.id] || { left: '20px', top: '20px' };
             icon.style.left = pos.left;
             icon.style.top = pos.top;
-            if (trashedApps[icon.id]) {
-                icon.style.display = 'none';
-            } else {
-                icon.style.display = 'flex';
-            }
+            if (trashedApps[icon.id]) icon.style.display = 'none';
+            else icon.style.display = 'flex';
         });
     } catch(e) {}
     if (window.initDinoGame) window.initDinoGame();
@@ -299,10 +262,9 @@ document.querySelectorAll('.icon').forEach(icon => {
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
             let curX = icon.offsetLeft, curY = icon.offsetTop;
-            let snapX = Math.round(curX / GRID_X) * GRID_X;
-            let snapY = Math.round(curY / GRID_Y) * GRID_Y;
+            let snap = window.snapToGrid(curX, curY);
             const trashIcon = document.getElementById('icon-win-trash');
-            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snapX === trashIcon.offsetLeft && snapY === trashIcon.offsetTop) {
+            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
                 icon.style.display = 'none';
                 window.closeOSWindow(icon.dataset.id);
                 trashedApps[icon.id] = { ru: icon.dataset.titleRu, en: icon.dataset.titleEn };
@@ -315,10 +277,10 @@ document.querySelectorAll('.icon').forEach(icon => {
             }
             let overlap = false;
             document.querySelectorAll('.icon').forEach(other => {
-                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snapX && other.offsetTop === snapY) overlap = true;
+                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
             });
             if (overlap) { icon.style.left = oldLeft; icon.style.top = oldTop; return; }
-            icon.style.left = snapX + 'px'; icon.style.top = snapY + 'px';
+            icon.style.left = snap.x + 'px'; icon.style.top = snap.y + 'px';
             try {
                 let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
                 positions[icon.id] = { left: icon.style.left, top: icon.style.top };
@@ -343,13 +305,3 @@ document.querySelectorAll('.os-window').forEach(win => {
         document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
     });
 });
-
-function updateTaskbarTimer() {
-    const distance = targetDate - new Date().getTime();
-    const tbLabel = document.getElementById('taskbar-timer');
-    if (!tbLabel) return;
-    if (distance < 0) { tbLabel.innerHTML = "00:00:00:00"; return; }
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    tbLabel.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-}
-setInterval(updateTaskbarTimer, 1000);
