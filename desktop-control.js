@@ -198,33 +198,33 @@ window.activateDesktopMode = function() {
     document.getElementById('boot-screen').style.display = 'none';
     document.getElementById('desktop-env').style.display = 'block';
     
-    const initialPositions = {
-        'icon-win-trash': { left: '20px', top: '20px' },
-        'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-store': { left: '20px', top: '200px' },
-        'icon-win-msg': { left: '20px', top: '290px' },
-        'icon-win-search': { left: '120px', top: '20px' },
-        'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' },
-        'icon-win-zip': { left: '120px', top: '290px' },
-        'icon-win-zip2': { left: '220px', top: '20px' },
-        'icon-win-zip3': { left: '220px', top: '110px' },
-        'icon-win-dontopen': { left: '220px', top: '200px' },
-        'icon-win-bsod': { left: '220px', top: '290px' }
-    };
-
     try {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
         trashedApps = savedTrash;
+        
         document.querySelectorAll('.icon').forEach(icon => {
-            const pos = savedPositions[icon.id] || initialPositions[icon.id] || { left: '20px', top: '20px' };
-            icon.style.left = pos.left;
-            icon.style.top = pos.top;
-            if (trashedApps[icon.id]) icon.style.display = 'none';
-            else icon.style.display = 'flex';
+            icon.style.display = 'flex';
+            icon.style.left = '0px';
+            icon.style.top = '0px';
+        });
+
+        document.querySelectorAll('.icon').forEach(icon => {
+            if (trashedApps[icon.id]) {
+                icon.style.display = 'none';
+            } else if (savedPositions[icon.id]) {
+                icon.style.left = savedPositions[icon.id].left;
+                icon.style.top = savedPositions[icon.id].top;
+            } else {
+                icon.style.display = 'none';
+                const slot = window.getFirstAvailableSlot();
+                icon.style.left = slot.left;
+                icon.style.top = slot.top;
+                icon.style.display = 'flex';
+            }
         });
     } catch(e) {}
+    
     if (window.initDinoGame) window.initDinoGame();
     if (window.initBlockBlast) window.initBlockBlast();
     if (window.initMessenger) window.initMessenger();
@@ -261,9 +261,10 @@ document.querySelectorAll('.icon').forEach(icon => {
             icon.style.zIndex = "auto";
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
-            let curX = icon.offsetLeft, curY = icon.offsetTop;
-            let snap = window.snapToGrid(curX, curY);
+            
+            let snap = window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY);
             const trashIcon = document.getElementById('icon-win-trash');
+            
             if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
                 icon.style.display = 'none';
                 window.closeOSWindow(icon.dataset.id);
@@ -305,3 +306,13 @@ document.querySelectorAll('.os-window').forEach(win => {
         document.addEventListener('pointerup', function onUp() { document.removeEventListener('pointermove', onPointerMove); document.removeEventListener('pointerup', onUp); });
     });
 });
+
+function updateTaskbarTimer() {
+    const distance = targetDate - new Date().getTime();
+    const tbLabel = document.getElementById('taskbar-timer');
+    if (!tbLabel) return;
+    if (distance < 0) { tbLabel.innerHTML = "00:00:00:00"; return; }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    tbLabel.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+}
+setInterval(updateTaskbarTimer, 1000);
