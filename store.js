@@ -17,32 +17,51 @@ function renderStoreList() {
     container.innerHTML = '';
     
     const isRu = (currentLang === 'ru');
-    const storeApps = [
-        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟' },
-        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐' },
-        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖' },
-        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱' },
-        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀' }
+    const categories = [
+        {
+            titleRu: "--- ПРИЛОЖЕНИЯ ---",
+            titleEn: "--- APPLICATIONS ---",
+            apps: [
+                { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟' },
+                { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐' },
+                { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀' }
+            ]
+        },
+        {
+            titleRu: "--- ИГРЫ ---",
+            titleEn: "--- GAMES ---",
+            apps: [
+                { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖' },
+                { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱' }
+            ]
+        }
     ];
 
-    storeApps.forEach(app => {
-        const item = document.createElement('div');
-        item.className = 'store-item';
-        
-        const displayTitle = isRu ? app.ru : app.en;
-        const iconEl = document.getElementById(app.id);
-        const isInstalled = iconEl && iconEl.style.display !== 'none' && !trashedApps[app.id];
-        
-        let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
+    categories.forEach(cat => {
+        const catHeader = document.createElement('div');
+        catHeader.style.cssText = "font-weight:bold; color:#88ff88; margin:10px 0 5px 0; font-size:12px; letter-spacing:1px;";
+        catHeader.innerText = isRu ? cat.titleRu : cat.titleEn;
+        container.appendChild(catHeader);
 
-        item.innerHTML = `
-            <div class="store-item-left">
-                <span>${app.icon}</span>
-                <span>${displayTitle}</span>
-            </div>
-            <button class="explorer-btn" onclick="toggleAppInstallation('${app.id}', ${isInstalled})">${btnText}</button>
-        `;
-        container.appendChild(item);
+        cat.apps.forEach(app => {
+            const item = document.createElement('div');
+            item.className = 'store-item';
+            
+            const displayTitle = isRu ? app.ru : app.en;
+            const iconEl = document.getElementById(app.id);
+            const isInstalled = iconEl && iconEl.style.display !== 'none' && !trashedApps[app.id];
+            
+            let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
+
+            item.innerHTML = `
+                <div class="store-item-left">
+                    <span>${app.icon}</span>
+                    <span>${displayTitle}</span>
+                </div>
+                <button class="explorer-btn" onclick="toggleAppInstallation('${app.id}', ${isInstalled})">${btnText}</button>
+            `;
+            container.appendChild(item);
+        });
     });
 }
 
