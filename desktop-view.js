@@ -1,6 +1,7 @@
 const osStyles = document.createElement('style');
 osStyles.innerHTML = `
-    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 2000; font-family: 'Courier New', Courier, monospace; color: var(--neon-green); padding: 10px; box-sizing: border-box; user-select: none; text-shadow: var(--glow-green); overflow: hidden; }
+    * { font-family: 'Courier New', Courier, monospace !important; }
+    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 2000; color: var(--neon-green); padding: 10px; box-sizing: border-box; user-select: none; text-shadow: var(--glow-green); overflow: hidden; }
     .desktop-env.rage-active { --neon-green: #ff3333 !important; --bright-green: #ff8888 !important; --dark-green: #220000 !important; --glow-green: 0 0 10px rgba(255, 51, 51, 0.6) !important; color: var(--neon-green) !important; text-shadow: var(--glow-green) !important; }
     .desktop-env.rage-active .window-header { background: var(--neon-green) !important; color: #000000 !important; }
     .desktop-env.rage-active .window-btn { border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
@@ -22,7 +23,7 @@ osStyles.innerHTML = `
     .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 44px; background: rgba(0, 34, 0, 0.85); backdrop-filter: blur(3px); border-top: 2px solid var(--neon-green); display: flex; justify-content: space-between; align-items: center; padding: 0 10px; box-sizing: border-box; z-index: 4000; box-shadow: var(--glow-green); }
     .taskbar-left { display: flex; align-items: center; gap: 8px; max-width: 70%; }
     .taskbar-start { font-weight: bold; border: 1px solid var(--neon-green); padding: 5px 8px; font-size: 11px; white-space: nowrap; box-shadow: var(--glow-green); }
-    .taskbar-lang, .taskbar-exit { font-weight: bold; border: 1px dashed var(--neon-green); padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: var(--neon-green); font-family: inherit; box-shadow: var(--glow-green); }
+    .taskbar-lang, .taskbar-exit { font-weight: bold; border: 1px dashed var(--neon-green); padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: var(--neon-green); box-shadow: var(--glow-green); }
     .taskbar-lang:hover, .taskbar-exit:hover { background: var(--neon-green); color: #000000; text-shadow: none; }
     .taskbar-exit { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); }
     .taskbar-exit:hover { background: var(--neon-red); color: #000000; text-shadow: none; }
@@ -31,8 +32,10 @@ osStyles.innerHTML = `
     .taskbar-app-btn.active { background: var(--neon-green); color: #000000; text-shadow: none; }
     .taskbar-timer { font-weight: bold; font-size: 12px; letter-spacing: 0.5px; text-shadow: var(--glow-green); white-space: nowrap; }
     .msg-container { display: flex; height: 180px; border: 1px dashed var(--neon-green); }
-    .msg-left { width: 35%; border-right: 1px dashed var(--neon-green); padding: 6px; font-size: 11px; color: rgba(51, 255, 51, 0.5); overflow-y: auto; }
-    .msg-right { width: 65%; padding: 6px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px; }
+    .msg-left { width: 40%; border-right: 1px dashed var(--neon-green); padding: 6px; font-size: 11px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+    .msg-user-item { padding: 4px; border: 1px solid transparent; cursor: pointer; }
+    .msg-user-item:hover { border-color: var(--neon-green); background: rgba(51, 255, 51, 0.1); }
+    .msg-right { width: 60%; padding: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 11px; }
     .dino-canvas { background: #050505; border: 1px solid var(--neon-green); display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: var(--glow-green); }
     .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; position: relative; }
     .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #050505; border: 2px solid var(--neon-green); padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; box-shadow: var(--glow-green); }
@@ -42,13 +45,15 @@ osStyles.innerHTML = `
     .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.5); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 1px dashed var(--neon-green); }
     .bb-piece .bb-cell { width: 14px; height: 14px; }
     .rage-banner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold; border: 4px solid #ff3333; background: #000000; color: #ff3333; padding: 20px 4px; text-align: center; z-index: 9999; box-shadow: 0 0 30px #ff3333; width: 90%; max-width: 450px; }
-    .bsod-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0000aa; color: #ffffff; z-index: 99999; font-family: monospace; padding: 40px 20px; box-sizing: border-box; text-shadow: none; font-size: 14px; line-height: 1.6; }
+    .bsod-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0000aa; color: #ffffff; z-index: 99999; padding: 40px 20px; box-sizing: border-box; text-shadow: none; font-size: 14px; line-height: 1.6; }
     .nested-folder-link { cursor: pointer; color: var(--neon-green); text-decoration: underline; display: block; margin: 10px 0; font-weight: bold; }
-    .trash-controls { display: flex; gap: 10px; margin-bottom: 12px; }
-    .trash-btn { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 4px 8px; cursor: pointer; font-family: inherit; font-size: 12px; box-shadow: var(--glow-green); }
-    .trash-btn:hover { background: var(--neon-green); color: #000000; text-shadow: none; }
-    .trash-list { border-top: 1px dashed var(--neon-green); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .trash-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .trash-controls, .explorer-controls { display: flex; gap: 10px; margin-bottom: 12px; }
+    .trash-btn, .explorer-btn { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 4px 8px; cursor: pointer; font-size: 12px; box-shadow: var(--glow-green); border-radius: 0; }
+    .trash-btn:hover, .explorer-btn:hover { background: var(--neon-green); color: #000000; text-shadow: none; }
+    .trash-list, .explorer-list { border-top: 1px dashed var(--neon-green); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .trash-item, .explorer-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px; border: 1px solid transparent; }
+    .explorer-item:hover { border-color: var(--neon-green); background: rgba(51, 255, 51, 0.05); }
+    .explorer-item-left { display: flex; align-items: center; gap: 8px; }
     @media (max-width: 600px) { .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; } .window-header { padding: 8px; } .window-btn { padding: 6px 12px; font-size: 14px; } .taskbar-start { display: none; } }
 `;
 document.head.appendChild(osStyles);
@@ -65,19 +70,17 @@ const desktopHTML = `
         </div>
 
         <div class="desktop-icons-container" id="desktopIconsContainer">
-            <div class="icon" style="top:20px; left:20px;" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
-            <div class="icon" style="top:110px; left:20px;" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
-            <div class="icon" style="top:200px; left:20px;" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
-            
-            <div class="icon" style="top:20px; left:120px;" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
-            <div class="icon" style="top:110px; left:120px;" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
-            
-            <div class="icon" style="top:20px; left:220px;" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
-            <div class="icon" style="top:110px; left:220px;" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
-            <div class="icon" style="top:200px; left:220px;" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
-            
-            <div class="icon" style="top:290px; left:20px;" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
-            <div class="icon" style="top:290px; left:120px;" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
+            <div class="icon" id="icon-win-trash" data-id="win-trash" data-title-ru="Корзина" data-title-en="Trash" data-icon="🗑️"><div class="icon-pic">🗑️</div><div class="icon-name" id="label-win-trash">Корзина</div></div>
+            <div class="icon" id="icon-win-explorer" data-id="win-explorer" data-title-ru="Проводник" data-title-en="Explorer" data-icon="🗁"><div class="icon-pic">🗁</div><div class="icon-name" id="label-win-explorer">Проводник</div></div>
+            <div class="icon" id="icon-win-msg" data-id="win-msg" data-title-ru="KPR-Связь" data-title-en="KPR-Chat" data-icon="📟"><div class="icon-pic">📟</div><div class="icon-name" id="label-win-msg">KPR-Связь</div></div>
+            <div class="icon" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
+            <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
+            <div class="icon" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
+            <div class="icon" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
+            <div class="icon" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
+            <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
+            <div class="icon" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
+            <div class="icon" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
         </div>
         
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
@@ -89,27 +92,37 @@ const desktopHTML = `
                 <div class="trash-list" id="trashListContainer"></div>
             </div>
         </div>
+
+        <div id="win-explorer" class="os-window" style="width: 360px; height: 300px; top: 10%; left: 40px;">
+            <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
+            <div class="window-body">
+                <div class="explorer-list" id="explorerListContainer"></div>
+            </div>
+        </div>
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
             <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body" id="win-zip-body">
-                <p id="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
-                <input type="password" id="zip-input" placeholder="..." style="background:#000000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-family:inherit; font-size:14px; border-radius:0;">
-                <button id="zip-btn" style="background:var(--neon-green); color:#000000; border:none; padding:8px 16px; margin-top:10px; font-weight:bold; cursor:pointer; font-family:inherit; width:100%;">ОК</button>
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="..." style="background:#000000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-size:14px; border-radius:0;">
+                <button class="zip-submit-btn" onclick="checkZipPassword('win-zip')" style="background:var(--neon-green); color:#000000; border:none; padding:8px 16px; margin-top:10px; font-weight:bold; cursor:pointer; width:100%;">ОК</button>
             </div>
         </div>
 
-        <div id="win-zip2" class="os-window" style="width: 320px; height: 180px; top: 25%; left: 20px;">
+        <div id="win-zip2" class="os-window" style="width: 330px; height: 200px; top: 25%; left: 20px;">
             <div class="window-header"><span id="head-zip2">АРХИВАТОР - SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
             <div class="window-body" id="win-zip2-body">
-                <p>Локальные метаданные KPR-OS.</p>
-                <p style="color:var(--bright-green);margin-top:10px;">Статус: Архив поврежден временным сдвигом.</p>
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="..." style="background:#000000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-size:14px; border-radius:0;">
+                <button class="zip-submit-btn" onclick="checkZipPassword('win-zip2')" style="background:var(--neon-green); color:#000000; border:none; padding:8px 16px; margin-top:10px; font-weight:bold; cursor:pointer; width:100%;">ОК</button>
             </div>
         </div>
 
-        <div id="win-zip3" class="os-window" style="width: 320px; height: 180px; top: 30%; left: 25px;">
+        <div id="win-zip3" class="os-window" style="width: 330px; height: 200px; top: 30%; left: 25px;">
             <div class="window-header"><span id="head-zip3">АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
             <div class="window-body" id="win-zip3-body">
-                <p>Манифест: "Новая Эра близко. Подготовьте терминальные ключи шлюза."</p>
+                <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
+                <input type="password" class="zip-input-field" placeholder="..." style="background:#000000; border:1px solid var(--neon-green); color:var(--neon-green); padding:8px; width:100%; outline:none; font-size:14px; border-radius:0;">
+                <button class="zip-submit-btn" onclick="checkZipPassword('win-zip3')" style="background:var(--neon-green); color:#000000; border:none; padding:8px 16px; margin-top:10px; font-weight:bold; cursor:pointer; width:100%;">ОК</button>
             </div>
         </div>
 
@@ -120,11 +133,11 @@ const desktopHTML = `
             </div>
         </div>
         
-        <div id="win-msg" class="os-window" style="width: 360px; height: 260px; top: 12%; left: 12px;">
+        <div id="win-msg" class="os-window" style="width: 380px; height: 260px; top: 12%; left: 12px;">
             <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
             <div class="window-body" style="padding:0;">
                 <div class="msg-container">
-                    <div class="msg-left" id="msg-user-list">[Списков нет]</div>
+                    <div class="msg-left" id="msg-user-list"></div>
                     <div class="msg-right" id="msg-chat-zone">ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ НАЧАЛА СЕССИИ</div>
                 </div>
             </div>
