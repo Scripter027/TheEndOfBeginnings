@@ -18,29 +18,25 @@ function renderStoreList() {
     
     const isRu = (currentLang === 'ru');
     const storeApps = [
-        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟', winId: 'win-msg' },
-        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐', winId: 'win-search' },
-        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', winId: 'win-dino' },
-        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', winId: 'win-blocks' }
+        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟' },
+        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐' },
+        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖' },
+        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱' },
+        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀' }
     ];
 
     storeApps.forEach(app => {
         const item = document.createElement('div');
-        item.className = 'explorer-item';
+        item.className = 'store-item';
         
         const displayTitle = isRu ? app.ru : app.en;
         const iconEl = document.getElementById(app.id);
         const isInstalled = iconEl && iconEl.style.display !== 'none' && !trashedApps[app.id];
         
-        let btnText = '';
-        if (isInstalled) {
-            btnText = isRu ? 'Удалить' : 'Uninstall';
-        } else {
-            btnText = isRu ? 'Скачать' : 'Install';
-        }
+        let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
 
         item.innerHTML = `
-            <div class="explorer-item-left">
+            <div class="store-item-left">
                 <span>${app.icon}</span>
                 <span>${displayTitle}</span>
             </div>
