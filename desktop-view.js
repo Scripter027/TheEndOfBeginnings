@@ -14,7 +14,6 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-bsod') {
         const bsod = document.getElementById('bsodScreen');
         if (bsod) bsod.style.display = 'block';
-        return;
     }
     const win = document.getElementById(id);
     if (!win) return;
