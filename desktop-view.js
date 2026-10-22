@@ -1,62 +1,61 @@
 const osStyles = document.createElement('style');
 osStyles.innerHTML = `
     * { font-family: 'Courier New', Courier, monospace !important; box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --neon-green: #55ff55 !important; --bright-green: #aaffaa !important; --dark-green: #004400 !important; --neon-red: #ff3333 !important; }
-    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: var(--neon-green); padding: 10px; user-select: none; text-shadow: 0 0 15px rgba(85, 255, 85, 0.6); overflow: hidden; }
-    .desktop-env::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.4) 100%); z-index: 9999; background-size: 100% 4px, 100% 100%; pointer-events: none; }
-    .desktop-env.rage-active { --neon-green: #ff3333 !important; --bright-green: #ff8888 !important; --dark-green: #220000 !important; text-shadow: 0 0 15px rgba(255, 51, 51, 0.8) !important; color: var(--neon-green) !important; }
+    .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: #55ff55; padding: 10px; user-select: none; text-shadow: 0 0 10px rgba(85, 255, 85, 0.5); overflow: hidden; }
+    .desktop-env::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.4) 100%); z-index: 9999; background-size: 100% 4px, 100% 100%; pointer-events: none; }
+    .desktop-env.rage-active { --neon-green: #ff3333 !important; --bright-green: #ff8888 !important; --dark-green: #220000 !important; text-shadow: 0 0 12px rgba(255, 51, 51, 0.7) !important; color: var(--neon-green) !important; }
     .desktop-env.rage-active .window-header { background: var(--neon-green) !important; color: #000000 !important; }
-    .desktop-env.rage-active .window-btn, .desktop-env.rage-active .os-window, .desktop-env.rage-active .icon { border-color: var(--neon-green) !important; box-shadow: 0 0 15px rgba(255, 51, 51, 0.6) !important; }
-    .desktop-env.rage-active .taskbar { border-top-color: var(--neon-green) !important; box-shadow: 0 0 15px rgba(255, 51, 51, 0.6) !important; background: rgba(34, 0, 0, 0.8) !important; }
+    .desktop-env.rage-active .window-btn, .desktop-env.rage-active .os-window, .desktop-env.rage-active .icon { border-color: var(--neon-green) !important; box-shadow: 0 0 12px rgba(255, 51, 51, 0.5) !important; }
+    .desktop-env.rage-active .taskbar { border-top-color: var(--neon-green) !important; box-shadow: 0 0 12px rgba(255, 51, 51, 0.5) !important; background: rgba(34, 0, 0, 0.8) !important; }
     .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
-    .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid var(--neon-green); width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border-radius: 0; touch-action: none; z-index: 2100; transition: background 0.15s ease, box-shadow 0.15s ease; }
-    .icon:hover, .icon:active { background: rgba(85, 255, 85, 0.35); border-style: solid; border-color: var(--bright-green); box-shadow: 0 0 30px rgba(85, 255, 85, 1); color: var(--bright-green); }
+    .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid #55ff55; width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border-radius: 0; touch-action: none; z-index: 2100; transition: background 0.15s ease, box-shadow 0.15s ease; }
+    .icon:hover, .icon:active { background: rgba(85, 255, 85, 0.3); border-color: #88ff88; box-shadow: 0 0 25px rgba(85, 255, 85, 0.9); color: #88ff88; }
     .icon-pic { font-size: 24px; margin-bottom: 2px; pointer-events: none; }
     .icon-name { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.1; pointer-events: none; }
-    .os-window { display: none; position: absolute; border: 2px solid var(--neon-green); background: rgba(0, 0, 0, 0.95); box-shadow: 0 0 25px rgba(85, 255, 85, 0.5); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; box-sizing: border-box; }
+    .os-window { display: none; position: absolute; border: 2px solid #55ff55; background: rgba(0, 0, 0, 0.95); box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; box-sizing: border-box; }
     .os-window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; height: calc(100vh - 44px) !important; max-width: 100vw !important; max-height: calc(100vh - 44px) !important; }
-    .window-header { background: var(--neon-green); color: #000000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
-    .window-controls { display: flex; gap: 8px; }
-    .window-btn { cursor: pointer; font-weight: bold; background: #000000; color: var(--neon-green); border: 2px solid var(--neon-green); padding: 4px 10px; font-size: 12px; border-radius: 0; min-width: 28px; text-align: center; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); transition: all 0.15s ease; }
-    .window-btn:hover, .window-btn:active { background: var(--neon-green); color: #000000; text-shadow: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.6); }
-    .window-close:hover, .window-close:active { background: var(--neon-red) !important; color: #000000 !important; border-color: var(--neon-red) !important; text-shadow: none; box-shadow: 0 0 20px rgba(255, 51, 51, 0.9) !important; }
+    .window-header { background: #55ff55; color: #000000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
+    .window-controls { display: flex; gap: 6px; }
+    .window-btn { cursor: pointer; font-weight: bold; background: #000000; color: #55ff55; border: 2px solid #55ff55; padding: 4px 8px; font-size: 11px; border-radius: 0; min-width: 26px; text-align: center; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); transition: all 0.15s ease; }
+    .window-btn:hover, .window-btn:active { background: #55ff55; color: #000000; text-shadow: none; }
+    .window-close:hover, .window-close:active { background: var(--neon-red) !important; color: #000000 !important; border-color: var(--neon-red) !important; text-shadow: none; box-shadow: 0 0 15px rgba(255, 51, 51, 0.8) !important; }
     .window-body { padding: 12px; font-size: 13px; height: calc(100% - 38px); overflow-y: auto; -webkit-overflow-scrolling: touch; line-height: 1.5; text-transform: uppercase; }
-    .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 44px; background: rgba(0, 0, 0, 0.95); border-top: 2px solid var(--neon-green); display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 4000; box-shadow: 0 0 25px rgba(85, 255, 85, 0.5); }
+    .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 44px; background: rgba(0, 0, 0, 0.95); border-top: 2px solid #55ff55; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 4000; box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); }
     .taskbar-left { display: flex; align-items: center; gap: 8px; max-width: 70%; }
-    .taskbar-start { font-weight: bold; border: 2px solid var(--neon-green); padding: 5px 8px; font-size: 11px; white-space: nowrap; box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); }
-    .taskbar-lang, .taskbar-exit { font-weight: bold; border: 2px solid var(--neon-green); padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: var(--neon-green); box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; }
-    .taskbar-lang:hover, .taskbar-exit:hover { background: var(--neon-green); color: #000000; text-shadow: none; box-shadow: 0 0 20px rgba(85, 255, 85, 0.8); }
-    .taskbar-exit { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 12px rgba(255, 51, 51, 0.5); }
-    .taskbar-exit:hover { background: var(--neon-red); color: #000000; text-shadow: none; box-shadow: 0 0 25px rgba(255, 51, 51, 0.9); }
+    .taskbar-start { font-weight: bold; border: 2px solid #55ff55; padding: 5px 8px; font-size: 11px; white-space: nowrap; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); }
+    .taskbar-lang, .taskbar-exit { font-weight: bold; border: 2px solid #55ff55; padding: 5px 8px; font-size: 11px; cursor: pointer; background: transparent; color: #55ff55; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; }
+    .taskbar-lang:hover, .taskbar-exit:hover { background: #55ff55; color: #000000; text-shadow: none; }
+    .taskbar-exit { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); }
+    .taskbar-exit:hover { background: var(--neon-red); color: #000000; text-shadow: none; box-shadow: 0 0 20px rgba(255, 51, 51, 0.8); }
     .taskbar-apps { display: flex; gap: 4px; overflow-x: auto; }
-    .taskbar-app-btn { background: transparent; border: 2px solid var(--neon-green); padding: 3px 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); border-radius: 0; color: var(--neon-green); }
-    .taskbar-app-btn.active { background: var(--neon-green); color: #000000; text-shadow: none; box-shadow: 0 0 20px rgba(85, 255, 85, 0.7); }
+    .taskbar-app-btn { background: transparent; border: 2px solid #55ff55; padding: 3px 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); border-radius: 0; }
+    .taskbar-app-btn.active { background: #55ff55; color: #000000; text-shadow: none; }
     .taskbar-timer { font-weight: bold; font-size: 12px; letter-spacing: 0.5px; white-space: nowrap; }
-    .msg-container { display: flex; height: 180px; border: 2px solid var(--neon-green); background: rgba(0,0,0,0.7); }
-    .msg-left { width: 40%; border-right: 2px solid var(--neon-green); padding: 6px; font-size: 11px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-    .msg-user-item { padding: 4px; border: 2px solid transparent; cursor: pointer; }
-    .msg-user-item:hover { border-color: var(--neon-green); background: rgba(85, 255, 85, 0.25); box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); }
-    .msg-right { width: 60%; padding: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 11px; }
-    .dino-canvas { background: #000000; border: 2px solid var(--neon-green); display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); }
+    .msg-container { display: flex; height: 100%; width: 100%; border: 2px solid #55ff55; background: #000000; min-height: 180px; }
+    .msg-left { width: 35%; border-right: 2px solid #55ff55; padding: 4px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; height: 100%; }
+    .msg-user-item { padding: 6px; border: 2px solid transparent; cursor: pointer; font-size: 12px; font-weight: bold; }
+    .msg-user-item:hover { border-color: #55ff55; background: rgba(85, 255, 85, 0.15); }
+    .msg-right { width: 65%; display: flex; flex-direction: column; height: 100%; background: rgba(0,0,0,0.2); }
+    .dino-canvas { background: #000000; border: 2px solid #55ff55; display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.4); }
     .bb-container { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; position: relative; }
-    .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #000000; border: 2px solid var(--neon-green); padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); }
+    .bb-board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #000000; border: 2px solid #55ff55; padding: 4px; width: 100%; max-width: 260px; aspect-ratio: 1/1; box-shadow: 0 0 15px rgba(85, 255, 85, 0.4); }
     .bb-cell { width: 100%; height: 100%; border: 1px solid #003300; box-sizing: border-box; }
-    .bb-cell.filled { background: var(--neon-green) !important; box-shadow: 0 0 15px rgba(85, 255, 85, 0.9) !important; }
-    .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 2px solid var(--neon-green); background: rgba(0,0,0,0.5); padding: 6px; box-sizing: border-box; }
-    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.7); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 2px dashed var(--neon-green); }
+    .bb-cell.filled { background: #55ff55 !important; box-shadow: 0 0 10px rgba(85, 255, 85, 0.8) !important; }
+    .bb-dock { display: flex; gap: 15px; justify-content: center; min-height: 85px; width: 100%; border: 2px solid #55ff55; background: rgba(0,0,0,0.4); padding: 6px; box-sizing: border-box; }
+    .bb-piece { display: grid; gap: 1px; padding: 4px; background: rgba(0,0,0,0.6); width: fit-content; height: fit-content; touch-action: none; user-select: none; border: 2px dashed #55ff55; }
     .bb-piece .bb-cell { width: 14px; height: 14px; }
     .rage-banner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold; border: 4px solid #ff3333; background: #000000; color: #ff3333; padding: 20px 4px; text-align: center; z-index: 9999; box-shadow: 0 0 30px #ff3333; width: 90%; max-width: 450px; }
     .bsod-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0000aa; color: #ffffff; z-index: 99999; padding: 40px 20px; box-sizing: border-box; text-shadow: none; font-size: 14px; line-height: 1.6; }
-    .nested-folder-link { cursor: pointer; color: var(--neon-green); text-decoration: underline; display: block; margin: 10px 0; font-weight: bold; }
+    .nested-folder-link { cursor: pointer; color: #55ff55; text-decoration: underline; display: block; margin: 10px 0; font-weight: bold; }
     .trash-controls, .explorer-controls { display: flex; gap: 10px; margin-bottom: 12px; }
-    .trash-btn, .explorer-btn { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); padding: 6px 14px; cursor: pointer; font-size: 14px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; }
-    .trash-btn:hover, .explorer-btn:hover { background: var(--neon-green); color: #000000; text-shadow: none; box-shadow: 0 0 20px rgba(85, 255, 85, 0.8); }
-    .trash-list, .explorer-list, .store-list { border-top: 2px solid var(--neon-green); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .trash-item, .explorer-item, .store-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px; border: 2px solid transparent; background: rgba(0,0,0,0.6); }
-    .explorer-item:hover, .store-item:hover { border-color: var(--neon-green); background: rgba(85, 255, 85, 0.15); box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); }
+    .trash-btn, .explorer-btn { background: transparent; border: 2px solid #55ff55; color: #55ff55; padding: 6px 14px; cursor: pointer; font-size: 14px; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; }
+    .trash-btn:hover, .explorer-btn:hover { background: #55ff55; color: #000000; text-shadow: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.8); }
+    .trash-list, .explorer-list, .store-list { border-top: 2px solid #55ff55; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .trash-item, .explorer-item, .store-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px; border: 2px solid transparent; background: rgba(0,0,0,0.5); }
+    .explorer-item:hover, .store-item:hover { border-color: #55ff55; background: rgba(85, 255, 85, 0.15); box-shadow: 0 0 10px rgba(85, 255, 85, 0.3); }
     .explorer-item-left, .store-item-left { display: flex; align-items: center; gap: 8px; }
-    .zip-input-field { background: rgba(0, 0, 0, 0.7); border: 2px solid var(--neon-green); color: var(--neon-green); padding: 14px; font-size: 16px; outline: none; box-shadow: 0 0 12px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; -webkit-appearance: none; width: 100%; }
-    .zip-input-field:focus { border-color: var(--bright-green); box-shadow: 0 0 30px rgba(85, 255, 85, 0.9); color: var(--bright-green); }
+    .zip-input-field { background: rgba(0, 0, 0, 0.6); border: 2px solid #55ff55; color: #55ff55; padding: 14px; font-size: 16px; outline: none; box-shadow: 0 0 10px rgba(85, 255, 85, 0.4); border-radius: 0; transition: all 0.15s ease; -webkit-appearance: none; width: 100%; }
+    .zip-input-field:focus { border-color: #88ff88; box-shadow: 0 0 25px rgba(85, 255, 85, 0.8); color: #88ff88; }
     @media (max-width: 600px) { .os-window { width: 92vw !important; height: auto !important; left: 4vw !important; } .window-header { padding: 8px; } .window-btn { padding: 6px 12px; font-size: 14px; } .taskbar-start { display: none; } }
 `;
 document.head.appendChild(osStyles);
@@ -88,7 +87,7 @@ const desktopHTML = `
         </div>
         
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
-            <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-trash')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
+            <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-trash')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
             <div class="window-body">
                 <div class="trash-controls">
                     <button class="trash-btn" id="btn-trash-clear" onclick="emptyTrash()">Очистить</button>
@@ -98,7 +97,7 @@ const desktopHTML = `
         </div>
 
         <div id="win-explorer" class="os-window" style="width: 360px; height: 300px; top: 10%; left: 40px;">
-            <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-explorer')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
+            <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-explorer')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
             <div class="window-body">
                 <div class="explorer-list" id="explorerListContainer"></div>
             </div>
@@ -106,14 +105,14 @@ const desktopHTML = `
 `;
 const desktopHTMLContent3 = `
         <div id="win-store" class="os-window" style="width: 360px; height: 320px; top: 15%; left: 60px;">
-            <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-store')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-store')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-store')">X</span></div></div>
+            <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-store')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-store')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-store')">X</span></div></div>
             <div class="window-body">
                 <div class="store-list" id="storeListContainer"></div>
             </div>
         </div>
 
         <div id="win-settings" class="os-window" style="width: 340px; height: 220px; top: 20%; left: 80px;">
-            <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-settings')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-settings')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-settings')">X</span></div></div>
+            <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-settings')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-settings')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-settings')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
                 <p id="txt-settings-info" style="font-size:12px; text-align:center; line-height:1.4;"></p>
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
@@ -121,70 +120,70 @@ const desktopHTMLContent3 = `
         </div>
 
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
-            <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-zip')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
+            <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body" id="win-zip-body">
                 <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
                 <input type="password" class="zip-input-field" placeholder="...">
-                <button class="trash-btn" onclick="checkZipPassword('win-zip')" style="background:var(--neon-green); color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+                <button class="trash-btn" onclick="checkZipPassword('win-zip')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
 
         <div id="win-zip2" class="os-window" style="width: 330px; height: 200px; top: 25%; left: 20px;">
-            <div class="window-header"><span id="head-zip2">АРХИВАТОР - SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-zip2')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
+            <div class="window-header"><span id="head-zip2">АРХИВАТОР - SECRET1.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip2')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip2')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip2')">X</span></div></div>
             <div class="window-body" id="win-zip2-body">
                 <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
                 <input type="password" class="zip-input-field" placeholder="...">
-                <button class="trash-btn" onclick="checkZipPassword('win-zip2')" style="background:var(--neon-green); color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+                <button class="trash-btn" onclick="checkZipPassword('win-zip2')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
 
         <div id="win-zip3" class="os-window" style="width: 330px; height: 200px; top: 30%; left: 25px;">
-            <div class="window-header"><span id="head-zip3">АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-zip3')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
+            <div class="window-header"><span id="head-zip3">АРХИВАТОР - SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip3')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
             <div class="window-body" id="win-zip3-body">
                 <p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p>
                 <input type="password" class="zip-input-field" placeholder="...">
-                <button class="trash-btn" onclick="checkZipPassword('win-zip3')" style="background:var(--neon-green); color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
+                <button class="trash-btn" onclick="checkZipPassword('win-zip3')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
 
         <div id="win-dontopen" class="os-window" style="width: 320px; height: 200px; top: 20%; left: 30px;">
-            <div class="window-header"><span id="head-dontopen">НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-dontopen')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
+            <div class="window-header"><span id="head-dontopen">НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dontopen')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
             <div class="window-body" id="nestedFolderBody">
                 <span class="nested-folder-link" id="nested-link-0" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span>
             </div>
         </div>
         
         <div id="win-msg" class="os-window" style="width: 380px; height: 260px; top: 12%; left: 12px;">
-            <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-msg')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
-            <div class="window-body" style="padding:0;">
+            <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-msg')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
+            <div class="window-body" style="padding:0; height:calc(100% - 38px);">
                 <div class="msg-container">
                     <div class="msg-left" id="msg-user-list"></div>
-                    <div class="msg-right" id="msg-chat-zone">ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ НАЧАЛА СЕССИИ</div>
+                    <div class="msg-right" id="msg-chat-zone"></div>
                 </div>
             </div>
         </div>
         
         <div id="win-search" class="os-window" style="width: 330px; height: 180px; top: 40%; left: 8px;">
-            <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-search')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
-            <div class="window-body" id="search-browser-body"><strong>Ошибка 404:</strong> Нет связи с внешним шлюзом. Локальный прокси-сервер KPR-GATEWAY не отвечает.</div>
+            <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-search')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
+            <div class="window-body" id="search-browser-body"></div>
         </div>
         
         <div id="win-dino" class="os-window" style="width: 360px; height: 240px; top: 5%; left: 5px;">
-            <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-dino')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
+            <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dino')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
             <div class="window-body" style="text-align:center; overflow:hidden;">
                 <canvas id="dinoCanvas" class="dino-canvas" width="580" height="150"></canvas>
-                <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(51,255,51,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
+                <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(85,255,85,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
             </div>
         </div>
         
         <div id="win-blocks" class="os-window" style="width: 320px; height: 460px; top: 2px; left: 2px;">
-            <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn" onclick="maximizeOSWindow('win-blocks')">[]</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
+            <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-blocks')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
             <div class="window-body" style="overflow-y:auto;">
                 <div class="bb-container">
                     <div style="font-size:14px; font-weight:bold;" id="bb-score">СЧЕТ: 0</div>
                     <div id="bbBoard" class="bb-board"></div>
                     <div id="bbDock" class="bb-dock"></div>
-                    <div id="bb-msg" style="font-size:11px; text-align:center; color:rgba(51,255,51,0.7);">Зажми фигуру и тащи её на доску</div>
+                    <div id="bb-msg" style="font-size:11px; text-align:center; color:rgba(85,255,85,0.7);">Зажми фигуру и тащи её на доску</div>
                 </div>
             </div>
         </div>
