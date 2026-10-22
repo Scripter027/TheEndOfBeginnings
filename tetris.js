@@ -51,16 +51,21 @@ window.initTetrisGame = function() {
         if (scoreLabel) {
             scoreLabel.innerText = (getLang() === 'ru' ? 'СЧЕТ: ' : 'SCORE: ') + score;
         }
-
         if (gameOver) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#55ff55';
-            ctx.font = '10px Courier New';
+            ctx.strokeStyle = '#ff3333';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+            ctx.fillStyle = '#ff3333';
+            ctx.font = 'bold 9px Courier New';
             ctx.textAlign = 'center';
-            ctx.fillText(getLang() === 'ru' ? 'ИГРА ОКОНЧЕНА' : 'GAME OVER', canvas.width / 2, canvas.height / 2 - 10);
+            ctx.fillText(getLang() === 'ru' ? 'ИГРА ОКОНЧЕНА' : 'GAME OVER', canvas.width / 2, canvas.height / 2 - 15);
+            ctx.fillStyle = '#55ff55';
             ctx.font = '7px Courier New';
-            ctx.fillText(getLang() === 'ru' ? '[ПРОБЕЛ] РЕСТАРТ' : '[SPACE] RESTART', canvas.width / 2, canvas.height / 2 + 10);
+            ctx.fillText(getLang() === 'ru' ? 'СЧЕТ: ' + score : 'SCORE: ' + score, canvas.width / 2, canvas.height / 2 + 5);
+            ctx.font = '6px Courier New';
+            ctx.fillText(getLang() === 'ru' ? '[ПРОБЕЛ] СТАРТ' : '[SPACE] RESTART', canvas.width / 2, canvas.height / 2 + 25);
             ctx.textAlign = 'left';
         }
     }
@@ -120,7 +125,7 @@ window.initTetrisGame = function() {
 
     window.controlTetris = function(action) {
         if (action === 'left') window.tetrisMoveLeft();
-        if (action === 'right') window.window.tetrisMoveRight();
+        if (action === 'right') window.tetrisMoveRight();
         if (action === 'rotate') window.tetrisRotate();
         if (action === 'down') window.tetrisDrop();
     };
