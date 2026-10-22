@@ -121,12 +121,12 @@ function updateDesktopTexts() {
 }
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
-    const isRu = (currentLang === 'ru');
-    if (step === 1) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(2)">📁 ' + (isRu ? 'ТЫ ИЗДЕВАЕШЬСЯ' : 'ARE YOU KIDDING ME') + '</span>';
-    else if (step === 2) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(3)">📁 ' + (isRu ? 'НЕ ОТКРЫВАЙ СКАЗАЛ' : 'I SAID DO NOT OPEN') + '</span>';
-    else if (step === 3) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(4)">📁 ' + (isRu ? 'ЛАДНО' : 'FINE') + '</span>';
-    else if (step === 4) body.innerHTML = '<span class="nested-folder-link" onclick="advanceNestedFolder(5)">📁 ' + (isRu ? 'СМОТРИ РАЗ ХОЧЕШЬ' : 'LOOK IF YOU WANT') + '</span>';
-    else if (step === 5) body.innerHTML = '<p style="color:var(--bright-green)">' + (isRu ? '[Здесь абсолютно пусто...]' : '[It is absolutely empty here...]') + '</p>';
+    const isRu = (currentLang === 'ru'); const nextStep = step + 1;
+    const phrasesRu = ["ТЫ ИЗДЕВАЕШЬСЯ", "НЕ ОТКРЫВАЙ СКАЗАЛ", "ЛАДНО", "СМОТРИ РАЗ ХОЧЕШЬ", "ТАМ ПУСТО", "КОНЧАЙ ЭТО", "ГЛУБЖЕ СИСТЕМЫ", "ОШИБКА ДОСТУПА", "КОД КАТЕГОРИИ 404"];
+    const phrasesEn = ["ARE YOU KIDDING ME", "I SAID DO NOT OPEN", "FINE", "LOOK IF YOU WANT", "IT IS EMPTY THERE", "STOP THIS", "DEEPER INTO SYSTEM", "ACCESS ERROR", "CATEGORY CODE 404"];
+    let text = isRu ? phrasesRu[step % phrasesRu.length] : phrasesEn[step % phrasesEn.length];
+    const randId = Math.floor(Math.random() * 100000);
+    body.innerHTML = `<div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" id="nested-link-${randId}" onclick="advanceNestedFolder(${nextStep})">📁 ${text}</span></div>`;
 };
 
 window.emptyTrash = function() {
@@ -161,19 +161,28 @@ function renderTrashList() {
 
 function renderExplorerList() {
     const container = document.getElementById('explorerListContainer'); if (!container) return;
-    container.innerHTML = ''; const icons = document.querySelectorAll('.icon'); let hasItems = false;
-    icons.forEach(icon => {
-        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store') return;
-        if (trashedApps[icon.id]) return;
-        hasItems = true; const item = document.createElement('div'); item.className = 'explorer-item';
-        const titleRu = icon.dataset.titleRu || icon.querySelector('.icon-name').innerText;
-        const titleEn = icon.dataset.titleEn || icon.querySelector('.icon-name').innerText;
-        const displayTitle = currentLang === 'ru' ? titleRu : titleEn;
-        const pic = icon.querySelector('.icon-pic').innerText;
-        item.innerHTML = `<div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${icon.dataset.id}', '${displayTitle}', '${pic}')">${currentLang==='ru'?'Открыть':'Open'}</button>`;
-        container.appendChild(item);
+    container.innerHTML = ''; const icons = document.querySelectorAll('.icon'); const isRu = (currentLang === 'ru');
+    const appTypes = { apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'], games: ['icon-win-dino', 'icon-win-blocks'], other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen'] };
+    const sections = [{ id: 'apps', ru: '--- ПРИЛОЖЕНИЯ ---', en: '--- APPLICATIONS ---' }, { id: 'games', ru: '--- ИГРЫ ---', en: '--- GAMES ---' }, { id: 'other', ru: '--- ПРОЧЕЕ ---', en: '--- OTHER ---' }];
+    sections.forEach(sec => {
+        const listHTML = [];
+        icons.forEach(icon => {
+            if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store') return;
+            if (trashedApps[icon.id]) return;
+            if (appTypes[sec.id].includes(icon.id)) {
+                const titleRu = icon.dataset.titleRu || icon.querySelector('.icon-name').innerText;
+                const titleEn = icon.dataset.titleEn || icon.querySelector('.icon-name').innerText;
+                const displayTitle = isRu ? titleRu : titleEn; const pic = icon.querySelector('.icon-pic').innerText;
+                listHTML.push(`<div class="explorer-item"><div class="explorer-item-left"><span>${pic}</span><span>${displayTitle}</span></div><button class="explorer-btn" onclick="window.openOSWindow('${icon.dataset.id}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button></div>`);
+            }
+        });
+        if (listHTML.length > 0) {
+            const secTitle = document.createElement('div'); secTitle.style.cssText = "font-weight:bold; color:#88ff88; margin:10px 0 5px 0; font-size:12px; letter-spacing:1px;";
+            secTitle.innerText = isRu ? sec.ru : sec.en; container.appendChild(secTitle);
+            const itemsWrap = document.createElement('div'); itemsWrap.innerHTML = listHTML.join(''); container.appendChild(itemsWrap);
+        }
     });
-    if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Проводник пуст' : 'Explorer is empty';
+    if (container.children.length === 0) container.innerHTML = isRu ? 'Проводник пуст' : 'Explorer is empty';
 }
 window.checkZipPassword = function(winId) {
     const win = document.getElementById(winId); const input = win.querySelector('.zip-input-field');
