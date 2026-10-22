@@ -109,6 +109,14 @@ const desktopHTMLContent3 = `
             </div>
         </div>
 
+        <div id="win-settings" class="os-window" style="width: 320px; height: 180px; top: 20%; left: 80px;">
+            <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-settings')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-settings')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
+                <p id="txt-settings-info" style="font-size:11px; text-align:center;"></p>
+                <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); width:100%; padding:10px; font-weight:bold;">СТЕРЕТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
             <div class="window-header"><span id="head-zip">АРХИВАТОР - SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body" id="win-zip-body">
@@ -182,6 +190,7 @@ const desktopHTMLContent3 = `
             <div class="taskbar-left">
                 <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
                 <button class="taskbar-lang" id="taskbar-lang-btn" onclick="toggleDesktopLanguage()">RU</button>
+                <button class="taskbar-lang" id="taskbar-settings-btn" onclick="window.openOSWindow('win-settings', '⚙', '⚙')" style="border-style:dashed;">⚙</button>
                 <button class="taskbar-exit" id="tb-exit-btn" onclick="exitToTerminal()">ВЫХОД</button>
                 <div id="taskbar-apps" class="taskbar-apps"></div>
             </div>
