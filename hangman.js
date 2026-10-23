@@ -12,6 +12,10 @@ window.initHangmanGame = function() {
     let maxWrong = 6;
     let gameActive = false;
     let gameLang = 'ru';
+    let isGameOver = false;
+
+    let hangmanScore = 0;
+    let hangmanHighScore = localStorage.getItem('kpr_hangman_highscore') || 0;
 
     const dictionary = {
         ru: {
@@ -26,10 +30,23 @@ window.initHangmanGame = function() {
         }
     };
 
+    function getLang() {
+        return typeof currentLang !== 'undefined' ? currentLang : 'ru';
+    }
+
+    function updateScorePanel() {
+        const curLabel = document.getElementById('hangman-current-score');
+        const highLabel = document.getElementById('hangman-high-score');
+        const isRu = (getLang() === 'ru');
+        if (curLabel) curLabel.innerText = (isRu ? 'СЧЕТ: ' : 'SCORE: ') + hangmanScore;
+        if (highLabel) highLabel.innerText = (isRu ? 'РЕКОРД: ' : 'BEST: ') + hangmanHighScore;
+    }
+
     window.selectHangmanDifficulty = function(len, lang) {
         wordLength = len;
         gameLang = lang;
         gameActive = true;
+        isGameOver = false;
         wrongAttempts = 0;
         guessedLetters = [];
         
@@ -39,13 +56,15 @@ window.initHangmanGame = function() {
         if (overBox) overBox.innerHTML = '';
         drawHangman();
         buildKeyboard();
+        updateScorePanel();
     };
 
     window.showHangmanMenu = function() {
         gameActive = false;
+        isGameOver = false;
         dockEl.innerHTML = '';
         if (overBox) overBox.innerHTML = '';
-        const isRu = (currentLang === 'ru');
+        const isRu = (getLang() === 'ru');
         
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -53,55 +72,73 @@ window.initHangmanGame = function() {
         ctx.fillStyle = '#55ff55';
         ctx.font = 'bold 12px Courier New';
         ctx.textAlign = 'center';
-        ctx.fillText(isRu ? 'ВЫБЕРИТЕ ДЛИНУ СЛОВА' : 'SELECT WORD LENGTH', canvas.width / 2, 40);
-        ctx.fillText(isRu ? 'И ЯЗЫК В МЕНЮ НИЖЕ' : 'AND LANGUAGE IN MENU BELOW', canvas.width / 2, 60);
+        ctx.fillText(isRu ? 'ВЫБЕРИТЕ РЕЖИМ СЛОЖНОСТИ' : 'SELECT WORD DIFFICULTY', canvas.width / 2, 50);
 
         dockEl.innerHTML = `
             <div style="display:flex; flex-direction:column; gap:4px; width:100%; align-items:center; background:#000; padding:4px;">
                 <div style="display:flex; gap:4px; width:100%;">
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(5, 'ru')">RU-5</button>
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(7, 'ru')">RU-7</button>
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(10, 'ru')">RU-10</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(5, 'ru')">RU-5 (+100)</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(7, 'ru')">RU-7 (+1000)</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(10, 'ru')">RU-10 (+10000)</button>
                 </div>
                 <div style="display:flex; gap:4px; width:100%;">
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(5, 'en')">EN-5</button>
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(7, 'en')">EN-7</button>
-                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(10, 'en')">EN-10</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(5, 'en')">EN-5 (+100)</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(7, 'en')">EN-7 (+1000)</button>
+                    <button class="trash-btn" style="flex:1; padding:5px; font-size:10px;" onclick="selectHangmanDifficulty(10, 'en')">EN-10 (+10000)</button>
                 </div>
             </div>
         `;
+        updateScorePanel();
     };
-
     function buildKeyboard() {
         dockEl.innerHTML = '';
         dockEl.style.display = 'flex';
-        dockEl.style.flexWrap = 'wrap';
+        dockEl.style.flexDirection = 'column';
         dockEl.style.gap = '3px';
-        dockEl.style.justifyContent = 'center';
+        dockEl.style.alignItems = 'center';
 
-        const keys = gameLang === 'ru' ? "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        
-        keys.split('').forEach(char => {
-            const btn = document.createElement('button');
-            btn.className = 'trash-btn';
-            btn.style.padding = '3px 5px';
-            btn.style.fontSize = '10px';
-            btn.innerText = char;
-            btn.onclick = () => handleLetterInput(char, btn);
-            dockEl.appendChild(btn);
+        const rowsRu = ["ЙЦУКЕНГШЩЗХЪ", "ФЫВАПРОЛДЖЭ", "ЯЧСМИТЬБЮ"];
+        const rowsEn = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+        const targetLayout = gameLang === 'ru' ? rowsRu : rowsEn;
+
+        targetLayout.forEach(rowStr => {
+            const rowContainer = document.createElement('div');
+            rowContainer.style.display = 'flex';
+            rowContainer.style.gap = '2px';
+            rowContainer.style.justifyContent = 'center';
+            rowContainer.style.width = '100%';
+
+            rowStr.split('').forEach(char => {
+                const btn = document.createElement('button');
+                btn.className = 'trash-btn';
+                btn.style.padding = '4px 3px';
+                btn.style.fontSize = '9px';
+                btn.style.minWidth = '18px';
+                btn.innerText = char;
+                btn.onclick = () => handleLetterInput(char, btn);
+                rowContainer.appendChild(btn);
+            });
+            dockEl.appendChild(rowContainer);
         });
     }
 
     function handleLetterInput(char, buttonEl) {
-        if (!gameActive || guessedLetters.includes(char)) return;
+        if (!gameActive || isGameOver || guessedLetters.includes(char)) return;
         guessedLetters.push(char);
         
         if (buttonEl) {
-            buttonEl.style.opacity = '0.4';
+            buttonEl.style.opacity = '0.3';
             buttonEl.disabled = true;
         }
 
-        if (!secretWord.includes(char)) {
+        if (secretWord.includes(char)) {
+            hangmanScore += 10;
+            if (hangmanScore > hangmanHighScore) {
+                hangmanHighScore = hangmanScore;
+                localStorage.setItem('kpr_hangman_highscore', hangmanHighScore);
+            }
+            updateScorePanel();
+        } else {
             wrongAttempts++;
         }
 
@@ -130,7 +167,7 @@ window.initHangmanGame = function() {
         if (wrongAttempts >= 6) { ctx.beginPath(); ctx.moveTo(100, 85); ctx.lineTo(115, 105); ctx.stroke(); }
 
         ctx.fillStyle = '#55ff55';
-        ctx.font = 'bold 15px Courier New';
+        ctx.font = 'bold 14px Courier New';
         ctx.textAlign = 'center';
         
         let displayStr = '';
@@ -138,27 +175,55 @@ window.initHangmanGame = function() {
             let char = secretWord[i];
             displayStr += guessedLetters.includes(char) ? char + ' ' : '_ ';
         }
-        ctx.fillText(displayStr.trim(), canvas.width / 2 + 30, 125);
+        ctx.fillText(displayStr.trim(), canvas.width / 2 + 35, 120);
     }
 
     function checkGameStatus() {
-        let win = true;
+        let isWin = true;
         for (let i = 0; i < secretWord.length; i++) {
-            if (!guessedLetters.includes(secretWord[i])) win = false;
+            if (!guessedLetters.includes(secretWord[i])) isWin = false;
         }
 
-        const isRu = (gameLang === 'ru');
-        if (win) {
+        const isRu = (getLang() === 'ru');
+        if (isWin) {
             gameActive = false;
             dockEl.innerHTML = '';
-            if (overBox) overBox.innerHTML = `<span style="color:#55ff55; font-size:11px;">${isRu ? 'СПАСЕН! ЖМИ ИНТЕР ДЛЯ СЛЕДУЮЩЕГО' : 'SAVED! CLICK ENTER FOR NEXT'}</span>`;
+            let bonus = 100;
+            if (wordLength === 7) bonus = 1000;
+            if (wordLength === 10) bonus = 10000;
+
+            hangmanScore += bonus;
+            if (hangmanScore > hangmanHighScore) {
+                hangmanHighScore = hangmanScore;
+                localStorage.setItem('kpr_hangman_highscore', hangmanHighScore);
+            }
+            updateScorePanel();
+
+            if (overBox) overBox.innerHTML = `<span style="color:#55ff55; font-size:11px;">${isRu ? `ПОБЕДА (+${bonus})! ЗАГРУЗКА...` : `WIN (+${bonus})! LOADING...`}</span>`;
+            
+            setTimeout(() => {
+                selectHangmanDifficulty(wordLength, gameLang);
+            }, 3000);
             return;
         }
 
         if (wrongAttempts >= maxWrong) {
             gameActive = false;
+            isGameOver = true;
             dockEl.innerHTML = '';
-            if (overBox) overBox.innerHTML = `<span style="color:var(--neon-red); font-size:10px;">${isRu ? 'КАЗНЕН! СЛОВО: ' : 'EXECUTED! WORD: '}${secretWord}</span>`;
+            if (overBox) {
+                overBox.innerHTML = `
+                    <div style="color:var(--neon-red); font-size:10px; text-transform:uppercase;">
+                        ${isRu ? 'КАЗНЕН! [SHIFT] - МЕНЮ | [ПРОБЕЛ] - ЗАНОВО' : 'EXECUTED! [SHIFT] - MENU | [SPACE] - RESTART'}
+                    </div>
+                `;
+            }
+            
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'var(--neon-red)';
+            ctx.font = 'bold 11px Courier New';
+            ctx.fillText(secretWord, canvas.width / 2 + 35, 75);
         }
     }
 
@@ -166,13 +231,13 @@ window.initHangmanGame = function() {
         const win = document.getElementById('win-hangman');
         if (!win || win.style.display !== 'block') return;
 
-        if (!gameActive) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                window.selectHangmanDifficulty(wordLength, gameLang);
-            } else if (e.key === 'Shift') {
+        if (!gameActive || isGameOver) {
+            if (e.key === 'Shift') {
                 e.preventDefault();
                 window.showHangmanMenu();
+            } else if (e.code === 'Space') {
+                e.preventDefault();
+                window.selectHangmanDifficulty(wordLength, gameLang);
             }
             return;
         }
