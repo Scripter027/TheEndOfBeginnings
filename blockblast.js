@@ -11,16 +11,16 @@ window.initBlockBlast = function() {
     let activeDrag = null;
 
     const allPieces = [
-        [],
-        [],
-        [,],
-        [],
-        [,,],
-        [,],
-        [,],
-        [,,],
-        [],
-        [,,,]
+        [[1]],
+        [[1, 1]],
+        [[1], [1]],
+        [[1, 1, 1]],
+        [[1], [1], [1]],
+        [[1, 1], [1, 1]],
+        [[1, 1, 1], [0, 1, 0]],
+        [[1, 0], [1, 1], [0, 1]],
+        [[1, 1, 1, 1]],
+        [[1], [1], [1], [1]]
     ];
 
     function initGame() {
@@ -47,7 +47,7 @@ window.initBlockBlast = function() {
     }
 
     function canPlace(matrix, row, col) {
-        if (row < 0 || row + matrix.length > 8 || col < 0 || col + matrix.length > 8) return false;
+        if (row < 0 || row + matrix.length > 8 || col < 0 || col + matrix[0].length > 8) return false;
         for (let r = 0; r < matrix.length; r++) {
             for (let c = 0; c < matrix[r].length; c++) {
                 if (matrix[r][c] && board[row + r][col + c]) return false;
@@ -122,14 +122,14 @@ window.initBlockBlast = function() {
         }
 
         while(currentPieces.length < 3) {
-            currentPieces.push(allPieces);
+            currentPieces.push(allPieces[0]);
         }
 
         currentPieces.forEach((matrix, index) => {
             const wrap = document.createElement('div');
             wrap.className = 'bb-piece';
             wrap.style.gridTemplateRows = `repeat(${matrix.length}, 1fr)`;
-            wrap.style.gridTemplateColumns = `repeat(${matrix.length}, 1fr)`;
+            wrap.style.gridTemplateColumns = `repeat(${matrix[0].length}, 1fr)`;
             wrap.style.position = 'relative';
 
             matrix.forEach(row => {
