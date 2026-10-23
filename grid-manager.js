@@ -1,12 +1,12 @@
-window.PADDING_OFFSET = 20;
-window.GRID_Y = 90;
+window.PADDING_OFFSET = 12;
+window.GRID_Y = 85;
 
 function getDynamicGridX() {
     const container = document.getElementById('desktopIconsContainer');
     if (!container) return 100;
     const bounds = container.getBoundingClientRect();
     if (bounds.width <= 480) {
-        return Math.floor((bounds.width - (window.PADDING_OFFSET * 2)) / 4);
+        return Math.floor((bounds.width - 24) / 4);
     }
     return 100;
 }
@@ -19,7 +19,7 @@ window.getFirstAvailableSlot = function() {
     const gridX = getDynamicGridX();
     
     const maxCols = bounds.width <= 480 ? 4 : Math.floor((bounds.width - window.PADDING_OFFSET) / gridX) || 1;
-    const maxRows = Math.floor((bounds.height - 44 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
+    const maxRows = Math.floor((bounds.height - 40 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
     const icons = document.querySelectorAll('.icon');
     
     for (let r = 0; r < maxRows; r++) {
@@ -59,7 +59,7 @@ window.snapToGrid = function(x, y) {
     let snapY = Math.round((localY - window.PADDING_OFFSET) / window.GRID_Y) * window.GRID_Y + window.PADDING_OFFSET;
     
     const maxCols = bounds.width <= 480 ? 4 : Math.floor((bounds.width - window.PADDING_OFFSET) / gridX) || 1;
-    const maxRows = Math.floor((bounds.height - 44 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
+    const maxRows = Math.floor((bounds.height - 40 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
     
     if (snapX < window.PADDING_OFFSET) snapX = window.PADDING_OFFSET;
     if (snapX > (maxCols - 1) * gridX + window.PADDING_OFFSET) snapX = (maxCols - 1) * gridX + window.PADDING_OFFSET;
