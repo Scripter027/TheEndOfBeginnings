@@ -115,7 +115,6 @@
             <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
-
     <div id="main-container">
         <div class="timer-wrapper" id="timer-toggle">
             <div class="timer-title" id="timer-label">До момента x осталось:</div>
@@ -145,12 +144,12 @@
             <div class="icon" id="icon-win-search" data-id="win-search" data-title-ru="Поисковик" data-title-en="Search" data-icon="🌐"><div class="icon-pic">🌐</div><div class="icon-name" id="label-win-search">Поисковик</div></div>
             <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
             <div class="icon" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
-            <div class="icon" id="icon-win-tetris" data-id="win-tetris" data-title-ru="Тетрис" data-title-en="Tetris" data-icon="🕹️" style="display: none;"><div class="icon-pic">🕹️</div><div class="icon-name" id="label-win-tetris">Тетрис</div></div>
+            <div class="icon" id="icon-win-tetris" data-id="win-tetris" data-title-ru="Тетрис" data-title-en="Tetris" data-icon="🕹️"><div class="icon-pic">🕹️</div><div class="icon-name" id="label-win-tetris">Тетрис</div></div>
             <div class="icon" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
             <div class="icon" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
             <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
             <div class="icon" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
-            <div class="icon" id="icon-win-bsod" data-id="bsodScreen" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
+            <div class="icon" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
         </div>
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
             <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-trash')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
@@ -159,13 +158,11 @@
                 <div class="trash-list" id="trashListContainer"></div>
             </div>
         </div>
-
         <div id="win-explorer" class="os-window" style="width: 360px; height: 300px; top: 10%; left: 40px;">
             <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-explorer')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-explorer')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-explorer')">X</span></div></div>
             <div class="window-body" id="explorerListContainer"></div>
         </div>
-
-                <div id="win-store" class="os-window" style="width: 360px; height: 320px; top: 15%; left: 60px;">
+        <div id="win-store" class="os-window" style="width: 360px; height: 320px; top: 15%; left: 60px;">
             <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-store')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-store')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-store')">X</span></div></div>
             <div class="window-body">
                 <div id="storeListContainer" style="height: calc(100% - 40px); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px;"></div>
@@ -175,7 +172,6 @@
                 </div>
             </div>
         </div>
-
         <div id="win-settings" class="os-window" style="width: 340px; height: 220px; top: 20%; left: 80px;">
             <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-settings')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-settings')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-settings')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;">
@@ -183,7 +179,6 @@
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
             </div>
         </div>
-
         <div id="win-tetris" class="os-window" style="width: 300px; height: 360px; top: 8%; left: 15px;">
             <div class="window-header"><span id="head-tetris">TETRIS.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tetris')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tetris')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tetris')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:calc(100% - 38px); padding:8px;">
@@ -197,7 +192,6 @@
                 </div>
             </div>
         </div>
-
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
             <div class="window-header"><span id="head-zip">SECRET.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip')">X</span></div></div>
             <div class="window-body">
@@ -214,7 +208,6 @@
                 <button class="trash-btn" onclick="checkZipPassword('win-zip2')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
-
         <div id="win-zip3" class="os-window" style="width: 330px; height: 200px; top: 30%; left: 25px;">
             <div class="window-header"><span id="head-zip3">SECRET2.ZIP</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-zip3')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-zip3')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-zip3')">X</span></div></div>
             <div class="window-body">
@@ -223,14 +216,12 @@
                 <button class="trash-btn" onclick="checkZipPassword('win-zip3')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>
             </div>
         </div>
-
         <div id="win-dontopen" class="os-window" style="width: 320px; height: 200px; top: 20%; left: 30px;">
             <div class="window-header"><span id="head-dontopen">НЕ ОТКРЫВАТЬ</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dontopen')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dontopen')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dontopen')">X</span></div></div>
             <div class="window-body" id="nestedFolderBody">
                 <span class="nested-folder-link" id="nested-link-0" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span>
             </div>
         </div>
-
         <div id="win-msg" class="os-window" style="width: 380px; height: 260px; top: 12%; left: 12px;">
             <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-msg')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-msg')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-msg')">X</span></div></div>
             <div class="window-body" style="padding:0; height:calc(100% - 38px);">
@@ -240,12 +231,10 @@
                 </div>
             </div>
         </div>
-
         <div id="win-search" class="os-window" style="width: 330px; height: 180px; top: 40%; left: 8px;">
             <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-search')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
             <div class="window-body" id="search-browser-body"></div>
         </div>
-
         <div id="win-dino" class="os-window" style="width: 360px; height: 240px; top: 5%; left: 5px;">
             <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dino')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
             <div class="window-body" style="text-align:center; overflow:hidden;">
@@ -253,7 +242,6 @@
                 <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(85,255,85,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
             </div>
         </div>
-
         <div id="win-blocks" class="os-window" style="width: 320px; height: 460px; top: 2px; left: 2px;">
             <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-blocks')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
             <div class="window-body" style="overflow-y:auto;">
@@ -264,7 +252,6 @@
                 </div>
             </div>
         </div>
-
         <div class="taskbar">
             <div class="taskbar-left">
                 <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
@@ -276,10 +263,12 @@
             <div id="taskbar-timer" class="taskbar-timer">00:00:00:00</div>
         </div>
     </div>
-
-    <script src="config.js"></script>
+        <script src="config.js"></script>
     <script src="engine.js"></script>
     <script src="grid-manager.js"></script>
+    <script src="trash.js"></script>
+    <script src="explorer.js"></script>
+    <script src="bsod.js"></script>
     <script src="desktop-view.js"></script>
     <script src="desktop-control.js"></script>
     <script src="messenger-logic.js"></script>
@@ -288,8 +277,5 @@
     <script src="blockblast.js"></script>
     <script src="store.js"></script>
     <script src="tetris.js"></script>
-    <script src="trash.js"></script>
-    <script src="explorer.js"></script>
-    <script src="bsod.js"></script>
 </body>
 </html>
