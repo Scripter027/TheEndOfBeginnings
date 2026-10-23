@@ -10,14 +10,27 @@ window.initSudokuGame = function() {
     let activeDigit = null;
     let currentLevel = 'easy';
     let gameActive = false;
+    let isGameOver = false;
+
+    let sudokuScore = 0;
+    let sudokuHighScore = localStorage.getItem('kpr_sudoku_highscore') || 0;
 
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
     }
 
+    function updateScorePanel() {
+        const curLabel = document.getElementById('sudoku-current-score');
+        const highLabel = document.getElementById('sudoku-high-score');
+        const isRu = (getLang() === 'ru');
+        if (curLabel) curLabel.innerText = (isRu ? 'СЧЕТ: ' : 'SCORE: ') + sudokuScore;
+        if (highLabel) highLabel.innerText = (isRu ? 'РЕКОРД: ' : 'BEST: ') + sudokuHighScore;
+    }
+
     window.selectSudokuDifficulty = function(level) {
         currentLevel = level;
         gameActive = true;
+        isGameOver = false;
         generateSudokuSolution();
         initialBoard = Array(9).fill(null).map(() => Array(9).fill(0));
         
@@ -52,10 +65,12 @@ window.initSudokuGame = function() {
         if (overBox) overBox.innerHTML = '';
         drawBoard();
         initDock();
+        updateScorePanel();
     };
 
     window.showSudokuMenu = function() {
         gameActive = false;
+        isGameOver = false;
         dockEl.innerHTML = '';
         if (overBox) overBox.innerHTML = '';
         
@@ -70,6 +85,7 @@ window.initSudokuGame = function() {
                 <button class="trash-btn" style="width:80%; padding:10px; font-weight:bold;" onclick="selectSudokuDifficulty('hard')">HARD (+10000)</button>
             </div>
         `;
+        updateScorePanel();
     };
 
     function generateSudokuSolution() {
@@ -99,7 +115,7 @@ window.initSudokuGame = function() {
         if (col === 9) { row++; col = 0; }
         if (solutionBoard[row][col] !== 0) return fillSudokuCells(row, col + 1);
 
-        let nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
+        let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
         for (let i = 0; i < 9; i++) {
             let num = nums[i];
             if (isValidSudoku(row, col, num)) {
@@ -145,7 +161,7 @@ window.initSudokuGame = function() {
                 cell.addEventListener('dragover', (e) => e.preventDefault());
                 cell.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    if (!gameActive || initialBoard[r][c] !== 0 || !activeDigit) return;
+                    if (!gameActive || isGameOver || initialBoard[r][c] !== 0 || !activeDigit) return;
 
                     if (activeDigit !== solutionBoard[r][c]) {
                         triggerGameOver();
@@ -164,10 +180,15 @@ window.initSudokuGame = function() {
 
     function triggerGameOver() {
         gameActive = false;
+        isGameOver = true;
         dockEl.innerHTML = '';
         const isRu = (getLang() === 'ru');
         if (overBox) {
-            overBox.innerHTML = `<span style="color:var(--neon-red); font-size:12px; cursor:pointer;" onclick="window.showSudokuMenu()">${isRu ? 'КРИТИЧЕСКАЯ ОШИБКА! НАЖМИ ДЛЯ СБРОСА' : 'CRITICAL ERROR! CLICK TO RESET'}</span>`;
+            overBox.innerHTML = `
+                <div style="color:var(--neon-red); font-size:11px; text-transform:uppercase;">
+                    ${isRu ? 'ОШИБКА! [SHIFT] - МЕНЮ | [ПРОБЕЛ] - ЗАНОВО' : 'ERROR! [SHIFT] - MENU | [SPACE] - RESTART'}
+                </div>
+            `;
         }
     }
 
@@ -186,9 +207,12 @@ window.initSudokuGame = function() {
             if (currentLevel === 'medium') points = 1000;
             if (currentLevel === 'hard') points = 10000;
 
-            if (typeof score !== 'undefined') {
-                score += points;
+            sudokuScore += points;
+            if (sudokuScore > sudokuHighScore) {
+                sudokuHighScore = sudokuScore;
+                localStorage.setItem('kpr_sudoku_highscore', sudokuHighScore);
             }
+            updateScorePanel();
 
             const isRu = (getLang() === 'ru');
             if (overBox) {
@@ -223,6 +247,19 @@ window.initSudokuGame = function() {
             dockEl.appendChild(digit);
         }
     }
+
+    window.addEventListener('keydown', (e) => {
+        const win = document.getElementById('win-sudoku');
+        if (!win || win.style.display !== 'block' || !isGameOver) return;
+
+        if (e.key === 'Shift') {
+            e.preventDefault();
+            window.showSudokuMenu();
+        } else if (e.code === 'Space') {
+            e.preventDefault();
+            window.selectSudokuDifficulty(currentLevel);
+        }
+    });
 
     const resizeObserver = new ResizeObserver(() => {
         if (gameActive) drawBoard();
