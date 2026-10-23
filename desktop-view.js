@@ -35,6 +35,10 @@ window.updateDesktopTexts = function() {
     if (winDino) winDino.innerText = isRu ? "Динозавр" : "Dino";
     const winBlocks = document.getElementById('label-win-blocks');
     if (winBlocks) winBlocks.innerText = isRu ? "Блок Бласт" : "Block Blast";
+    const winTetris = document.getElementById('label-win-tetris');
+    if (winTetris) winTetris.innerText = isRu ? "Тетрис" : "Tetris";
+    const winSudoku = document.getElementById('label-win-sudoku');
+    if (winSudoku) winSudoku.innerText = isRu ? "Судоку" : "Sudoku";
     const winDont = document.getElementById('label-win-dontopen');
     if (winDont) winDont.innerText = isRu ? "НЕ ОТКРЫВАТЬ" : "DO NOT OPEN";
     const winBsod = document.getElementById('label-win-bsod');
@@ -63,6 +67,8 @@ window.updateDesktopTexts = function() {
     if (headDino) headDino.innerText = isRu ? "DINO_RUN.EXE" : "DINO_RUN.EXE";
     const headBlocks = document.getElementById('head-blocks');
     if (headBlocks) headBlocks.innerText = isRu ? "BLOCK_BLAST.EXE" : "BLOCK_BLAST.EXE";
+    const headSudoku = document.getElementById('head-sudoku');
+    if (headSudoku) headSudoku.innerText = isRu ? "СУДОКУ.EXE" : "SUDOKU.EXE";
     const txtInfo = document.getElementById('txt-settings-info');
     if (txtInfo) txtInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will clear highscores and restore default icons.";
     const btnReset = document.getElementById('btn-reset-all');
@@ -122,7 +128,7 @@ window.clearAllOSData = function() {
     document.querySelectorAll('.icon').forEach(icon => {
         icon.style.left = '';
         icon.style.top = '';
-        if (icon.id === 'icon-win-tetris') {
+        if (icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku') {
             icon.style.display = 'none';
         } else {
             icon.style.display = 'flex';
@@ -156,7 +162,7 @@ window.activateDesktopMode = function() {
             icon.style.left = '';
             icon.style.top = '';
             
-            if (icon.id === 'icon-win-tetris' && !installedApps[icon.id]) {
+            if ((icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku') && !installedApps[icon.id]) {
                 icon.style.display = 'none';
                 return;
             }
@@ -179,5 +185,6 @@ window.activateDesktopMode = function() {
     try { if (window.initMessenger) window.initMessenger(); } catch (e) {}
     try { if (window.initKeeperStore) window.initKeeperStore(); } catch (e) {}
     try { if (window.initTetrisGame) window.initTetrisGame(); } catch (e) {}
+    try { if (window.initSudokuGame) window.initSudokuGame(); } catch (e) {}
     if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
