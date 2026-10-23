@@ -43,6 +43,10 @@ window.updateDesktopTexts = function() {
     if (winMem) winMem.innerText = isRu ? "Память" : "Memory";
     const winTow = document.getElementById('label-win-tower');
     if (winTow) winTow.innerText = isRu ? "Башня" : "Tower";
+    const winWd = document.getElementById('label-win-words');
+    if (winWd) winWd.innerText = isRu ? "Слова" : "Words";
+    const winHg = document.getElementById('label-win-hangman');
+    if (winHg) winHg.innerText = isRu ? "Виселица" : "Hangman";
     const winDont = document.getElementById('label-win-dontopen');
     if (winDont) winDont.innerText = isRu ? "НЕ ОТКРЫВАТЬ" : "DO NOT OPEN";
     const winBsod = document.getElementById('label-win-bsod');
@@ -77,6 +81,10 @@ window.updateDesktopTexts = function() {
     if (headMem) headMem.innerText = isRu ? "ПАМЯТЬ.EXE" : "MEMORY.EXE";
     const headTow = document.getElementById('head-tower');
     if (headTow) headTow.innerText = isRu ? "БАШНЯ.EXE" : "TOWER.EXE";
+    const headWd = document.getElementById('head-words');
+    if (headWd) headWd.innerText = isRu ? "СЛОВА.EXE" : "WORDS.EXE";
+    const headHg = document.getElementById('head-hangman');
+    if (headHg) headHg.innerText = isRu ? "ВИСЕЛИЦА.EXE" : "HANGMAN.EXE";
     const txtInfo = document.getElementById('txt-settings-info');
     if (txtInfo) txtInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will clear highscores and restore default icons.";
     const btnReset = document.getElementById('btn-reset-all');
@@ -139,7 +147,7 @@ window.clearAllOSData = function() {
     document.querySelectorAll('.icon').forEach(icon => {
         icon.style.left = '';
         icon.style.top = '';
-        if (icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower') {
+        if (icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower' || icon.id === 'icon-win-words' || icon.id === 'icon-win-hangman') {
             icon.style.display = 'none';
         } else {
             icon.style.display = 'flex';
@@ -172,7 +180,7 @@ window.activateDesktopMode = function() {
             icon.style.left = '';
             icon.style.top = '';
             
-            if ((icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower') && !installedApps[icon.id]) {
+            if ((icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower' || icon.id === 'icon-win-words' || icon.id === 'icon-win-hangman') && !installedApps[icon.id]) {
                 icon.style.display = 'none';
                 return;
             }
@@ -198,5 +206,7 @@ window.activateDesktopMode = function() {
     try { if (window.initSudokuGame) window.initSudokuGame(); } catch (e) {}
     try { if (window.initMemoryGame) window.initMemoryGame(); } catch (e) {}
     try { if (window.initTowerGame) window.initTowerGame(); } catch (e) {}
+    try { if (window.initWordsGame) window.initWordsGame(); } catch (e) {}
+    try { if (window.initHangmanGame) window.initHangmanGame(); } catch (e) {}
     if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
