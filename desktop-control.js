@@ -1,243 +1,264 @@
-window.osZIndex = 3000;
-window.openWindowsTrack = {};
-window.desktopLangClicks = 0;
-
-document.querySelectorAll('.icon').forEach(icon => {
-    icon.addEventListener('dblclick', () => { 
-        if(icon.style.display !== 'none') {
-            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
-        }
-    });
+window.addEventListener('DOMContentLoaded', () => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    const pwaOverlay = document.getElementById('pwa-install-overlay');
+    const bootScr = document.getElementById('boot-screen');
     
-    let lastTap = 0;
-    icon.addEventListener('touchend', (e) => {
-        let currentTime = new Date().getTime(); 
-        let tapLength = currentTime - lastTap;
-        if (tapLength < 300 && tapLength > 0 && icon.style.display !== 'none') { 
-            e.preventDefault(); 
-            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
-        }
-        lastTap = currentTime;
-    });
-
-    icon.addEventListener('pointerdown', function(e) {
-        if (icon.style.display === 'none') return;
-        
-        if (icon.id === 'icon-win-trash' || icon.id === 'icon-win-explorer' || icon.id === 'icon-win-store') {
-            let initialTop = icon.offsetTop;
-            let initialLeft = icon.offsetLeft;
-            setTimeout(() => { 
-                if(icon.offsetTop === initialTop && icon.offsetLeft === initialLeft && icon.style.display !== 'none') {
-                    window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon); 
-                }
-            }, 200);
-        }
-        
-        icon.style.zIndex = "5000"; 
-        let shiftX = e.clientX - icon.getBoundingClientRect().left; 
-        let shiftY = e.clientY - icon.getBoundingClientRect().top;
-        let oldTop = icon.style.top;
-        let oldLeft = icon.style.left;
-        
-        function moveAt(pageX, pageY) {
-            let containerEl = document.getElementById('desktopIconsContainer');
-            if (!containerEl) return;
-            let container = containerEl.getBoundingClientRect();
-            let x = pageX - container.left - shiftX; 
-            let y = pageY - container.top - shiftY;
-            icon.style.left = x + 'px'; 
-            icon.style.top = y + 'px';
-        }
-        
-        function onPointerMove(ev) { moveAt(ev.clientX, ev.clientY); }
-        document.addEventListener('pointermove', onPointerMove);
-        
-        document.addEventListener('pointerup', function onUp(ev) {
-            icon.style.zIndex = "auto"; 
-            document.removeEventListener('pointermove', onPointerMove); 
-            document.removeEventListener('pointerup', onUp);
-            
-            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : { x: ev.clientX - shiftX, y: ev.clientY - shiftY }; 
-            const trashIcon = document.getElementById('icon-win-trash');
-            
-            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
-                icon.style.display = 'none'; 
-                window.closeOSWindow(icon.dataset.id);
-                if (typeof trashedApps !== 'undefined') {
-                    trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' }; 
-                    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-                }
-                if (window.renderTrashList) window.renderTrashList(); 
-                if (window.renderExplorerList) window.renderExplorerList(); 
-                if (window.renderStoreList) window.renderStoreList();
-                icon.style.left = oldLeft; 
-                icon.style.top = oldTop; 
-                return;
-            }
-            
-            let overlap = false;
-            document.querySelectorAll('.icon').forEach(other => { 
-                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true; 
-            });
-            
-            if (overlap) { 
-                icon.style.left = oldLeft; 
-                icon.style.top = oldTop; 
-                return; 
-            }
-            
-            icon.style.left = snap.x + 'px'; 
-            icon.style.top = snap.y + 'px';
-            
-            try {
-                let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-                positions[icon.id] = { left: icon.style.left, top: icon.style.top }; 
-                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-            } catch(err) {}
-            if (window.renderExplorerList) window.renderExplorerList();
-            if (window.renderStoreList) window.renderStoreList();
-        });
-    });
-});
-document.querySelectorAll('.os-window').forEach(win => {
-    let header = win.querySelector('.window-header');
-    if (!header) return;
-    header.addEventListener('pointerdown', function(e) {
-        if (e.target.classList.contains('window-btn') || win.classList.contains('maximized')) return;
-        win.style.zIndex = ++window.osZIndex; 
-        let shiftX = e.clientX - win.getBoundingClientRect().left; 
-        let shiftY = e.clientY - win.getBoundingClientRect().top;
-        
-        function moveAt(pageX, pageY) { 
-            let top = pageY - shiftY; 
-            if (top < 0) top = 0; 
-            win.style.left = (pageX - shiftX) + 'px'; 
-            win.style.top = top + 'px'; 
-        }
-        
-        function onPointerMove(e) { moveAt(e.clientX, e.clientY); }
-        document.addEventListener('pointermove', onPointerMove);
-        document.addEventListener('pointerup', function onUp() { 
-            document.removeEventListener('pointermove', onPointerMove); 
-            document.removeEventListener('pointerup', onUp); 
-        });
-    });
-});
-
-window.toggleMaximize = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.classList.toggle('maximized');
-    if (id === 'win-msg' && window.initMessenger) window.initMessenger();
-};
-
-window.openOSWindow = function(id, title, iconStr) {
-    if (id === 'win-bsod') {
-        if (window.triggerBSOD) window.triggerBSOD();
+    if (isMobile && !isStandalone && pwaOverlay) {
+        pwaOverlay.style.display = 'flex';
         return;
     }
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.style.display = 'block';
-    win.style.zIndex = ++window.osZIndex;
-    if (window.innerWidth < 600) {
-        win.style.left = '4vw';
-        win.style.top = '10vh';
+    if (bootScr) {
+        bootScr.style.display = 'block';
     }
-    if (!window.openWindowsTrack[id]) {
-        window.openWindowsTrack[id] = iconStr || '📦';
-        if (window.renderTaskbarApps) window.renderTaskbarApps();
+    setTimeout(printBootLines, 500);
+});
+
+const bootScreen = document.getElementById('boot-screen');
+const mainContainer = document.getElementById('main-container');
+let bootLine = 0;
+
+function printBootLines() {
+    if (!bootScreen) {
+        if (mainContainer) mainContainer.style.display = 'flex';
+        return;
     }
-    if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
-    if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
-    if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
-    if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
-    if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
-};
-
-window.closeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) {
-        win.style.display = 'none';
-        win.classList.remove('maximized');
+    if (typeof bootLogs !== 'undefined' && bootLine < bootLogs.length) { 
+        bootScreen.innerHTML += bootLogs[bootLine] + '<br>'; 
+        bootScreen.scrollTop = bootScreen.scrollHeight; 
+        bootLine++; 
+        setTimeout(printBootLines, 260); 
+    } else { 
+        setTimeout(() => { 
+            bootScreen.style.display = 'none'; 
+            if (mainContainer) mainContainer.style.display = 'flex'; 
+            const inputField = document.getElementById('user-input');
+            if (inputField) inputField.focus();
+            const outputField = document.getElementById('response-text');
+            if (outputField && typeof langData !== 'undefined' && langData[currentLang]) {
+                outputField.innerText = langData[currentLang].defaultPrompt;
+            }
+        }, 300); 
     }
-    delete window.openWindowsTrack[id];
-    if (window.renderTaskbarApps) window.renderTaskbarApps();
-};
+}
 
-window.minimizeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) win.style.display = 'none';
-    if (window.renderTaskbarApps) window.renderTaskbarApps();
-};
-
-window.toggleWindowFromTaskbar = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    if (win.style.display === 'block') {
-        win.style.display = 'none';
-    } else {
-        win.style.display = 'block';
-        win.style.zIndex = ++window.osZIndex;
-    }
-    if (window.renderTaskbarApps) window.renderTaskbarApps();
-};
-
-window.exitToTerminal = function() {
-    const desktop = document.getElementById('desktop-env');
-    const mainContainer = document.getElementById('main-container');
-    const responseText = document.getElementById('response-text');
-    const userInput = document.getElementById('user-input');
-    
-    if (desktop) desktop.style.display = 'none';
-    if (mainContainer) mainContainer.style.display = 'flex';
-    if (responseText && typeof langData !== 'undefined' && langData[currentLang]) {
-        responseText.innerText = langData[currentLang].defaultPrompt;
-    }
-    if (userInput) userInput.focus();
-};
-
-window.toggleDesktopLanguage = function() {
-    window.desktopLangClicks++;
-    if (window.desktopLangClicks >= 10) {
-        const env = document.getElementById('desktop-env');
-        const banner = document.getElementById('rageBanner');
-        if (env) env.classList.add('rage-active');
-        if (banner) banner.style.display = 'block';
-        setTimeout(() => {
-            if (env) env.classList.remove('rage-active');
-            if (banner) banner.style.display = 'none';
-            window.desktopLangClicks = 0;
-        }, 10000);
-    }
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    const langBtn = document.getElementById('taskbar-lang-btn');
-    if (langBtn) langBtn.innerText = currentLang.toUpperCase();
-    if (window.updateDesktopTexts) window.updateDesktopTexts();
-};
-
-function updateTaskbarTimer() {
+function updateTimer() {
     if (typeof targetDate === 'undefined') return;
     const distance = targetDate - new Date().getTime(); 
-    const tbLabel = document.getElementById('taskbar-timer'); 
-    if (!tbLabel) return;
+    const label = document.getElementById('countdown'); 
+    if (!label) return;
     if (distance < 0) { 
-        tbLabel.innerHTML = "00:00:00:00"; 
+        label.innerHTML = "00:00:00:00"; 
         return; 
     }
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    const dStr = days < 10 ? '0' + days : days;
-    const hStr = hours < 10 ? '0' + hours : hours;
-    const mStr = minutes < 10 ? '0' + minutes : minutes;
-    const sStr = seconds < 10 ? '0' + seconds : seconds;
-    
-    window.requestAnimationFrame(() => {
-        if (tbLabel) tbLabel.innerHTML = dStr + ':' + hStr + ':' + mStr + ':' + sStr;
+    label.innerHTML = `${days < 10 ? '0' + days : days}:${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+}
+setInterval(updateTimer, 1000); 
+updateTimer();
+
+const openModalBtn = document.getElementById('open-modal-btn');
+if (openModalBtn) {
+    openModalBtn.addEventListener('click', () => { 
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalContent = document.getElementById('modal-text-content');
+        if (modalContent && typeof langData !== 'undefined' && langData[currentLang]) {
+            modalContent.innerText = langData[currentLang].hackerManifest; 
+        }
+        if (modalOverlay) modalOverlay.style.display = 'flex'; 
     });
 }
-setInterval(updateTaskbarTimer, 1000);
-updateTaskbarTimer();
+
+const modalOverlayEl = document.getElementById('modal-overlay');
+if (modalOverlayEl) {
+    modalOverlayEl.addEventListener('click', () => { 
+        modalOverlayEl.style.display = 'none'; 
+    });
+}
+const timerToggle = document.getElementById('timer-toggle');
+if (timerToggle) {
+    timerToggle.addEventListener('click', () => { 
+        isSecretMode = !isSecretMode; 
+        if (mainContainer) mainContainer.classList.toggle('secret-active', isSecretMode); 
+        const timerLabel = document.getElementById('timer-label');
+        if (timerLabel && typeof langData !== 'undefined' && langData[currentLang]) {
+            timerLabel.innerText = langData[currentLang].labelSecret; 
+        }
+    });
+}
+
+const langBtnEl = document.getElementById('lang-btn');
+if (langBtnEl) {
+    langBtnEl.addEventListener('click', () => {
+        if (isLock) return; 
+        langClickCount++; 
+        const outputField = document.getElementById('response-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const timerLabel = document.getElementById('timer-label');
+        if (langClickCount > 5) {
+            isLock = true; 
+            const oldText = outputField ? outputField.innerHTML : ''; 
+            if (outputField && typeof langData !== 'undefined' && langData[currentLang]) {
+                outputField.innerText = langData[currentLang].rageReply; 
+            }
+            document.body.classList.add('wrong-flash');
+            setTimeout(() => { 
+                document.body.classList.remove('wrong-flash'); 
+                if (outputField) outputField.innerHTML = oldText; 
+                langClickCount = 0; 
+                langBtnEl.classList.remove('rage-mode'); 
+                langBtnEl.innerText = currentLang === 'ru' ? 'EN' : 'RU'; 
+                isLock = false; 
+            }, 2500); 
+            return;
+        }
+        const oldLang = currentLang; 
+        currentLang = currentLang === 'ru' ? 'en' : 'ru'; 
+        langBtnEl.innerText = langClickCount >= 4 ? langData[currentLang].rageSwitch : (currentLang === 'ru' ? 'EN' : 'RU'); 
+        if (langClickCount >= 4) langBtnEl.classList.add('rage-mode');
+        if (timerLabel && typeof langData !== 'undefined' && langData[currentLang]) timerLabel.innerText = langData[currentLang].labelSecret; 
+        if (submitBtn && typeof langData !== 'undefined' && langData[currentLang]) submitBtn.innerText = langData[currentLang].btnText;
+        if (!outputField || typeof langData === 'undefined') return;
+        const currentText = outputField.innerHTML;
+        if (currentText === langData[oldLang].defaultPrompt) { 
+            outputField.innerText = langData[currentLang].defaultPrompt; 
+        } else if (currentStep > 0 && currentStep <= 7 && langData[oldLang].steps[currentStep - 1] && currentText === langData[oldLang].steps[currentStep - 1].reply) { 
+            outputField.innerText = langData[currentLang].steps[currentStep - 1].reply; 
+        } else if (currentText.includes(tgConfig.link)) { 
+            outputField.innerHTML = (currentLang === 'ru' ? tgConfig.textRu : tgConfig.textEn) + `<a href="${tgConfig.link}" target="_blank">${tgConfig.link}</a>`; 
+        } else { 
+            for (const key in langData[oldLang].freeAnswers) { 
+                if (currentText === langData[oldLang].freeAnswers[key]) { 
+                    outputField.innerHTML = langData[currentLang].freeAnswers[key]; 
+                    break; 
+                } 
+            } 
+        }
+    });
+}
+
+function triggerInputFlash() { 
+    const flashZone = document.getElementById('terminal-input-zone');
+    if (flashZone) {
+        flashZone.classList.add('input-flash-active'); 
+        setTimeout(() => { flashZone.classList.remove('input-flash-active'); }, 450); 
+    }
+}
+
+function cleanInputString(str) { 
+    let res = str.trim(); 
+    if (res === "!!!!!") return res; 
+    res = res.toUpperCase(); 
+    while (res.length > 0 && ['.', '!', '?', ','].includes(res[res.length - 1])) { 
+        res = res.slice(0, -1).trim(); 
+    } 
+    return res; 
+}
+
+function checkCode() {
+    if (isLock) return; 
+    const inputField = document.getElementById('user-input');
+    const outputField = document.getElementById('response-text');
+    if (!inputField || !outputField) return;
+    const rawValue = inputField.value;
+    const trimmedValue = rawValue.trim();
+    if (trimmedValue.toUpperCase() === 'PLAYMODE') {
+        inputField.value = ""; 
+        triggerInputFlash(); 
+        isLock = true;
+        outputField.innerText = "INITIALIZING DEPLOYMODE...";
+        setTimeout(() => {
+            outputField.innerHTML = 'LOADING KPR-OS OS...<br><div style="width:100%; border:2px solid var(--neon-green); height:20px; position:relative; margin-top:10px;"><div id="pm-progress" style="width:0%; background:var(--neon-green); height:100%; transition:width 0.1s linear;"></div></div>';
+            const prog = document.getElementById('pm-progress');
+            let w = 0;
+            const iv = setInterval(() => {
+                w += 5; 
+                if(prog) prog.style.width = w + '%';
+                if(w >= 100) {
+                    clearInterval(iv);
+                    setTimeout(() => {
+                        if (mainContainer) mainContainer.style.display = 'none';
+                        if (bootScreen) bootScreen.style.display = 'none';
+                        isLock = false;
+                        if(window.activateDesktopMode) window.activateDesktopMode();
+                    }, 400);
+                }
+            }, 100);
+        }, 1000);
+        return;
+    }
+    if (trimmedValue === "") { 
+        isLock = true; 
+        outputField.innerText = langData[currentLang].emptyWrong; 
+        document.body.classList.add('wrong-flash'); 
+        setTimeout(() => { 
+            document.body.classList.remove('wrong-flash'); 
+            outputField.innerText = langData[currentLang].defaultPrompt; 
+            isLock = false; 
+            inputField.focus(); 
+        }, 3000); 
+        inputField.value = ""; 
+        return; 
+    }
+    if (currentStep === 5 && trimmedValue === "!!!!!") { 
+        triggerInputFlash(); 
+        outputField.innerText = langData[currentLang].steps[currentStep].reply; 
+        currentStep++; 
+        inputField.value = ""; 
+        langClickCount = 0; 
+        return; 
+    }
+    let cleanCode = cleanInputString(rawValue);
+    if (cleanCode === "НОВАЯ ЭРА" || cleanCode === "NEW ERA") { 
+        triggerInputFlash(); 
+        outputField.innerHTML = (currentLang === 'ru' ? tgConfig.textRu : tgConfig.textEn) + `<a href="${tgConfig.link}" target="_blank">${tgConfig.link}</a>`; 
+        inputField.value = ""; 
+        langClickCount = 0; 
+        return; 
+    }
+    if (typeof langData !== 'undefined' && langData[currentLang].freeAnswers[cleanCode] !== undefined) { 
+        triggerInputFlash(); 
+        outputField.innerHTML = langData[currentLang].freeAnswers[cleanCode]; 
+        inputField.value = ""; 
+        langClickCount = 0; 
+        return; 
+    }
+    if (typeof QUEST_CONFIG !== 'undefined' && currentStep <= 6) {
+        const targetTrigger = langData[currentLang].steps[currentStep].trigger.toUpperCase();
+        if (cleanCode === targetTrigger || cleanCode.includes(targetTrigger)) { 
+            triggerInputFlash(); 
+            outputField.innerText = langData[currentLang].steps[currentStep].reply; 
+            if (currentStep < 6) currentStep++; 
+            inputField.value = ""; 
+            langClickCount = 0; 
+            return; 
+        }
+    }
+    isLock = true; 
+    const contemptList = langData[currentLang].contempt;
+    const randomContempt = contemptList[Math.floor(Math.random() * contemptList.length)];
+    outputField.innerText = `${langData[currentLang].wrong}\n${randomContempt}`; 
+    document.body.classList.add('wrong-flash'); 
+    inputField.value = "";
+    setTimeout(() => { 
+        document.body.classList.remove('wrong-flash'); 
+        outputField.innerText = langData[currentLang].defaultPrompt; 
+        isLock = false; 
+        inputField.focus(); 
+    }, 3000); 
+}
+
+const submitBtnEl = document.getElementById('submit-btn');
+if (submitBtnEl) {
+    submitBtnEl.addEventListener('click', checkCode);
+}
+
+const userInputEl = document.getElementById('user-input');
+if (userInputEl) {
+    userInputEl.addEventListener('keydown', (e) => { 
+        if (e.key === 'Enter') checkCode(); 
+    });
+}
