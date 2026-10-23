@@ -57,7 +57,8 @@ function renderStoreList() {
         { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀', type: 'apps', defaultInstalled: true },
         { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', type: 'games', defaultInstalled: true },
         { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', type: 'games', defaultInstalled: true },
-        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games', defaultInstalled: false }
+        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games', defaultInstalled: false },
+        { id: 'icon-win-sudoku', ru: 'Судоку', en: 'Sudoku', icon: '🔢', type: 'games', defaultInstalled: false }
     ];
     storeApps.forEach(app => {
         if (app.type !== window.activeStoreTab) return;
@@ -67,7 +68,7 @@ function renderStoreList() {
         const iconEl = document.getElementById(app.id);
         
         let isInstalled = app.defaultInstalled;
-        if (app.id === 'icon-win-tetris') {
+        if (app.id === 'icon-win-tetris' || app.id === 'icon-win-sudoku') {
             isInstalled = !!installedApps[app.id];
         } else if (iconEl && (iconEl.style.display === 'none' || localTrash[app.id])) {
             isInstalled = false;
@@ -98,7 +99,7 @@ window.toggleAppInstallation = function(id, isInstalled) {
         }
         trashedApps[id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        if (id === 'icon-win-tetris') {
+        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku') {
             delete installedApps[id];
             localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
         }
@@ -110,7 +111,7 @@ window.toggleAppInstallation = function(id, isInstalled) {
         let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         positions[id] = { left: slot.left, top: slot.top };
         localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-        if (id === 'icon-win-tetris') {
+        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku') {
             installedApps[id] = true;
             localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
         }
