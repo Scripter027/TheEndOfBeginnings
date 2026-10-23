@@ -4,29 +4,29 @@ window.initTetrisGame = function() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const COLS = 10, ROWS = 20;
-    let size = 10;
+    let size = 20;
 
     let score = 0, gameOver = false, timer = 0, board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
     const colors = [null, '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55'];
     const shapes = [
         [],
-        [],
-        [,],
-        [,],
-        [,],
-        [,],
-        [,],
-        [,]
+        [[1,1,1,1]],
+        [[1,1,1],[0,1,0]],
+        [[1,1,1],[1,0,0]],
+        [[1,1,1],[0,0,1]],
+        [[1,1],[1,1]],
+        [[1,1,0],[0,1,1]],
+        [[0,1,1],[1,1,0]]
     ];
 
     let piece = getRandomPiece();
 
     function resizeCanvas() {
         const rect = canvas.parentElement.getBoundingClientRect();
-        const availableHeight = rect.height - 110;
+        const availableHeight = rect.height - 120;
         const sizeByHeight = Math.floor(availableHeight / ROWS);
-        const sizeByWidth = Math.floor((rect.width - 24) / COLS);
-        size = Math.max(10, Math.min(sizeByHeight, sizeByWidth));
+        const sizeByWidth = Math.floor((rect.width - 32) / COLS);
+        size = Math.max(16, Math.min(sizeByHeight, sizeByWidth));
         canvas.width = COLS * size; 
         canvas.height = ROWS * size;
         draw();
@@ -85,7 +85,7 @@ window.initTetrisGame = function() {
 
     function rotate() {
         const m = piece.matrix;
-        const n = m.map((_, i) => m.map(row => row[i]).reverse());
+        const n = m[0].map((_, i) => m.map(row => row[i]).reverse());
         const oldMatrix = piece.matrix; 
         piece.matrix = n;
         if (collide(piece)) piece.matrix = oldMatrix;
