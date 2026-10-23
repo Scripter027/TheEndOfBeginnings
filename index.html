@@ -190,12 +190,13 @@
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
             </div>
         </div>
-        <div id="win-tetris" class="os-window" style="width: 300px; height: 360px; top: 8%; left: 15px;">
+         <div id="win-tetris" class="os-window" style="width: 300px; height: 420px; top: 8%; left: 15px;">
             <div class="window-header"><span id="head-tetris">TETRIS.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tetris')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tetris')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tetris')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:calc(100% - 38px); padding:8px;">
                 <div id="tetris-score" style="font-size:14px; font-weight:bold; color:#55ff55; margin-bottom:4px;">СЧЕТ: 0</div>
-                <canvas id="tetrisCanvas" style="background:#000; border:2px solid #55ff55; display:block; max-height:220px; aspect-ratio:10/20;"></canvas>
-                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%; margin-top:6px;">
+                <canvas id="tetrisCanvas" style="background:#000; border:2px solid #55ff55; display:block; max-height:200px; aspect-ratio:10/20;"></canvas>
+                <div id="tetris-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:4px 0;"></div>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%;">
                     <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('left')">◀</button>
                     <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('rotate')">🔄</button>
                     <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('right')">▶</button>
@@ -246,19 +247,22 @@
             <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-search')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-search')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-search')">X</span></div></div>
             <div class="window-body" id="search-browser-body"></div>
         </div>
-        <div id="win-dino" class="os-window" style="width: 360px; height: 240px; top: 5%; left: 5px;">
+        <div id="win-dino" class="os-window" style="width: 360px; height: 280px; top: 5%; left: 5px;">
             <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-dino')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-dino')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-dino')">X</span></div></div>
-            <div class="window-body" style="text-align:center; overflow:hidden;">
-                <canvas id="dinoCanvas" class="dino-canvas" width="580" height="150"></canvas>
-                <div id="dino-hint" style="font-size:11px; margin-top:5px; padding:6px; background:rgba(85,255,85,0.1);">Нажми ПРОБЕЛ / Кликни мышь для прыжка и старта</div>
+            <div class="window-body" style="text-align:center; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px;">
+                <canvas id="dinoCanvas" class="dino-canvas" width="580" height="150" style="max-height:140px;"></canvas>
+                <div id="dino-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:4px 0;"></div>
+                <div id="dino-hint" style="font-size:11px; padding:6px; background:rgba(85,255,85,0.1); cursor:pointer; border:1px solid #55ff55;" onclick="window.triggerDinoJump()">НАЖМИ ДЛЯ ПРЫЖКА / СТАРТА</div>
             </div>
         </div>
-        <div id="win-blocks" class="os-window" style="width: 320px; height: 460px; top: 2px; left: 2px;">
+
+        <div id="win-blocks" class="os-window" style="width: 320px; height: 500px; top: 2px; left: 2px;">
             <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-blocks')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
-            <div class="window-body" style="overflow-y:auto;">
+            <div class="window-body" style="overflow-y:auto; display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px;">
                 <div class="bb-container">
-                    <div style="font-size:14px; font-weight:bold;" id="bb-score">СЧЕТ: 0</div>
+                    <div style="font-size:14px; font-weight:bold; margin-bottom:4px;" id="bb-score">СЧЕТ: 0</div>
                     <div id="bbBoard" class="bb-board"></div>
+                    <div id="bb-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:6px 0;"></div>
                     <div id="bbDock" class="bb-dock"></div>
                 </div>
             </div>
