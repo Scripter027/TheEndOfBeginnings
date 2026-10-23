@@ -3,24 +3,40 @@ window.initTetrisGame = function() {
     const overBox = document.getElementById('tetris-over-box');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const COLS = 10, ROWS = 20, SIZE = 10;
-    canvas.width = COLS * SIZE; 
-    canvas.height = ROWS * SIZE;
+    const COLS = 10, ROWS = 20;
+    let size = 10;
 
     let score = 0, gameOver = false, timer = 0, board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
     const colors = [null, '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55', '#55ff55'];
     const shapes = [
         [],
-        [[1,1,1,1]],
-        [[1,1,1],[0,1,0]],
-        [[1,1,1],[1,0,0]],
-        [[1,1,1],[0,0,1]],
-        [[1,1],[1,1]],
-        [[1,1,0],[0,1,1]],
-        [[0,1,1],[1,1,0]]
+        [],
+        [,],
+        [,],
+        [,],
+        [,],
+        [,],
+        [,]
     ];
 
     let piece = getRandomPiece();
+
+    function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const availableHeight = rect.height - 110;
+        const sizeByHeight = Math.floor(availableHeight / ROWS);
+        const sizeByWidth = Math.floor((rect.width - 24) / COLS);
+        size = Math.max(10, Math.min(sizeByHeight, sizeByWidth));
+        canvas.width = COLS * size; 
+        canvas.height = ROWS * size;
+        draw();
+    }
+
+    resizeCanvas();
+    const resizeObserver = new ResizeObserver(() => {
+        resizeCanvas();
+    });
+    resizeObserver.observe(canvas.parentElement);
 
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
@@ -37,14 +53,14 @@ window.initTetrisGame = function() {
         board.forEach((row, r) => row.forEach((val, c) => {
             if (val) { 
                 ctx.fillStyle = colors[val]; 
-                ctx.fillRect(c*SIZE, r*SIZE, SIZE-1, SIZE-1); 
+                ctx.fillRect(c*size, r*size, size-1, size-1); 
             }
         }));
         if (piece && piece.matrix && !gameOver) {
             piece.matrix.forEach((row, r) => row.forEach((val, c) => {
                 if (val) { 
                     ctx.fillStyle = colors[piece.color]; 
-                    ctx.fillRect((piece.x+c)*SIZE, (piece.y+r)*SIZE, SIZE-1, SIZE-1); 
+                    ctx.fillRect((piece.x+c)*size, (piece.y+r)*size, size-1, size-1); 
                 }
             }));
         }
@@ -53,7 +69,6 @@ window.initTetrisGame = function() {
             scoreLabel.innerText = (getLang() === 'ru' ? 'СЧЕТ: ' : 'SCORE: ') + score;
         }
     }
-
     function collide(p, ox=0, oy=0) {
         return p.matrix.some((row, r) => row.some((val, c) => {
             if (!val) return false;
@@ -70,7 +85,7 @@ window.initTetrisGame = function() {
 
     function rotate() {
         const m = piece.matrix;
-        const n = m[0].map((_, i) => m.map(row => row[i]).reverse());
+        const n = m.map((_, i) => m.map(row => row[i]).reverse());
         const oldMatrix = piece.matrix; 
         piece.matrix = n;
         if (collide(piece)) piece.matrix = oldMatrix;
