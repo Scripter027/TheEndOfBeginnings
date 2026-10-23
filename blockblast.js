@@ -7,7 +7,7 @@ window.initBlockBlast = function() {
     let board = Array(8).fill(null).map(() => Array(8).fill(0));
     let score = 0;
     let currentPieces = [];
-    let draggedPiece = null;
+    let activeDrag = null;
 
     const allPieces = [
         [[1]],
@@ -60,8 +60,8 @@ window.initBlockBlast = function() {
         dockEl.innerHTML = '';
         currentPieces = [];
         let emptyCount = countEmptyCells();
-        
         let attempts = 0;
+        
         while (currentPieces.length < 3 && attempts < 200) {
             let p;
             if (emptyCount < 25 && Math.random() > 0.3) {
@@ -94,7 +94,7 @@ window.initBlockBlast = function() {
             wrap.className = 'bb-piece';
             wrap.style.gridTemplateRows = `repeat(${matrix.length}, 1fr)`;
             wrap.style.gridTemplateColumns = `repeat(${matrix[0].length}, 1fr)`;
-            wrap.draggable = true;
+            wrap.style.position = 'relative';
 
             matrix.forEach(row => {
                 row.forEach(val => {
@@ -104,57 +104,92 @@ window.initBlockBlast = function() {
                 });
             });
 
-            wrap.addEventListener('dragstart', () => { draggedPiece = { matrix, index }; });
+            function handleStart(clientX, clientY) {
+                activeDrag = { matrix, index, element: wrap, startX: wrap.offsetLeft, startY: wrap.offsetTop };
+                wrap.style.zIndex = '9999';
+            }
+
+            function handleMove(clientX, clientY) {
+                if (!activeDrag || activeDrag.index !== index) return;
+                const rect = dockEl.getBoundingClientRect();
+                wrap.style.position = 'fixed';
+                wrap.style.left = (clientX - 30) + 'px';
+                wrap.style.top = (clientY - 30) + 'px';
+            }
+
+            function handleEnd(clientX, clientY) {
+                if (!activeDrag || activeDrag.index !== index) return;
+                
+                const bRect = boardEl.getBoundingClientRect();
+                if (clientX >= bRect.left && clientX <= bRect.right && clientY >= bRect.top && clientY <= bRect.bottom) {
+                    const cellW = bRect.width / 8;
+                    const cellH = bRect.height / 8;
+                    const col = Math.floor((clientX - bRect.left) / cellW);
+                    const row = Math.floor((clientY - bRect.top) / cellH);
+
+                    if (canPlace(matrix, row, col)) {
+                        for (let r = 0; r < matrix.length; r++) {
+                            for (let c = 0; c < matrix[r].length; c++) {
+                                if (matrix[r][c]) board[row + r][col + c] = 1;
+                            }
+                        }
+                        score += 10;
+                        checkLines();
+                        drawBoard();
+                        wrap.style.visibility = 'hidden';
+                        currentPieces[index] = null;
+                        if (currentPieces.every(p => p === null)) generatePieces();
+                    } else {
+                        resetPiecePosition();
+                    }
+                } else {
+                    resetPiecePosition();
+                }
+                activeDrag = null;
+            }
+
+            function resetPiecePosition() {
+                wrap.style.position = 'relative';
+                wrap.style.left = '0px';
+                wrap.style.top = '0px';
+                wrap.style.zIndex = 'auto';
+            }
+
+            wrap.addEventListener('touchstart', (e) => {
+                const t = e.targetTouches[0];
+                handleStart(t.clientX, t.clientY);
+            });
+            wrap.addEventListener('touchmove', (e) => {
+                const t = e.targetTouches[0];
+                handleMove(t.clientX, t.clientY);
+            });
+            wrap.addEventListener('touchend', (e) => {
+                const t = e.changedTouches[0];
+                handleEnd(t.clientX, t.clientY);
+            });
+
+            wrap.addEventListener('mousedown', (e) => {
+                handleStart(e.clientX, e.clientY);
+                const mouseMove = (me) => handleMove(me.clientX, me.clientY);
+                const mouseUp = (me) => {
+                    handleEnd(me.clientX, me.clientY);
+                    document.removeEventListener('mousemove', mouseMove);
+                    document.removeEventListener('mouseup', mouseUp);
+                };
+                document.addEventListener('mousemove', mouseMove);
+                document.addEventListener('mouseup', mouseUp);
+            });
+
             dockEl.appendChild(wrap);
         });
     }
 
-    boardEl.addEventListener('dragover', (e) => { e.preventDefault(); });
-    boardEl.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (!draggedPiece) return;
-
-        const rect = boardEl.getBoundingClientRect();
-        const cellW = rect.width / 8;
-        const cellH = rect.height / 8;
-        const targetX = e.clientX - rect.left;
-        const targetY = e.clientY - rect.top;
-
-        const col = Math.floor(targetX / cellW);
-        const row = Math.floor(targetY / cellH);
-
-        if (canPlace(draggedPiece.matrix, row, col)) {
-            for (let r = 0; r < draggedPiece.matrix.length; r++) {
-                for (let c = 0; c < draggedPiece.matrix[r].length; c++) {
-                    if (draggedPiece.matrix[r][c]) board[row + r][col + c] = 1;
-                }
-            }
-            score += 10;
-            checkLines();
-            drawBoard();
-            
-            const pieceEls = dockEl.querySelectorAll('.bb-piece');
-            if (pieceEls[draggedPiece.index]) {
-                pieceEls[draggedPiece.index].style.visibility = 'hidden';
-                pieceEls[draggedPiece.index].draggable = false;
-            }
-            
-            currentPieces[draggedPiece.index] = null;
-            if (currentPieces.every(p => p === null)) {
-                generatePieces();
-            }
-        }
-        draggedPiece = null;
-    });
-
     function checkLines() {
         let rowsToRemove = [];
         let colsToRemove = [];
-
         for (let r = 0; r < 8; r++) {
             if (board[r].every(cell => cell === 1)) rowsToRemove.push(r);
         }
-
         for (let c = 0; c < 8; c++) {
             let colFilled = true;
             for (let r = 0; r < 8; r++) {
@@ -162,13 +197,11 @@ window.initBlockBlast = function() {
             }
             if (colFilled) colsToRemove.push(c);
         }
-
         rowsToRemove.forEach(r => { board[r] = Array(8).fill(0); score += 20; });
         colsToRemove.forEach(c => {
             for (let r = 0; r < 8; r++) board[r][c] = 0;
             score += 20;
         });
-
         if (scoreEl) scoreEl.innerText = (currentLang === 'ru' ? 'СЧЕТ: ' : 'SCORE: ') + score;
     }
 
