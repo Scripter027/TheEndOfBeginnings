@@ -1,6 +1,11 @@
 {
-  "short_name": "TEOB",
   "name": "The End of Beginnings",
+  "short_name": "KPR Terminal",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#002200",
   "icons": [
     {
       "src": "icon.png",
@@ -8,10 +13,5 @@
       "sizes": "512x512",
       "purpose": "any maskable"
     }
-  ],
-  "start_url": ".",
-  "background_color": "#000000",
-  "theme_color": "#002200",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
