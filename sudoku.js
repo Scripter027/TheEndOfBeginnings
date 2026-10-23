@@ -8,12 +8,16 @@ window.initSudokuGame = function() {
     let currentBoard = Array(9).fill(null).map(() => Array(9).fill(0));
     let solutionBoard = Array(9).fill(null).map(() => Array(9).fill(0));
     let activeDigit = null;
+    let currentLevel = 'easy';
+    let gameActive = false;
 
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
     }
 
     window.selectSudokuDifficulty = function(level) {
+        currentLevel = level;
+        gameActive = true;
         generateSudokuSolution();
         initialBoard = Array(9).fill(null).map(() => Array(9).fill(0));
         
@@ -47,6 +51,25 @@ window.initSudokuGame = function() {
 
         if (overBox) overBox.innerHTML = '';
         drawBoard();
+        initDock();
+    };
+
+    window.showSudokuMenu = function() {
+        gameActive = false;
+        dockEl.innerHTML = '';
+        if (overBox) overBox.innerHTML = '';
+        
+        const isRu = (getLang() === 'ru');
+        boardEl.innerHTML = `
+            <div style="grid-column:span 9; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; height:100%; width:100%; padding:20px; background:#000;">
+                <div style="font-size:16px; font-weight:bold; color:#55ff55; letter-spacing:1px; margin-bottom:10px;">
+                    ${isRu ? 'ВЫБЕРИТЕ УРОВЕНЬ' : 'SELECT DIFFICULTY'}
+                </div>
+                <button class="trash-btn" style="width:80%; padding:10px; font-weight:bold;" onclick="selectSudokuDifficulty('easy')">EASY (+100)</button>
+                <button class="trash-btn" style="width:80%; padding:10px; font-weight:bold;" onclick="selectSudokuDifficulty('medium')">MEDIUM (+1000)</button>
+                <button class="trash-btn" style="width:80%; padding:10px; font-weight:bold;" onclick="selectSudokuDifficulty('hard')">HARD (+10000)</button>
+            </div>
+        `;
     };
 
     function generateSudokuSolution() {
@@ -55,10 +78,10 @@ window.initSudokuGame = function() {
     }
 
     function isValidSudoku(row, col, num) {
-        for (let x = 0; col < 9 && x < 9; x++) {
+        for (let x = 0; x < 9; x++) {
             if (solutionBoard[row][x] === num) return false;
         }
-        for (let x = 0; row < 9 && x < 9; x++) {
+        for (let x = 0; x < 9; x++) {
             if (solutionBoard[x][col] === num) return false;
         }
         let startRow = row - row % 3;
@@ -88,6 +111,7 @@ window.initSudokuGame = function() {
         return false;
     }
     function drawBoard() {
+        if (!gameActive) return;
         boardEl.innerHTML = '';
         const bRect = boardEl.getBoundingClientRect();
         const cellSize = Math.floor(bRect.width / 9);
@@ -104,7 +128,6 @@ window.initSudokuGame = function() {
                 cell.style.fontSize = '14px';
                 cell.style.fontWeight = 'bold';
 
-                let borderStyle = '1px solid #003300';
                 if (r % 3 === 0 && r !== 0) cell.style.borderTop = '2px solid #55ff55';
                 if (c % 3 === 0 && c !== 0) cell.style.borderLeft = '2px solid #55ff55';
 
@@ -122,7 +145,12 @@ window.initSudokuGame = function() {
                 cell.addEventListener('dragover', (e) => e.preventDefault());
                 cell.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    if (initialBoard[r][c] !== 0 || !activeDigit) return;
+                    if (!gameActive || initialBoard[r][c] !== 0 || !activeDigit) return;
+
+                    if (activeDigit !== solutionBoard[r][c]) {
+                        triggerGameOver();
+                        return;
+                    }
 
                     currentBoard[r][c] = activeDigit;
                     drawBoard();
@@ -134,25 +162,42 @@ window.initSudokuGame = function() {
         }
     }
 
+    function triggerGameOver() {
+        gameActive = false;
+        dockEl.innerHTML = '';
+        const isRu = (getLang() === 'ru');
+        if (overBox) {
+            overBox.innerHTML = `<span style="color:var(--neon-red); font-size:12px; cursor:pointer;" onclick="window.showSudokuMenu()">${isRu ? 'КРИТИЧЕСКАЯ ОШИБКА! НАЖМИ ДЛЯ СБРОСА' : 'CRITICAL ERROR! CLICK TO RESET'}</span>`;
+        }
+    }
+
     function checkSudokuStatus() {
         let complete = true;
-        let correct = true;
-
         for (let r = 0; r < 9; r++) {
             for (let c = 0; c < 9; c++) {
                 if (currentBoard[r][c] === 0) complete = false;
-                if (currentBoard[r][c] !== solutionBoard[r][c]) correct = false;
             }
         }
 
-        if (complete && correct) {
-            if (overBox) {
-                overBox.innerHTML = `<span style="color:#55ff55; font-size:12px;">${getLang() === 'ru' ? 'СЕССИЯ ЗАВЕРШЕНА УСПЕШНО!' : 'SUDOKU SOLVED SUCCESS!'}</span>`;
+        if (complete) {
+            gameActive = false;
+            dockEl.innerHTML = '';
+            let points = 100;
+            if (currentLevel === 'medium') points = 1000;
+            if (currentLevel === 'hard') points = 10000;
+
+            if (typeof score !== 'undefined') {
+                score += points;
             }
-        } else if (complete && !correct) {
+
+            const isRu = (getLang() === 'ru');
             if (overBox) {
-                overBox.innerHTML = `<span style="color:var(--neon-red); font-size:12px;">${getLang() === 'ru' ? 'ОБНАРУЖЕНЫ ОШИБКИ В СЕТКЕ' : 'ERRORS DETECTED IN GRID'}</span>`;
+                overBox.innerHTML = `<span style="color:#55ff55; font-size:11px;">${isRu ? `ПОБЕДА (+${points})! ЗАГРУЗКА...` : `WIN (+${points})! LOADING...`}</span>`;
             }
+
+            setTimeout(() => {
+                selectSudokuDifficulty(currentLevel);
+            }, 3000);
         }
     }
 
@@ -180,10 +225,9 @@ window.initSudokuGame = function() {
     }
 
     const resizeObserver = new ResizeObserver(() => {
-        if (currentBoard.some(row => row.some(v => v !== 0))) drawBoard();
+        if (gameActive) drawBoard();
     });
     resizeObserver.observe(boardEl.parentElement);
 
-    initDock();
-    window.selectSudokuDifficulty('easy');
+    window.showSudokuMenu();
 };
