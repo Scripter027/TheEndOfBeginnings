@@ -12,7 +12,7 @@ window.renderExplorerList = function() {
     const isRu = (currentLang === 'ru');
     const appTypes = {
         apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'],
-        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris'],
+        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris', 'icon-win-sudoku'],
         other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen']
     };
     const listHTML = [];
