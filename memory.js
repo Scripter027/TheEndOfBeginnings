@@ -12,6 +12,21 @@ window.initMemoryGame = function() {
     let isGameOver = false;
     let flashTimeouts = {};
 
+    function resizeMemoryBoard() {
+        const parent = boardEl.parentElement;
+        if (!parent) return;
+        let availableHeight = parent.clientHeight - 80;
+        let availableWidth = parent.clientWidth - 16;
+        let size = Math.max(160, Math.min(availableHeight, availableWidth));
+        boardEl.style.width = size + 'px';
+        boardEl.style.height = size + 'px';
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+        resizeMemoryBoard();
+    });
+    resizeObserver.observe(boardEl.parentElement);
+
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
     }
@@ -40,6 +55,7 @@ window.initMemoryGame = function() {
         isGameOver = false;
         if (overBox) overBox.innerHTML = '';
         updateScorePanel();
+        resizeMemoryBoard();
         nextRound();
     };
 
