@@ -39,6 +39,10 @@ window.updateDesktopTexts = function() {
     if (winTetris) winTetris.innerText = isRu ? "Тетрис" : "Tetris";
     const winSudoku = document.getElementById('label-win-sudoku');
     if (winSudoku) winSudoku.innerText = isRu ? "Судоку" : "Sudoku";
+    const winMem = document.getElementById('label-win-memory');
+    if (winMem) winMem.innerText = isRu ? "Память" : "Memory";
+    const winTow = document.getElementById('label-win-tower');
+    if (winTow) winTow.innerText = isRu ? "Башня" : "Tower";
     const winDont = document.getElementById('label-win-dontopen');
     if (winDont) winDont.innerText = isRu ? "НЕ ОТКРЫВАТЬ" : "DO NOT OPEN";
     const winBsod = document.getElementById('label-win-bsod');
@@ -69,6 +73,10 @@ window.updateDesktopTexts = function() {
     if (headBlocks) headBlocks.innerText = isRu ? "BLOCK_BLAST.EXE" : "BLOCK_BLAST.EXE";
     const headSudoku = document.getElementById('head-sudoku');
     if (headSudoku) headSudoku.innerText = isRu ? "СУДОКУ.EXE" : "SUDOKU.EXE";
+    const headMem = document.getElementById('head-memory');
+    if (headMem) headMem.innerText = isRu ? "ПАМЯТЬ.EXE" : "MEMORY.EXE";
+    const headTow = document.getElementById('head-tower');
+    if (headTow) headTow.innerText = isRu ? "БАШНЯ.EXE" : "TOWER.EXE";
     const txtInfo = document.getElementById('txt-settings-info');
     if (txtInfo) txtInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will clear highscores and restore default icons.";
     const btnReset = document.getElementById('btn-reset-all');
@@ -119,6 +127,9 @@ window.checkZipPassword = function(winId) {
 window.clearAllOSData = function() {
     localStorage.removeItem('kpr_dino_highscore');
     localStorage.removeItem('kpr_bb_highscore');
+    localStorage.removeItem('kpr_sudoku_highscore');
+    localStorage.removeItem('kpr_memory_highscore');
+    localStorage.removeItem('kpr_tower_highscore');
     localStorage.removeItem('kpr_icon_positions');
     localStorage.removeItem('kpr_trashed_apps');
     localStorage.removeItem('kpr_installed_apps');
@@ -128,7 +139,7 @@ window.clearAllOSData = function() {
     document.querySelectorAll('.icon').forEach(icon => {
         icon.style.left = '';
         icon.style.top = '';
-        if (icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku') {
+        if (icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower') {
             icon.style.display = 'none';
         } else {
             icon.style.display = 'flex';
@@ -153,7 +164,6 @@ window.activateDesktopMode = function() {
     if (deskEnv) deskEnv.style.display = 'block';
     
     try {
-        const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
         const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
         trashedApps = savedTrash;
@@ -162,7 +172,7 @@ window.activateDesktopMode = function() {
             icon.style.left = '';
             icon.style.top = '';
             
-            if ((icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku') && !installedApps[icon.id]) {
+            if ((icon.id === 'icon-win-tetris' || icon.id === 'icon-win-sudoku' || icon.id === 'icon-win-memory' || icon.id === 'icon-win-tower') && !installedApps[icon.id]) {
                 icon.style.display = 'none';
                 return;
             }
@@ -186,5 +196,7 @@ window.activateDesktopMode = function() {
     try { if (window.initKeeperStore) window.initKeeperStore(); } catch (e) {}
     try { if (window.initTetrisGame) window.initTetrisGame(); } catch (e) {}
     try { if (window.initSudokuGame) window.initSudokuGame(); } catch (e) {}
+    try { if (window.initMemoryGame) window.initMemoryGame(); } catch (e) {}
+    try { if (window.initTowerGame) window.initTowerGame(); } catch (e) {}
     if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
