@@ -2,6 +2,7 @@ window.initBlockBlast = function() {
     const boardEl = document.getElementById('bbBoard');
     const dockEl = document.getElementById('bbDock');
     const scoreEl = document.getElementById('bb-score');
+    const overBox = document.getElementById('bb-over-box');
     if (!boardEl || !dockEl) return;
 
     let board = Array(8).fill(null).map(() => Array(8).fill(0));
@@ -26,6 +27,7 @@ window.initBlockBlast = function() {
         board = Array(8).fill(null).map(() => Array(8).fill(0));
         score = 0;
         if (scoreEl) scoreEl.innerText = (currentLang === 'ru' ? 'СЧЕТ: ' : 'SCORE: ') + score;
+        if (overBox) overBox.innerHTML = '';
         drawBoard();
         generatePieces();
     }
@@ -104,14 +106,13 @@ window.initBlockBlast = function() {
                 });
             });
 
-            function handleStart(clientX, clientY) {
-                activeDrag = { matrix, index, element: wrap, startX: wrap.offsetLeft, startY: wrap.offsetTop };
+            function handleStart() {
+                activeDrag = { matrix, index, element: wrap };
                 wrap.style.zIndex = '9999';
             }
 
             function handleMove(clientX, clientY) {
                 if (!activeDrag || activeDrag.index !== index) return;
-                const rect = dockEl.getBoundingClientRect();
                 wrap.style.position = 'fixed';
                 wrap.style.left = (clientX - 30) + 'px';
                 wrap.style.top = (clientY - 30) + 'px';
@@ -119,8 +120,8 @@ window.initBlockBlast = function() {
 
             function handleEnd(clientX, clientY) {
                 if (!activeDrag || activeDrag.index !== index) return;
-                
                 const bRect = boardEl.getBoundingClientRect();
+                
                 if (clientX >= bRect.left && clientX <= bRect.right && clientY >= bRect.top && clientY <= bRect.bottom) {
                     const cellW = bRect.width / 8;
                     const cellH = bRect.height / 8;
@@ -138,7 +139,12 @@ window.initBlockBlast = function() {
                         drawBoard();
                         wrap.style.visibility = 'hidden';
                         currentPieces[index] = null;
-                        if (currentPieces.every(p => p === null)) generatePieces();
+                        
+                        if (currentPieces.every(p => p === null)) {
+                            generatePieces();
+                        } else {
+                            checkGameOver();
+                        }
                     } else {
                         resetPiecePosition();
                     }
@@ -157,19 +163,19 @@ window.initBlockBlast = function() {
 
             wrap.addEventListener('touchstart', (e) => {
                 const t = e.targetTouches[0];
-                handleStart(t.clientX, t.clientY);
+                if(t) handleStart();
             });
             wrap.addEventListener('touchmove', (e) => {
                 const t = e.targetTouches[0];
-                handleMove(t.clientX, t.clientY);
+                if(t) handleMove(t.clientX, t.clientY);
             });
             wrap.addEventListener('touchend', (e) => {
                 const t = e.changedTouches[0];
-                handleEnd(t.clientX, t.clientY);
+                if(t) handleEnd(t.clientX, t.clientY);
             });
 
             wrap.addEventListener('mousedown', (e) => {
-                handleStart(e.clientX, e.clientY);
+                handleStart();
                 const mouseMove = (me) => handleMove(me.clientX, me.clientY);
                 const mouseUp = (me) => {
                     handleEnd(me.clientX, me.clientY);
@@ -182,6 +188,24 @@ window.initBlockBlast = function() {
 
             dockEl.appendChild(wrap);
         });
+        checkGameOver();
+    }
+
+    function checkGameOver() {
+        let hasMoves = false;
+        currentPieces.forEach(p => {
+            if (!p) return;
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if (canPlace(p, r, c)) hasMoves = true;
+                }
+            }
+        });
+        if (!hasMoves && currentPieces.some(p => p !== null)) {
+            if (overBox) {
+                overBox.innerHTML = `<span style="color:var(--neon-red); font-size:12px; cursor:pointer;" onclick="window.resetBlockBlastGame()">${currentLang === 'ru' ? 'НЕТ ХОДОВ! НАЖМИ ДЛЯ СБРОСА' : 'NO MOVES! CLICK TO RESET'}</span>`;
+            }
+        }
     }
 
     function checkLines() {
