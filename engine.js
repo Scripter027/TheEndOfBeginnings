@@ -23,8 +23,25 @@ function printBootLines() {
         if (mainContainer) mainContainer.style.display = 'flex';
         return;
     }
-    if (typeof bootLogs !== 'undefined' && bootLine < bootLogs.length) { 
-        bootScreen.innerHTML += bootLogs[bootLine] + '<br>'; 
+    const localBootLogs = [
+        "ROM BIOS v4.01-KEEPER ENTERTAINMENT STAGE 1", 
+        "COPYRIGHT (C) 2026-2027 KEEPER ENT. ALL RIGHTS RESERVED.",
+        "---------------------------------------------------------", 
+        "CPU: KPR-QUANTUM PRO AT 8.44 GHz",
+        "TESTING RAM: 65536 KB ... OK", 
+        "DETECTING HARD DISK DRIVES ... PRIMARY MASTER: KPR-MASSIVE-SSD 2.04TB",
+        "LOAD SECTORS: 0x00FF32 -> 0x77FFA1 ... OK", 
+        "INITIALIZING MOUSE AND KEYBOARD BUSSES ... OK",
+        "GRAPHICS CARD: EMULATOR CRT-TUBE-NEON 512MB ... MATCHED", 
+        "LOADING KERNEL INTERFACE ... SUCCESS",
+        "CONNECTING SECURE UPLINK CHANNELS...", 
+        "ESTABLISHING ROUTING THROUGH KPR-GATEWAY...",
+        "ENCRYPTING SESSION ID ... AES-X-256 ACTIVE", 
+        "STATUS: ACCESS GRANTED TO KEEPER MAIN TERMINAL.", 
+        "RUNNING SYSTEM..."
+    ];
+    if (bootLine < localBootLogs.length) { 
+        bootScreen.innerHTML += localBootLogs[bootLine] + '<br>'; 
         bootScreen.scrollTop = bootScreen.scrollHeight; 
         bootLine++; 
         setTimeout(printBootLines, 260); 
