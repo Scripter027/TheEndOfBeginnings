@@ -23,6 +23,8 @@
             height: 100%; width: 100%; overflow: hidden;
             position: relative; text-shadow: var(--glow-green);
             transition: color 0.1s ease;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
         body::before {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
@@ -44,6 +46,10 @@
         }
         #boot-screen { display: block; position: absolute; top: 20px; left: 20px; font-size: 13px; line-height: 1.4; z-index: 10; font-weight: bold; max-width: 90%; height: 90%; overflow: hidden; }
         #main-container { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; padding: 20px; position: relative; z-index: 5; }
+        #main-container, .terminal-box, .terminal-output, .terminal-input, .modal-content {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
         .timer-wrapper { position: absolute; top: 6%; left: 50%; transform: translateX(-50%); text-align: center; cursor: pointer; padding: 10px 20px; border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: rgba(0, 0, 0, 0.6); min-width: 240px; transition: all 0.15s ease; }
         .timer-title { font-size: 11px; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; display: none; }
         .timer { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
@@ -156,14 +162,14 @@
             <div class="icon" id="icon-win-dino" data-id="win-dino" data-title-ru="Динозавр" data-title-en="Dino" data-icon="🦖"><div class="icon-pic">🦖</div><div class="icon-name" id="label-win-dino">Динозавр</div></div>
             <div class="icon" id="icon-win-blocks" data-id="win-blocks" data-title-ru="Блок Бласт" data-title-en="Block Blast" data-icon="🧱"><div class="icon-pic">🧱</div><div class="icon-name" id="label-win-blocks">Блок Бласт</div></div>
             <div class="icon" id="icon-win-tetris" data-id="win-tetris" data-title-ru="Тетрис" data-title-en="Tetris" data-icon="🕹️"><div class="icon-pic">🕹️</div><div class="icon-name" id="label-win-tetris">Тетрис</div></div>
+            <div class="icon" id="icon-win-sudoku" data-id="win-sudoku" data-title-ru="Судоку" data-title-en="Sudoku" data-icon="🔢"><div class="icon-pic">🔢</div><div class="icon-name" id="label-win-sudoku">Судоку</div></div>
+            <div class="icon" id="icon-win-memory" data-id="win-memory" data-title-ru="Память" data-title-en="Memory" data-icon="🧠"><div class="icon-pic">🧠</div><div class="icon-name" id="label-win-memory">Память</div></div>
+            <div class="icon" id="icon-win-tower" data-id="win-tower" data-title-ru="Башня" data-title-en="Tower" data-icon="🏢"><div class="icon-pic">🏢</div><div class="icon-name" id="label-win-tower">Башня</div></div>
             <div class="icon" id="icon-win-zip" data-id="win-zip" data-title-ru="secret.zip" data-title-en="secret.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret.zip</div></div>
             <div class="icon" id="icon-win-zip2" data-id="win-zip2" data-title-ru="secret1.zip" data-title-en="secret1.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret1.zip</div></div>
             <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
             <div class="icon" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
             <div class="icon" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
-            <div class="icon" id="icon-win-sudoku" data-id="win-sudoku" data-title-ru="Судоку" data-title-en="Sudoku" data-icon="🔢"><div class="icon-pic">🔢</div><div class="icon-name" id="label-win-sudoku">Судоку</div></div>
-            <div class="icon" id="icon-win-memory" data-id="win-memory" data-title-ru="Память" data-title-en="Memory" data-icon="🧠"><div class="icon-pic">🧠</div><div class="icon-name" id="label-win-memory">Память</div></div>
-            <div class="icon" id="icon-win-tower" data-id="win-tower" data-title-ru="Башня" data-title-en="Tower" data-icon="🏢"><div class="icon-pic">🏢</div><div class="icon-name" id="label-win-tower">Башня</div></div>
         </div>
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
             <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-trash')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-trash')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-trash')">X</span></div></div>
@@ -205,6 +211,34 @@
                     <button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris('right')">▶</button>
                     <button class="trash-btn" style="padding:6px; font-size:11px; grid-column:span 3;" onclick="controlTetris('down')">▼ СКОРОСТЬ</button>
                 </div>
+            </div>
+        </div>
+        <div id="win-sudoku" class="os-window" style="width: 320px; height: 490px; top: 15%; left: 15px;">
+            <div class="window-header"><span id="head-sudoku">SUDOKU.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-sudoku')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-sudoku')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-sudoku')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
+                <div id="sudoku-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
+                    <span id="sudoku-current-score">SCORE: 0</span>
+                    <span id="sudoku-high-score">BEST: 0</span>
+                </div>
+                <div id="sudokuBoard" style="display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; background:#000000; border:2px solid #55ff55; width:100%; aspect-ratio:1/1; margin-bottom:6px;"></div>
+                <div id="sudoku-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; line-height:1.3;"></div>
+                <div id="sudokuDock" class="bb-dock" style="min-height:45px; padding:4px;"></div>
+            </div>
+        </div>
+        <div id="win-memory" class="os-window" style="width: 300px; height: 400px; top: 10%; left: 20px;">
+            <div class="window-header"><span id="head-memory">MEMORY.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-memory')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-memory')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-memory')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
+                <div id="memory-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">СЧЕТ: 0</div>
+                <div id="memoryBoard" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; aspect-ratio:1/1; margin:10px 0;"></div>
+                <div id="memory-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div>
+            </div>
+        </div>
+        <div id="win-tower" class="os-window" style="width: 320px; height: 410px; top: 12%; left: 40px;">
+            <div class="window-header"><span id="head-tower">TOWER.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tower')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tower')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tower')">X</span></div></div>
+            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
+                <div id="tower-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">ЭТАЖИ: 0</div>
+                <canvas id="towerCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:240px;"></canvas>
+                <div id="tower-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div>
             </div>
         </div>
         <div id="win-zip" class="os-window" style="width: 330px; height: 200px; top: 20%; left: 15px;">
@@ -267,35 +301,6 @@
                     <div id="bb-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:6px 0;"></div>
                     <div id="bbDock" class="bb-dock"></div>
                 </div>
-            </div>
-        </div>
-                         <div id="win-sudoku" class="os-window" style="width: 320px; height: 510px; top: 15%; left: 15px;">
-            <div class="window-header"><span id="head-sudoku">SUDOKU.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-sudoku')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-sudoku')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-sudoku')">X</span></div></div>
-            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
-                <div id="sudoku-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
-                    <span id="sudoku-current-score">SCORE: 0</span>
-                    <span id="sudoku-high-score">BEST: 0</span>
-                </div>
-                <div id="sudokuBoard" style="display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; background:#000000; border:2px solid #55ff55; width:100%; aspect-ratio:1/1; margin-bottom:6px;"></div>
-                <div id="sudoku-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; line-height:1.3;"></div>
-                <div id="sudokuDock" class="bb-dock" style="min-height:45px; padding:4px;"></div>
-            </div>
-        </div>
-                <div id="win-memory" class="os-window" style="width: 300px; height: 400px; top: 10%; left: 20px;">
-            <div class="window-header"><span id="head-memory">MEMORY.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-memory')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-memory')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-memory')">X</span></div></div>
-            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
-                <div id="memory-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">СЧЕТ: 0</div>
-                <div id="memoryBoard" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; aspect-ratio:1/1; margin:10px 0;"></div>
-                <div id="memory-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div>
-            </div>
-        </div>
-
-        <div id="win-tower" class="os-window" style="width: 320px; height: 410px; top: 12%; left: 40px;">
-            <div class="window-header"><span id="head-tower">TOWER.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tower')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tower')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tower')">X</span></div></div>
-            <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
-                <div id="tower-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">ЭТАЖИ: 0</div>
-                <canvas id="towerCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:240px;"></canvas>
-                <div id="tower-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div>
             </div>
         </div>
         <div class="taskbar">
