@@ -1,8 +1,9 @@
-(function checkDeviceAccess() {
+window.addEventListener('DOMContentLoaded', () => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     const pwaOverlay = document.getElementById('pwa-install-overlay');
     const bootScr = document.getElementById('boot-screen');
+    
     if (isMobile && !isStandalone && pwaOverlay) {
         pwaOverlay.style.display = 'flex';
         return;
@@ -11,7 +12,7 @@
         bootScr.style.display = 'block';
     }
     setTimeout(printBootLines, 500);
-})();
+});
 
 const bootScreen = document.getElementById('boot-screen');
 const mainContainer = document.getElementById('main-container');
