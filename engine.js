@@ -7,7 +7,23 @@ function printBootLines() {
         if (mainContainer) mainContainer.style.display = 'flex';
         return;
     }
-    const logs = window.bootLogs || [];
+    const logs = [
+        "ROM BIOS v4.01-KEEPER ENTERTAINMENT STAGE 1", 
+        "COPYRIGHT (C) 2026-2027 KEEPER ENT. ALL RIGHTS RESERVED.",
+        "---------------------------------------------------------", 
+        "CPU: KPR-QUANTUM PRO AT 8.44 GHz",
+        "TESTING RAM: 65536 KB ... OK", 
+        "DETECTING HARD DISK DRIVES ... PRIMARY MASTER: KPR-MASSIVE-SSD 2.04TB",
+        "LOAD SECTORS: 0x00FF32 -> 0x77FFA1 ... OK", 
+        "INITIALIZING MOUSE AND KEYBOARD BUSSES ... OK",
+        "GRAPHICS CARD: EMULATOR CRT-TUBE-NEON 512MB ... MATCHED", 
+        "LOADING KERNEL INTERFACE ... SUCCESS",
+        "CONNECTING SECURE UPLINK CHANNELS...", 
+        "ESTABLISHING ROUTING THROUGH KPR-GATEWAY...",
+        "ENCRYPTING SESSION ID ... AES-X-256 ACTIVE", 
+        "STATUS: ACCESS GRANTED TO KEEPER MAIN TERMINAL.", 
+        "RUNNING SYSTEM..."
+    ];
     if (bootLine < logs.length) { 
         bootScreen.innerHTML += logs[bootLine] + '<br>'; 
         bootScreen.scrollTop = bootScreen.scrollHeight; 
@@ -36,8 +52,9 @@ function printBootLines() {
         pwaOverlay.style.display = 'flex';
         return;
     }
-    if (bootScreen) {
-        bootScreen.style.display = 'block';
+    const bs = document.getElementById('boot-screen');
+    if (bs) {
+        bs.style.display = 'block';
     }
     setTimeout(printBootLines, 100);
 })();
@@ -59,7 +76,6 @@ function updateTimer() {
 }
 setInterval(updateTimer, 1000); 
 updateTimer();
-
 const openModalBtn = document.getElementById('open-modal-btn');
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => { 
@@ -78,6 +94,7 @@ if (modalOverlayEl) {
         modalOverlayEl.style.display = 'none'; 
     });
 }
+
 const timerToggle = document.getElementById('timer-toggle');
 if (timerToggle) {
     timerToggle.addEventListener('click', () => { 
@@ -181,7 +198,8 @@ function checkCode() {
                     clearInterval(iv);
                     setTimeout(() => {
                         if (mainContainer) mainContainer.style.display = 'none';
-                        if (bootScreen) bootScreen.style.display = 'none';
+                        const bootScr = document.getElementById('boot-screen');
+                        if (bootScr) bootScr.style.display = 'none';
                         isLock = false;
                         if(window.activateDesktopMode) window.activateDesktopMode();
                     }, 400);
