@@ -1,6 +1,6 @@
 window.osZIndex = 3000;
 window.openWindowsTrack = {};
-let desktopLangClicks = 0;
+window.desktopLangClicks = 0;
 
 window.toggleMaximize = function(id) {
     const win = document.getElementById(id);
@@ -24,7 +24,7 @@ window.openOSWindow = function(id, title, iconStr) {
     }
     if (!window.openWindowsTrack[id]) {
         window.openWindowsTrack[id] = iconStr || '📦';
-        renderTaskbarApps();
+        if (window.renderTaskbarApps) window.renderTaskbarApps();
     }
     if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
     if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
@@ -40,15 +40,14 @@ window.closeOSWindow = function(id) {
         win.classList.remove('maximized');
     }
     delete window.openWindowsTrack[id];
-    renderTaskbarApps();
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
 };
 
 window.minimizeOSWindow = function(id) {
     const win = document.getElementById(id);
     if (win) win.style.display = 'none';
-    renderTaskbarApps();
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
 };
-
 window.toggleWindowFromTaskbar = function(id) {
     const win = document.getElementById(id);
     if (!win) return;
@@ -58,7 +57,7 @@ window.toggleWindowFromTaskbar = function(id) {
         win.style.display = 'block';
         win.style.zIndex = ++window.osZIndex;
     }
-    renderTaskbarApps();
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
 };
 
 window.exitToTerminal = function() {
@@ -76,8 +75,8 @@ window.exitToTerminal = function() {
 };
 
 window.toggleDesktopLanguage = function() {
-    desktopLangClicks++;
-    if (desktopLangClicks >= 10) {
+    window.desktopLangClicks++;
+    if (window.desktopLangClicks >= 10) {
         const env = document.getElementById('desktop-env');
         const banner = document.getElementById('rageBanner');
         if (env) env.classList.add('rage-active');
@@ -85,7 +84,7 @@ window.toggleDesktopLanguage = function() {
         setTimeout(() => {
             if (env) env.classList.remove('rage-active');
             if (banner) banner.style.display = 'none';
-            desktopLangClicks = 0;
+            window.desktopLangClicks = 0;
         }, 10000);
     }
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
@@ -93,3 +92,29 @@ window.toggleDesktopLanguage = function() {
     if (langBtn) langBtn.innerText = currentLang.toUpperCase();
     if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
+
+function updateTaskbarTimer() {
+    if (typeof targetDate === 'undefined') return;
+    const distance = targetDate - new Date().getTime(); 
+    const tbLabel = document.getElementById('taskbar-timer'); 
+    if (!tbLabel) return;
+    if (distance < 0) { 
+        tbLabel.innerHTML = "00:00:00:00"; 
+        return; 
+    }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    const dStr = days < 10 ? '0' + days : days;
+    const hStr = hours < 10 ? '0' + hours : hours;
+    const mStr = minutes < 10 ? '0' + minutes : minutes;
+    const sStr = seconds < 10 ? '0' + seconds : seconds;
+    
+    window.requestAnimationFrame(() => {
+        if (tbLabel) tbLabel.innerHTML = dStr + ':' + hStr + ':' + mStr + ':' + sStr;
+    });
+}
+setInterval(updateTaskbarTimer, 1000);
+updateTaskbarTimer();
