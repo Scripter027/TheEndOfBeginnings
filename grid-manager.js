@@ -1,19 +1,30 @@
-window.GRID_X = 100;
-window.GRID_Y = 90;
 window.PADDING_OFFSET = 20;
+window.GRID_Y = 90;
+
+function getDynamicGridX() {
+    const container = document.getElementById('desktopIconsContainer');
+    if (!container) return 100;
+    const bounds = container.getBoundingClientRect();
+    if (bounds.width <= 480) {
+        return Math.floor((bounds.width - (window.PADDING_OFFSET * 2)) / 4);
+    }
+    return 100;
+}
 
 window.getFirstAvailableSlot = function() {
     const container = document.getElementById('desktopIconsContainer');
     if (!container) return { left: window.PADDING_OFFSET + 'px', top: window.PADDING_OFFSET + 'px' };
     
     const bounds = container.getBoundingClientRect();
-    const maxCols = Math.floor((bounds.width - window.PADDING_OFFSET) / window.GRID_X) || 1;
-    const maxRows = Math.floor((bounds.height - window.PADDING_OFFSET) / window.GRID_Y) || 1;
+    const gridX = getDynamicGridX();
+    
+    const maxCols = bounds.width <= 480 ? 4 : Math.floor((bounds.width - window.PADDING_OFFSET) / gridX) || 1;
+    const maxRows = Math.floor((bounds.height - 44 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
     const icons = document.querySelectorAll('.icon');
     
-    for (let c = 0; c < maxCols; c++) {
-        for (let r = 0; r < maxRows; r++) {
-            const testX = c * window.GRID_X + window.PADDING_OFFSET;
+    for (let r = 0; r < maxRows; r++) {
+        for (let c = 0; c < maxCols; c++) {
+            const testX = c * gridX + window.PADDING_OFFSET;
             const testY = r * window.GRID_Y + window.PADDING_OFFSET;
             let occupied = false;
             
@@ -37,16 +48,24 @@ window.getFirstAvailableSlot = function() {
 
 window.snapToGrid = function(x, y) {
     const container = document.getElementById('desktopIconsContainer');
-    const bounds = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
+    const bounds = container ? container.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
     
     let localX = x - bounds.left;
     let localY = y - bounds.top;
     
-    let snapX = Math.round((localX - window.PADDING_OFFSET) / window.GRID_X) * window.GRID_X + window.PADDING_OFFSET;
+    const gridX = getDynamicGridX();
+    
+    let snapX = Math.round((localX - window.PADDING_OFFSET) / gridX) * gridX + window.PADDING_OFFSET;
     let snapY = Math.round((localY - window.PADDING_OFFSET) / window.GRID_Y) * window.GRID_Y + window.PADDING_OFFSET;
     
+    const maxCols = bounds.width <= 480 ? 4 : Math.floor((bounds.width - window.PADDING_OFFSET) / gridX) || 1;
+    const maxRows = Math.floor((bounds.height - 44 - window.PADDING_OFFSET) / window.GRID_Y) || 1;
+    
     if (snapX < window.PADDING_OFFSET) snapX = window.PADDING_OFFSET;
+    if (snapX > (maxCols - 1) * gridX + window.PADDING_OFFSET) snapX = (maxCols - 1) * gridX + window.PADDING_OFFSET;
+    
     if (snapY < window.PADDING_OFFSET) snapY = window.PADDING_OFFSET;
+    if (snapY > (maxRows - 1) * window.GRID_Y + window.PADDING_OFFSET) snapY = (maxRows - 1) * window.GRID_Y + window.PADDING_OFFSET;
     
     return { x: snapX, y: snapY };
 };
