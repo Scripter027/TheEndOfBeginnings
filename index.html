@@ -267,15 +267,10 @@
                 </div>
             </div>
         </div>
-         <div id="win-sudoku" class="os-window" style="width: 320px; height: 490px; top: 15%; left: 15px;">
+                 <div id="win-sudoku" class="os-window" style="width: 320px; height: 490px; top: 15%; left: 15px;">
             <div class="window-header"><span id="head-sudoku">SUDOKU.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-sudoku')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-sudoku')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-sudoku')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow:hidden;">
-                <div style="display:flex; gap:4px; width:100%;">
-                    <button class="trash-btn" style="padding:4px; font-size:10px; flex:1;" onclick="selectSudokuDifficulty('easy')">EASY</button>
-                    <button class="trash-btn" style="padding:4px; font-size:10px; flex:1;" onclick="selectSudDifficulty('medium')">MED</button>
-                    <button class="trash-btn" style="padding:4px; font-size:10px; flex:1;" onclick="selectSudokuDifficulty('hard')">HARD</button>
-                </div>
-                <div id="sudokuBoard" style="display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; background:#000000; border:2px solid #55ff55; width:100%; aspect-ratio:1/1; margin:6px 0;"></div>
+                <div id="sudokuBoard" style="display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; background:#000000; border:2px solid #55ff55; width:100%; aspect-ratio:1/1; margin-bottom:6px;"></div>
                 <div id="sudoku-over-box" style="width:100%; min-height:20px; text-align:center; font-weight:bold;"></div>
                 <div id="sudokuDock" class="bb-dock" style="min-height:45px; padding:4px;"></div>
             </div>
