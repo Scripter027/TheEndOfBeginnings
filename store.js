@@ -60,7 +60,9 @@ function renderStoreList() {
         { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games', defaultInstalled: false },
         { id: 'icon-win-sudoku', ru: 'Судоку', en: 'Sudoku', icon: '🔢', type: 'games', defaultInstalled: false },
         { id: 'icon-win-memory', ru: 'Память', en: 'Memory', icon: '🧠', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-tower', ru: 'Башня', en: 'Tower', icon: '🏢', type: 'games', defaultInstalled: false }
+        { id: 'icon-win-tower', ru: 'Башня', en: 'Tower', icon: '🏢', type: 'games', defaultInstalled: false },
+        { id: 'icon-win-words', ru: 'Угадай слово', en: 'Guess Word', icon: '🔤', type: 'games', defaultInstalled: false },
+        { id: 'icon-win-hangman', ru: 'Виселица', en: 'Hangman', icon: '🪵', type: 'games', defaultInstalled: false }
     ];
     storeApps.forEach(app => {
         if (app.type !== window.activeStoreTab) return;
@@ -70,7 +72,7 @@ function renderStoreList() {
         const iconEl = document.getElementById(app.id);
         
         let isInstalled = app.defaultInstalled;
-        if (app.id === 'icon-win-tetris' || app.id === 'icon-win-sudoku' || app.id === 'icon-win-memory' || app.id === 'icon-win-tower') {
+        if (app.id === 'icon-win-tetris' || app.id === 'icon-win-sudoku' || app.id === 'icon-win-memory' || app.id === 'icon-win-tower' || app.id === 'icon-win-words' || app.id === 'icon-win-hangman') {
             isInstalled = !!installedApps[app.id];
         } else if (iconEl && (iconEl.style.display === 'none' || localTrash[app.id])) {
             isInstalled = false;
@@ -101,7 +103,7 @@ window.toggleAppInstallation = function(id, isInstalled) {
         }
         trashedApps[id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower') {
+        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower' || id === 'icon-win-words' || id === 'icon-win-hangman') {
             delete installedApps[id];
             localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
         }
@@ -113,7 +115,7 @@ window.toggleAppInstallation = function(id, isInstalled) {
         let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         positions[id] = { left: slot.left, top: slot.top };
         localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower') {
+        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower' || id === 'icon-win-words' || id === 'icon-win-hangman') {
             installedApps[id] = true;
             localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
         }
