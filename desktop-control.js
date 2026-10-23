@@ -156,6 +156,8 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-sudoku' && window.showSudokuMenu) window.showSudokuMenu();
     if (id === 'win-memory' && window.resetMemoryGame) window.resetMemoryGame();
     if (id === 'win-tower' && window.resetTowerGame) window.resetTowerGame();
+    if (id === 'win-words' && window.showWordsMenu) window.showWordsMenu();
+    if (id === 'win-hangman' && window.showHangmanMenu) window.showHangmanMenu();
 };
 
 window.closeOSWindow = function(id) {
