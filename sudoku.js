@@ -130,7 +130,15 @@ window.initSudokuGame = function() {
         if (!gameActive) return;
         boardEl.innerHTML = '';
         const bRect = boardEl.getBoundingClientRect();
-        const cellSize = Math.floor(bRect.width / 9);
+        
+        let availableHeight = boardEl.parentElement.clientHeight - 130;
+        let availableWidth = boardEl.parentElement.clientWidth - 16;
+        let boardSize = Math.max(180, Math.min(availableHeight, availableWidth));
+        
+        boardEl.style.width = boardSize + 'px';
+        boardEl.style.height = boardSize + 'px';
+        
+        const cellSize = Math.floor(boardSize / 9);
 
         for (let r = 0; r < 9; r++) {
             for (let c = 0; c < 9; c++) {
@@ -141,7 +149,7 @@ window.initSudokuGame = function() {
                 cell.style.display = 'flex';
                 cell.style.alignItems = 'center';
                 cell.style.justifyContent = 'center';
-                cell.style.fontSize = '14px';
+                cell.style.fontSize = Math.floor(cellSize * 0.45) + 'px';
                 cell.style.fontWeight = 'bold';
 
                 if (r % 3 === 0 && r !== 0) cell.style.borderTop = '2px solid #55ff55';
@@ -176,6 +184,13 @@ window.initSudokuGame = function() {
                 boardEl.appendChild(cell);
             }
         }
+        
+        const dockCells = dockEl.querySelectorAll('.bb-cell');
+        dockCells.forEach(dc => {
+            dc.style.width = Math.floor(cellSize * 0.9) + 'px';
+            dc.style.height = Math.floor(cellSize * 0.9) + 'px';
+            dc.style.fontSize = Math.floor(cellSize * 0.45) + 'px';
+        });
     }
 
     function triggerGameOver() {
@@ -230,8 +245,6 @@ window.initSudokuGame = function() {
         for (let i = 1; i <= 9; i++) {
             const digit = document.createElement('div');
             digit.className = 'bb-cell filled';
-            digit.style.width = '24px';
-            digit.style.height = '24px';
             digit.style.display = 'flex';
             digit.style.alignItems = 'center';
             digit.style.justifyContent = 'center';
