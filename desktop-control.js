@@ -153,6 +153,9 @@ window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
     if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
     if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
+    if (id === 'win-sudoku' && window.showSudokuMenu) window.showSudokuMenu();
+    if (id === 'win-memory' && window.resetMemoryGame) window.resetMemoryGame();
+    if (id === 'win-tower' && window.resetTowerGame) window.resetTowerGame();
 };
 
 window.closeOSWindow = function(id) {
