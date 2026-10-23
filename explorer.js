@@ -23,38 +23,29 @@ window.renderExplorerList = function() {
     
     icons.forEach(icon => {
         if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
-        if (trashedApps[icon.id]) return;
+        
+        if (typeof trashedApps !== 'undefined' && trashedApps[icon.id]) return;
         
         if (appTypes[window.currentExplorerTab] && appTypes[window.currentExplorerTab].includes(icon.id)) {
+            if (window.currentExplorerTab === 'games' && !defaultInstalled.includes(icon.id) && !installedApps[icon.id]) {
+                return;
+            }
+
             const titleRu = icon.dataset.titleRu || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
             const titleEn = icon.dataset.titleEn || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
             const displayTitle = isRu ? titleRu : titleEn;
             const pic = icon.querySelector('.icon-pic') ? icon.querySelector('.icon-pic').innerText : '📦';
             const targetId = icon.dataset.id || '';
             
-            let isAvailable = defaultInstalled.includes(icon.id) || !!installedApps[icon.id];
-            
-            if (isAvailable) {
-                listHTML.push(`
-                    <div class="store-item">
-                        <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
-                            <span>${pic}</span>
-                            <span>${displayTitle}</span>
-                        </div>
-                        <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu ? 'Открыть' : 'Open'}</button>
+            listHTML.push(`
+                <div class="store-item">
+                    <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
+                        <span>${pic}</span>
+                        <span>${displayTitle}</span>
                     </div>
-                `);
-            } else {
-                listHTML.push(`
-                    <div class="store-item" style="opacity: 0.5;">
-                        <div class="store-item-left" style="display:flex; align-items:center; gap:8px; color: #ff3333;">
-                            <span>${pic}</span>
-                            <span>${displayTitle} (${isRu ? 'Не скачано' : 'Not installed'})</span>
-                        </div>
-                        <button class="explorer-btn" style="border-color: #ff3333; color: #ff3333; cursor: not-allowed;" onclick="alert('${isRu ? 'Ошибка: Сначала скачайте приложение в Магазине!' : 'Error: Install this app from the Store first!'}')">${isRu ? 'Блок' : 'Locked'}</button>
-                    </div>
-                `);
-            }
+                    <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu ? 'Открыть' : 'Open'}</button>
+                </div>
+            `);
         }
     });
     
