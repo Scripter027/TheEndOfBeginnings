@@ -5,9 +5,9 @@ window.initDinoGame = function() {
     let isPlaying = false;
     let score = 0;
     let highscore = localStorage.getItem('kpr_dino_highscore') || 0;
-    let gameSpeed = 4;
-    let speedIncrement = 0.002;
-    let dino = { x: 30, y: 120, w: 20, h: 30, vy: 0, gravity: 0.6, jumpForce: -10, isGrounded: true };
+    let gameSpeed = 5;
+    let speedIncrement = 0.0015;
+    let dino = { x: 40, y: 115, w: 22, h: 30, vy: 0, gravity: 0.6, jumpForce: -10.5, isGrounded: true, animFrame: 0 };
     let obstacles = [];
 
     function getLang() {
@@ -15,19 +15,28 @@ window.initDinoGame = function() {
     }
 
     function spawnObstacle() {
-        let minGap = 150 + (gameSpeed * 15);
-        let maxGap = 300 + (gameSpeed * 25);
+        let minGap = 180 + (gameSpeed * 12);
+        let maxGap = 350 + (gameSpeed * 20);
         let randomGap = Math.random() * (maxGap - minGap) + minGap;
         let lastObstacle = obstacles[obstacles.length - 1];
         let startX = lastObstacle ? lastObstacle.x + randomGap : canvas.width + 50;
-        obstacles.push({ x: startX, y: 125, w: 15, h: 25 });
+        
+        let randType = Math.random();
+        if (score > 150 && randType < 0.3) {
+            let birdY = Math.random() > 0.5 ? 85 : 110;
+            obstacles.push({ x: startX, y: birdY, w: 20, h: 14, type: 'bird', frame: 0 });
+        } else if (randType < 0.65) {
+            obstacles.push({ x: startX, y: 115, w: 12, h: 30, type: 'cactus_small' });
+        } else {
+            obstacles.push({ x: startX, y: 110, w: 24, h: 35, type: 'cactus_large' });
+        }
     }
 
     function resetGame() {
         score = 0;
-        gameSpeed = 4;
+        gameSpeed = 5;
         obstacles = [];
-        dino.y = 120;
+        dino.y = 115;
         dino.vy = 0;
         dino.isGrounded = true;
         isPlaying = true;
@@ -43,7 +52,7 @@ window.initDinoGame = function() {
     }
 
     window.addEventListener('keydown', (e) => { 
-        if (e.code === 'Space') { 
+        if (e.code === 'Space' || e.code === 'ArrowUp') { 
             jump(); 
             e.preventDefault(); 
         } 
@@ -53,24 +62,34 @@ window.initDinoGame = function() {
     function update() {
         if (!isPlaying) return;
         gameSpeed += speedIncrement;
-        score += 0.1;
+        score += 0.15;
         dino.vy += dino.gravity;
         dino.y += dino.vy;
-        if (dino.y >= 120) {
-            dino.y = 120;
+        
+        if (dino.y >= 115) {
+            dino.y = 115;
             dino.vy = 0;
             dino.isGrounded = true;
         }
+
+        if (dino.isGrounded) {
+            dino.animFrame += 0.15;
+        }
+
         if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width) {
             spawnObstacle();
         }
+
         for (let i = obstacles.length - 1; i >= 0; i--) {
             let o = obstacles[i];
             o.x -= gameSpeed;
+            if (o.type === 'bird') o.frame += 0.1;
+
             if (o.x + o.w < 0) {
                 obstacles.splice(i, 1);
                 continue;
             }
+
             if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
                 isPlaying = false;
                 if (score > highscore) {
@@ -81,19 +100,67 @@ window.initDinoGame = function() {
         }
     }
 
+    function drawDino(x, y) {
+        ctx.fillStyle = '#55ff55';
+        ctx.fillRect(x + 10, y, 12, 10);
+        ctx.fillRect(x + 18, y + 2, 2, 2);
+        ctx.fillRect(x + 6, y + 6, 6, 8);
+        ctx.fillRect(x, y + 10, 8, 12);
+        ctx.fillRect(x, y + 12, 18, 10);
+        ctx.fillRect(x + 12, y + 20, 6, 4);
+        
+        let legFrame = Math.floor(dino.animFrame) % 2;
+        if (!isPlaying) {
+            ctx.fillRect(x + 4, y + 22, 2, 6);
+            ctx.fillRect(x + 12, y + 22, 2, 6);
+        } else if (legFrame === 0) {
+            ctx.fillRect(x + 4, y + 22, 2, 8);
+            ctx.fillRect(x + 12, y + 22, 2, 4);
+        } else {
+            ctx.fillRect(x + 4, y + 22, 2, 4);
+            ctx.fillRect(x + 12, y + 22, 2, 8);
+        }
+    }
+
+    function drawObstacle(o) {
+        ctx.fillStyle = '#55ff55';
+        if (o.type === 'cactus_small') {
+            ctx.fillRect(o.x + 4, o.y, 4, 30);
+            ctx.fillRect(o.x, o.y + 8, 4, 10);
+            ctx.fillRect(o.x + 8, o.y + 12, 4, 8);
+            ctx.fillRect(o.x, o.y + 16, 12, 2);
+        } else if (o.type === 'cactus_large') {
+            ctx.fillRect(o.x + 8, o.y, 6, 35);
+            ctx.fillRect(o.x, o.y + 10, 8, 4);
+            ctx.fillRect(o.x, o.y + 6, 4, 8);
+            ctx.fillRect(o.x + 14, o.y + 14, 10, 4);
+            ctx.fillRect(o.x + 20, o.y + 10, 4, 8);
+        } else if (o.type === 'bird') {
+            let birdFrame = Math.floor(o.frame) % 2;
+            ctx.fillRect(o.x, o.y + 4, 20, 4);
+            ctx.fillRect(o.x + 8, o.y, 6, 6);
+            if (birdFrame === 0) {
+                ctx.fillRect(o.x + 4, o.y, 4, 4);
+            } else {
+                ctx.fillRect(o.x + 4, o.y + 8, 4, 4);
+            }
+        }
+    }
+
     function render() {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = '#55ff55';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(0, 145);
-        ctx.lineTo(canvas.width, 145);
+        ctx.moveTo(0, 144);
+        ctx.lineTo(canvas.width, 144);
         ctx.stroke();
+        
+        drawDino(dino.x, dino.y);
+        obstacles.forEach(o => { drawObstacle(o); });
+        
         ctx.fillStyle = '#55ff55';
-        ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-        ctx.fillStyle = '#55ff55';
-        obstacles.forEach(o => { ctx.fillRect(o.x, o.y, o.w, o.h); });
         ctx.font = '10px Courier New';
         ctx.fillText(`HI: ${Math.floor(highscore)}  SCORE: ${Math.floor(score)}`, 10, 20);
 
