@@ -144,6 +144,17 @@ window.initBlockBlast = function() {
                 activeDrag = { matrix, index, element: wrap };
                 wrap.style.zIndex = '9999';
                 if (overBox) overBox.innerHTML = '';
+                
+                const bRect = boardEl.getBoundingClientRect();
+                const cellSize = bRect.width / 8;
+                
+                const internalCells = wrap.querySelectorAll('.bb-cell');
+                internalCells.forEach(c => {
+                    c.style.width = cellSize + 'px';
+                    c.style.height = cellSize + 'px';
+                });
+                wrap.style.width = (cellSize * matrix[0].length) + 'px';
+                wrap.style.height = (cellSize * matrix.length) + 'px';
             }
 
             function handleMove(clientX, clientY) {
@@ -156,8 +167,8 @@ window.initBlockBlast = function() {
                 if (clientX >= bRect.left && clientX <= bRect.right && clientY >= bRect.top && clientY <= bRect.bottom) {
                     const cellW = bRect.width / 8;
                     const cellH = bRect.height / 8;
-                    const col = Math.floor((clientX - bRect.left) / cellW);
-                    const row = Math.floor((clientY - bRect.top) / cellH);
+                    const col = Math.floor((clientX - bRect.left) / cellW) - Math.floor(matrix[0].length / 2);
+                    const row = Math.floor((clientY - bRect.top) / cellH) - Math.floor(matrix.length / 2);
                     highlightPlacement(matrix, row, col);
                 } else {
                     clearHighlights();
@@ -172,8 +183,8 @@ window.initBlockBlast = function() {
                 if (clientX >= bRect.left && clientX <= bRect.right && clientY >= bRect.top && clientY <= bRect.bottom) {
                     const cellW = bRect.width / 8;
                     const cellH = bRect.height / 8;
-                    const col = Math.floor((clientX - bRect.left) / cellW);
-                    const row = Math.floor((clientY - bRect.top) / cellH);
+                    const col = Math.floor((clientX - bRect.left) / cellW) - Math.floor(matrix[0].length / 2);
+                    const row = Math.floor((clientY - bRect.top) / cellH) - Math.floor(matrix.length / 2);
 
                     if (canPlace(matrix, row, col)) {
                         for (let r = 0; r < matrix.length; r++) {
@@ -206,6 +217,13 @@ window.initBlockBlast = function() {
                 wrap.style.left = '0px';
                 wrap.style.top = '0px';
                 wrap.style.zIndex = 'auto';
+                wrap.style.width = '';
+                wrap.style.height = '';
+                const internalCells = wrap.querySelectorAll('.bb-cell');
+                internalCells.forEach(c => {
+                    c.style.width = '';
+                    c.style.height = '';
+                });
             }
 
             wrap.addEventListener('touchstart', (e) => {
