@@ -50,6 +50,17 @@
         .secret-active .timer-title { display: block; }
         .secret-active .timer { font-size: 32px; }
         .terminal-box { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 550px; padding: 10px; margin-top: 60px; }
+        @media screen and (min-width: 320px) and (max-width: 900px) and (orientation: landscape) {
+            html, body {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
         .terminal-output { min-height: 110px; margin-bottom: 25px; text-align: center; font-size: 18px; width: 100%; word-wrap: break-word; line-height: 1.5; text-transform: uppercase; }
         .input-group { display: flex; width: 100%; gap: 10px; }
         .terminal-input { flex: 1; background: rgba(0, 0, 0, 0.6); border: 2px solid var(--neon-green); padding: 14px; color: var(--neon-green); font-family: inherit; font-size: 16px; outline: none; box-shadow: var(--glow-green); border-radius: 0; transition: all 0.15s ease; -webkit-appearance: none; }
@@ -111,7 +122,7 @@
 <body>
     <div id="pwa-install-overlay" class="pwa-overlay">
         <div class="pwa-box">
-            <p>Чтобы данный сайт работал вам нужно добавить его на экран домой.</p><br>
+            <p>Чтобы данный site работал вам нужно добавить его на экран домой.</p><br>
             <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
