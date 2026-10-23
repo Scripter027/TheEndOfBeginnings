@@ -6,18 +6,20 @@ window.initDinoGame = function() {
     let isPlaying = false;
     let score = 0;
     let highscore = localStorage.getItem('kpr_dino_highscore') || 0;
-    let gameSpeed = 5;
-    let speedIncrement = 0.0015;
-    let dino = { x: 40, y: 115, w: 22, h: 30, vy: 0, gravity: 0.6, jumpForce: -10.5, isGrounded: true, animFrame: 0 };
+    
+    let gameSpeed = 300;
+    let speedIncrement = 10;
+    let dino = { x: 40, y: 115, w: 22, h: 30, vy: 0, gravity: 35, jumpForce: -630, isGrounded: true, animFrame: 0 };
     let obstacles = [];
+    let lastTime = 0;
 
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
     }
 
     function spawnObstacle() {
-        let minGap = 180 + (gameSpeed * 12);
-        let maxGap = 350 + (gameSpeed * 20);
+        let minGap = 180 + ((gameSpeed / 60) * 12);
+        let maxGap = 350 + ((gameSpeed / 60) * 20);
         let randomGap = Math.random() * (maxGap - minGap) + minGap;
         let lastObstacle = obstacles[obstacles.length - 1];
         let startX = lastObstacle ? lastObstacle.x + randomGap : canvas.width + 50;
@@ -35,12 +37,13 @@ window.initDinoGame = function() {
 
     function resetGame() {
         score = 0;
-        gameSpeed = 5;
+        gameSpeed = 300;
         obstacles = [];
         dino.y = 115;
         dino.vy = 0;
         dino.isGrounded = true;
         isPlaying = true;
+        lastTime = performance.now();
         if (overBox) overBox.innerHTML = '';
         spawnObstacle();
     }
@@ -72,12 +75,14 @@ window.initDinoGame = function() {
         jump();
     });
 
-    function update() {
+    function update(dt) {
         if (!isPlaying) return;
-        gameSpeed += speedIncrement;
-        score += 0.15;
-        dino.vy += dino.gravity;
-        dino.y += dino.vy;
+        
+        gameSpeed += speedIncrement * dt;
+        score += 9 * dt;
+        
+        dino.vy += dino.gravity * 60 * dt;
+        dino.y += dino.vy * dt;
         
         if (dino.y >= 115) {
             dino.y = 115;
@@ -86,7 +91,7 @@ window.initDinoGame = function() {
         }
 
         if (dino.isGrounded) {
-            dino.animFrame += 0.15;
+            dino.animFrame += 9 * dt;
         }
 
         if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width) {
@@ -95,8 +100,8 @@ window.initDinoGame = function() {
 
         for (let i = obstacles.length - 1; i >= 0; i--) {
             let o = obstacles[i];
-            o.x -= gameSpeed;
-            if (o.type === 'bird') o.frame += 0.1;
+            o.x -= gameSpeed * dt;
+            if (o.type === 'bird') o.frame += 6 * dt;
 
             if (o.x + o.w < 0) {
                 obstacles.splice(i, 1);
@@ -181,12 +186,17 @@ window.initDinoGame = function() {
         ctx.fillText(`HI: ${Math.floor(highscore)}  SCORE: ${Math.floor(score)}`, 10, 20);
     }
 
-    function loop() {
-        update();
+    function loop(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        let dt = (timestamp - lastTime) / 1000;
+        if (dt > 0.1) dt = 0.1;
+        lastTime = timestamp;
+
+        update(dt);
         render();
         requestAnimationFrame(loop);
     }
 
     resetGame();
-    loop();
+    requestAnimationFrame(loop);
 };
