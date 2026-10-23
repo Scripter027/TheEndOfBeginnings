@@ -14,7 +14,7 @@ window.renderExplorerList = function() {
     
     const appTypes = {
         apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'],
-        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris', 'icon-win-sudoku', 'icon-win-memory', 'icon-win-tower'],
+        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris', 'icon-win-sudoku', 'icon-win-memory', 'icon-win-tower', 'icon-win-words', 'icon-win-hangman'],
         other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen']
     };
     
