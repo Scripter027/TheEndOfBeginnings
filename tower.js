@@ -15,17 +15,24 @@ window.initTowerGame = function() {
     let speed = 120;
     let lastTime = 0;
 
-    function getLang() {
-        return typeof currentLang !== 'undefined' ? currentLang : 'ru';
-    }
-
     function resizeCanvas() {
         const rect = canvas.parentElement.getBoundingClientRect();
         canvas.width = rect.width - 16;
-        canvas.height = 240;
-        draw();
+        canvas.height = rect.height - 80;
+        if (stack.length > 0) {
+            draw();
+        }
     }
     resizeCanvas();
+
+    const resizeObserver = new ResizeObserver(() => {
+        resizeCanvas();
+    });
+    resizeObserver.observe(canvas.parentElement);
+
+    function getLang() {
+        return typeof currentLang !== 'undefined' ? currentLang : 'ru';
+    }
 
     function updateScorePanel() {
         const isRu = (getLang() === 'ru');
