@@ -1,19 +1,3 @@
-window.addEventListener('DOMContentLoaded', () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    const pwaOverlay = document.getElementById('pwa-install-overlay');
-    const bootScr = document.getElementById('boot-screen');
-    
-    if (isMobile && !isStandalone && pwaOverlay) {
-        pwaOverlay.style.display = 'flex';
-        return;
-    }
-    if (bootScr) {
-        bootScr.style.display = 'block';
-    }
-    setTimeout(printBootLines, 500);
-});
-
 const bootScreen = document.getElementById('boot-screen');
 const mainContainer = document.getElementById('main-container');
 let bootLine = 0;
@@ -23,28 +7,12 @@ function printBootLines() {
         if (mainContainer) mainContainer.style.display = 'flex';
         return;
     }
-    const localBootLogs = [
-        "ROM BIOS v4.01-KEEPER ENTERTAINMENT STAGE 1", 
-        "COPYRIGHT (C) 2026-2027 KEEPER ENT. ALL RIGHTS RESERVED.",
-        "---------------------------------------------------------", 
-        "CPU: KPR-QUANTUM PRO AT 8.44 GHz",
-        "TESTING RAM: 65536 KB ... OK", 
-        "DETECTING HARD DISK DRIVES ... PRIMARY MASTER: KPR-MASSIVE-SSD 2.04TB",
-        "LOAD SECTORS: 0x00FF32 -> 0x77FFA1 ... OK", 
-        "INITIALIZING MOUSE AND KEYBOARD BUSSES ... OK",
-        "GRAPHICS CARD: EMULATOR CRT-TUBE-NEON 512MB ... MATCHED", 
-        "LOADING KERNEL INTERFACE ... SUCCESS",
-        "CONNECTING SECURE UPLINK CHANNELS...", 
-        "ESTABLISHING ROUTING THROUGH KPR-GATEWAY...",
-        "ENCRYPTING SESSION ID ... AES-X-256 ACTIVE", 
-        "STATUS: ACCESS GRANTED TO KEEPER MAIN TERMINAL.", 
-        "RUNNING SYSTEM..."
-    ];
-    if (bootLine < localBootLogs.length) { 
-        bootScreen.innerHTML += localBootLogs[bootLine] + '<br>'; 
+    const logs = window.bootLogs || [];
+    if (bootLine < logs.length) { 
+        bootScreen.innerHTML += logs[bootLine] + '<br>'; 
         bootScreen.scrollTop = bootScreen.scrollHeight; 
         bootLine++; 
-        setTimeout(printBootLines, 260); 
+        setTimeout(printBootLines, 200); 
     } else { 
         setTimeout(() => { 
             bootScreen.style.display = 'none'; 
@@ -58,6 +26,21 @@ function printBootLines() {
         }, 300); 
     }
 }
+
+(function startSystemInit() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    const pwaOverlay = document.getElementById('pwa-install-overlay');
+    
+    if (isMobile && !isStandalone && pwaOverlay) {
+        pwaOverlay.style.display = 'flex';
+        return;
+    }
+    if (bootScreen) {
+        bootScreen.style.display = 'block';
+    }
+    setTimeout(printBootLines, 100);
+})();
 
 function updateTimer() {
     if (typeof targetDate === 'undefined') return;
