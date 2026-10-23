@@ -1,5 +1,6 @@
 window.initDinoGame = function() {
     const canvas = document.getElementById('dinoCanvas');
+    const overBox = document.getElementById('dino-over-box');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let isPlaying = false;
@@ -40,24 +41,36 @@ window.initDinoGame = function() {
         dino.vy = 0;
         dino.isGrounded = true;
         isPlaying = true;
+        if (overBox) overBox.innerHTML = '';
         spawnObstacle();
     }
     window.resetDinoGame = resetGame;
 
     function jump() {
-        if (dino.isGrounded && isPlaying) {
+        if (!isPlaying) {
+            resetGame();
+            return;
+        }
+        if (dino.isGrounded) {
             dino.vy = dino.jumpForce;
             dino.isGrounded = false;
         }
     }
+    window.triggerDinoJump = jump;
 
     window.addEventListener('keydown', (e) => { 
+        const win = document.getElementById('win-dino');
+        if (!win || win.style.display !== 'block') return;
         if (e.code === 'Space' || e.code === 'ArrowUp') { 
             jump(); 
             e.preventDefault(); 
         } 
     });
-    canvas.addEventListener('pointerdown', () => { jump(); });
+
+    canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        jump();
+    });
 
     function update() {
         if (!isPlaying) return;
@@ -95,6 +108,9 @@ window.initDinoGame = function() {
                 if (score > highscore) {
                     highscore = Math.floor(score);
                     localStorage.setItem('kpr_dino_highscore', highscore);
+                }
+                if (overBox) {
+                    overBox.innerHTML = `<span style="color:var(--neon-red); font-size:12px;">${getLang() === 'ru' ? 'СИСТЕМА СБОЯ! НАЖМИТЕ ДЛЯ СТАРТА' : 'SYSTEM CRASH! CLICK TO REBOOT'}</span>`;
                 }
             }
         }
@@ -163,22 +179,6 @@ window.initDinoGame = function() {
         ctx.fillStyle = '#55ff55';
         ctx.font = '10px Courier New';
         ctx.fillText(`HI: ${Math.floor(highscore)}  SCORE: ${Math.floor(score)}`, 10, 20);
-
-        if (!isPlaying) {
-            ctx.fillStyle = 'rgba(0,0,0,0.9)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#ff3333';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-            ctx.fillStyle = '#ff3333';
-            ctx.font = 'bold 16px Courier New';
-            ctx.textAlign = 'center';
-            ctx.fillText(getLang() === 'ru' ? 'СИСТЕМА СБОЯ' : 'SYSTEM CRASH', canvas.width / 2, 60);
-            ctx.fillStyle = '#55ff55';
-            ctx.font = '10px Courier New';
-            ctx.fillText(getLang() === 'ru' ? 'Кликни для перезапуска' : 'Click to reboot game', canvas.width / 2, 95);
-            ctx.textAlign = 'left';
-        }
     }
 
     function loop() {
@@ -187,7 +187,6 @@ window.initDinoGame = function() {
         requestAnimationFrame(loop);
     }
 
-    canvas.addEventListener('click', () => { if (!isPlaying) resetGame(); });
     resetGame();
     loop();
 };
