@@ -118,29 +118,20 @@ window.clearAllOSData = function() {
     localStorage.removeItem('kpr_installed_apps');
     trashedApps = {};
     window.closeOSWindow('win-settings');
-    const initialPositions = {
-        'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
-        'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
-        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
-        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
-        'icon-win-bsod': { left: '320px', top: '20px' }
-    };
-    localStorage.setItem('kpr_icon_positions', JSON.stringify(initialPositions));
-    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+    
     document.querySelectorAll('.icon').forEach(icon => {
+        icon.style.left = '';
+        icon.style.top = '';
         if (icon.id === 'icon-win-tetris') {
             icon.style.display = 'none';
-            return;
-        }
-        const pos = initialPositions[icon.id];
-        if(pos) {
-            icon.style.left = pos.left;
-            icon.style.top = pos.top;
+        } else {
             icon.style.display = 'flex';
+            const slot = window.getFirstAvailableSlot();
+            icon.style.left = slot.left;
+            icon.style.top = slot.top;
         }
     });
+
     if (window.resetDinoGame) window.resetDinoGame();
     if (window.resetBlockBlastGame) window.resetBlockBlastGame();
     if (window.resetTetrisGame) window.resetTetrisGame();
@@ -154,21 +145,17 @@ window.activateDesktopMode = function() {
     if (mainCont) mainCont.style.display = 'none';
     if (bootScr) bootScr.style.display = 'none';
     if (deskEnv) deskEnv.style.display = 'block';
-    const initialPositions = {
-        'icon-win-trash': { left: '20px', top: '20px' }, 'icon-win-explorer': { left: '20px', top: '110px' },
-        'icon-win-store': { left: '20px', top: '200px' }, 'icon-win-msg': { left: '20px', top: '290px' },
-        'icon-win-search': { left: '120px', top: '20px' }, 'icon-win-dino': { left: '120px', top: '110px' },
-        'icon-win-blocks': { left: '120px', top: '200px' }, 'icon-win-tetris': { left: '120px', top: '290px' },
-        'icon-win-zip': { left: '220px', top: '20px' }, 'icon-win-zip2': { left: '220px', top: '110px' },
-        'icon-win-zip3': { left: '220px', top: '200px' }, 'icon-win-dontopen': { left: '220px', top: '290px' },
-        'icon-win-bsod': { left: '320px', top: '20px' }
-    };
+    
     try {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
         const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
         trashedApps = savedTrash;
+        
         document.querySelectorAll('.icon').forEach(icon => {
+            icon.style.left = '';
+            icon.style.top = '';
+            
             if (icon.id === 'icon-win-tetris' && !installedApps[icon.id]) {
                 icon.style.display = 'none';
                 return;
@@ -177,16 +164,16 @@ window.activateDesktopMode = function() {
                 icon.style.display = 'none';
                 return;
             }
-            const pos = savedPositions[icon.id] || initialPositions[icon.id];
-            if (pos) {
-                icon.style.left = pos.left;
-                icon.style.top = pos.top;
-                icon.style.display = 'flex';
-            }
+            
+            icon.style.display = 'flex';
+            const slot = window.getFirstAvailableSlot();
+            icon.style.left = slot.left;
+            icon.style.top = slot.top;
         });
     } catch (e) {
         trashedApps = {};
     }
+    
     try { if (window.initDinoGame) window.initDinoGame(); } catch (e) {}
     try { if (window.initBlockBlast) window.initBlockBlast(); } catch (e) {}
     try { if (window.initMessenger) window.initMessenger(); } catch (e) {}
