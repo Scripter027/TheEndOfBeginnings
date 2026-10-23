@@ -1,65 +1,4 @@
-window.osZIndex = 3000;
-window.openWindowsTrack = {};
-let desktopLangClicks = 0;
 let trashedApps = {};
-
-window.toggleMaximize = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.classList.toggle('maximized');
-    if (id === 'win-msg' && window.initMessenger) window.initMessenger();
-};
-
-window.openOSWindow = function(id, title, iconStr) {
-    if (id === 'win-bsod') {
-        const bsod = document.getElementById('bsodScreen');
-        if (bsod) bsod.style.display = 'block';
-    }
-    const win = document.getElementById(id);
-    if (!win) return;
-    win.style.display = 'block';
-    win.style.zIndex = ++window.osZIndex;
-    if (window.innerWidth < 600) {
-        win.style.left = '4vw';
-        win.style.top = '10vh';
-    }
-    if (!window.openWindowsTrack[id]) {
-        window.openWindowsTrack[id] = iconStr || '📦';
-        renderTaskbarApps();
-    }
-    if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
-    if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
-    if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
-    if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
-    if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
-};
-
-window.closeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) {
-        win.style.display = 'none';
-        win.classList.remove('maximized');
-    }
-    delete window.openWindowsTrack[id];
-    renderTaskbarApps();
-};
-window.minimizeOSWindow = function(id) {
-    const win = document.getElementById(id);
-    if (win) win.style.display = 'none';
-    renderTaskbarApps();
-};
-
-window.toggleWindowFromTaskbar = function(id) {
-    const win = document.getElementById(id);
-    if (!win) return;
-    if (win.style.display === 'block') {
-        win.style.display = 'none';
-    } else {
-        win.style.display = 'block';
-        win.style.zIndex = ++window.osZIndex;
-    }
-    renderTaskbarApps();
-};
 
 function renderTaskbarApps() {
     const container = document.getElementById('taskbar-apps');
@@ -76,39 +15,7 @@ function renderTaskbarApps() {
     }
 }
 
-window.exitToTerminal = function() {
-    const desktop = document.getElementById('desktop-env');
-    const mainContainer = document.getElementById('main-container');
-    const responseText = document.getElementById('response-text');
-    const userInput = document.getElementById('user-input');
-    
-    if (desktop) desktop.style.display = 'none';
-    if (mainContainer) mainContainer.style.display = 'flex';
-    if (responseText && typeof langData !== 'undefined' && langData[currentLang]) {
-        responseText.innerText = langData[currentLang].defaultPrompt;
-    }
-    if (userInput) userInput.focus();
-};
-window.toggleDesktopLanguage = function() {
-    desktopLangClicks++;
-    if (desktopLangClicks >= 10) {
-        const env = document.getElementById('desktop-env');
-        const banner = document.getElementById('rageBanner');
-        if (env) env.classList.add('rage-active');
-        if (banner) banner.style.display = 'block';
-        setTimeout(() => {
-            if (env) env.classList.remove('rage-active');
-            if (banner) banner.style.display = 'none';
-            desktopLangClicks = 0;
-        }, 10000);
-    }
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    const langBtn = document.getElementById('taskbar-lang-btn');
-    if (langBtn) langBtn.innerText = currentLang.toUpperCase();
-    updateDesktopTexts();
-};
-
-function updateDesktopTexts() {
+window.updateDesktopTexts = function() {
     const isRu = (currentLang === 'ru');
     const exitBtn = document.getElementById('tb-exit-btn');
     if (exitBtn) exitBtn.innerText = isRu ? "ВЫХОД" : "EXIT";
@@ -160,18 +67,21 @@ function updateDesktopTexts() {
     if (txtInfo) txtInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will clear highscores and restore default icons.";
     const btnReset = document.getElementById('btn-reset-all');
     if (btnReset) btnReset.innerText = isRu ? "СТЕРЕТЬ ДАННЫЕ" : "WIPE ALL DATA";
+    
     document.querySelectorAll('.txt-zip-locked').forEach(el => {
         el.innerText = isRu ? "Файл зашифрован ключом AES-256." : "The file is encrypted with an AES-256 key.";
     });
-    if (typeof renderTrashList === 'function') renderTrashList();
-    if (typeof renderExplorerList === 'function') renderExplorerList();
+    
+    if (window.renderTrashList) window.renderTrashList();
+    if (window.renderExplorerList) window.renderExplorerList();
     if (window.renderStoreList) window.renderStoreList();
     if (window.renderMessengerUsers) window.renderMessengerUsers();
+    
     const searchWin = document.getElementById('win-search');
     if (window.initSearchBrowser && searchWin && searchWin.style.display === 'block') {
         window.initSearchBrowser();
     }
-}
+};
 window.advanceNestedFolder = function(step) {
     const body = document.getElementById('nestedFolderBody');
     if (!body) return;
@@ -183,118 +93,6 @@ window.advanceNestedFolder = function(step) {
     const randId = Math.floor(Math.random() * 100000);
     body.innerHTML = `<div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" id="nested-link-${randId}" onclick="advanceNestedFolder(${nextStep})">📁 ${text}</span></div>`;
 };
-
-window.emptyTrash = function() {
-    trashedApps = {};
-    localStorage.removeItem('kpr_trashed_apps');
-    if (typeof renderTrashList === 'function') renderTrashList();
-    if (window.renderStoreList) window.renderStoreList();
-};
-
-window.restoreApp = function(id) {
-    const icon = document.getElementById(id);
-    if (icon && typeof window.getFirstAvailableSlot === 'function') {
-        const slot = window.getFirstAvailableSlot();
-        icon.style.left = slot.left;
-        icon.style.top = slot.top;
-        icon.style.display = 'flex';
-        let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-        positions[id] = { left: slot.left, top: slot.top };
-        localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-        delete trashedApps[id];
-        localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        if (typeof renderTrashList === 'function') renderTrashList();
-        if (typeof renderExplorerList === 'function') renderExplorerList();
-        if (window.renderStoreList) window.renderStoreList();
-    }
-};
-
-function renderTrashList() {
-    const container = document.getElementById('trashListContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    let hasItems = false;
-    for (const id in trashedApps) {
-        hasItems = true;
-        const item = document.createElement('div');
-        item.className = 'trash-item';
-        const displayTitle = currentLang === 'ru' ? trashedApps[id].ru : trashedApps[id].en;
-        item.innerHTML = `<span>${displayTitle}</span><button class="trash-btn" onclick="restoreApp('${id}')">${currentLang==='ru'?'Вернуть':'Restore'}</button>`;
-        container.appendChild(item);
-    }
-    if (!hasItems) container.innerHTML = currentLang === 'ru' ? 'Корзина пуста' : 'Trash is empty';
-}
-window.currentExplorerTab = 'apps';
-window.switchExplorerTab = function(tabId) {
-    window.currentExplorerTab = tabId;
-    renderExplorerList();
-};
-
-function renderExplorerList() {
-    const container = document.getElementById('explorerListContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    const icons = document.querySelectorAll('.icon');
-    const isRu = (currentLang === 'ru');
-    const appTypes = {
-        apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'],
-        games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris'],
-        other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen']
-    };
-    const listHTML = [];
-    icons.forEach(icon => {
-        if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
-        if (trashedApps[icon.id]) return;
-        if (appTypes[window.currentExplorerTab] && appTypes[window.currentExplorerTab].includes(icon.id)) {
-            const titleRu = icon.dataset.titleRu || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
-            const titleEn = icon.dataset.titleEn || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
-            const displayTitle = isRu ? titleRu : titleEn;
-            const pic = icon.querySelector('.icon-pic') ? icon.querySelector('.icon-pic').innerText : '📦';
-            const targetId = icon.dataset.id || '';
-            listHTML.push(`
-                <div class="store-item">
-                    <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
-                        <span>${pic}</span>
-                        <span>${displayTitle}</span>
-                    </div>
-                    <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button>
-                </div>
-            `);
-        }
-    });
-    
-    const contentWrap = document.createElement('div');
-    contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:6px;";
-    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
-    
-    const tabsWrap = document.createElement('div');
-    tabsWrap.className = "store-tabs-container";
-    tabsWrap.style.cssText = "height:40px; border-top:2px solid #55ff55; display:flex; background:rgba(0,0,0,0.85); width:100%;";
-    
-    const tabs = [{id:'apps', ru:'APPS', en:'APPS'}, {id:'games', ru:'GAMES', en:'GAMES'}, {id:'other', ru:'OTHER', en:'OTHER'}];
-    tabs.forEach((t, index) => {
-        const btn = document.createElement('button');
-        btn.id = `explorer-tab-${t.id}`;
-        btn.style.cssText = "flex:1; background:transparent; border:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;";
-        if (index > 0) btn.style.borderLeft = "2px solid #55ff55";
-        btn.innerText = isRu ? t.ru : t.en;
-        if (window.currentExplorerTab === t.id) {
-            btn.style.background = "#55ff55";
-            btn.style.color = "#000000";
-        }
-        btn.onclick = () => window.switchExplorerTab(t.id);
-        tabsWrap.appendChild(btn);
-    });
-    
-    const mainWrap = document.createElement('div');
-    mainWrap.style.cssText = "display:flex; flex-direction:column; height:100%; width:100%; justify-content:space-between;";
-    mainWrap.appendChild(contentWrap);
-    mainWrap.appendChild(tabsWrap);
-    
-    container.innerHTML = '';
-    container.style.padding = '0';
-    container.appendChild(mainWrap);
-}
 
 window.checkZipPassword = function(winId) {
     const win = document.getElementById(winId);
@@ -317,6 +115,7 @@ window.clearAllOSData = function() {
     localStorage.removeItem('kpr_bb_highscore');
     localStorage.removeItem('kpr_icon_positions');
     localStorage.removeItem('kpr_trashed_apps');
+    localStorage.removeItem('kpr_installed_apps');
     trashedApps = {};
     window.closeOSWindow('win-settings');
     const initialPositions = {
@@ -331,6 +130,10 @@ window.clearAllOSData = function() {
     localStorage.setItem('kpr_icon_positions', JSON.stringify(initialPositions));
     localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
     document.querySelectorAll('.icon').forEach(icon => {
+        if (icon.id === 'icon-win-tetris') {
+            icon.style.display = 'none';
+            return;
+        }
         const pos = initialPositions[icon.id];
         if(pos) {
             icon.style.left = pos.left;
@@ -341,7 +144,7 @@ window.clearAllOSData = function() {
     if (window.resetDinoGame) window.resetDinoGame();
     if (window.resetBlockBlastGame) window.resetBlockBlastGame();
     if (window.resetTetrisGame) window.resetTetrisGame();
-    if (typeof updateDesktopTexts === 'function') updateDesktopTexts();
+    if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
 
 window.activateDesktopMode = function() {
@@ -363,8 +166,13 @@ window.activateDesktopMode = function() {
     try {
         const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         const savedTrash = JSON.parse(localStorage.getItem('kpr_trashed_apps')) || {};
+        const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
         trashedApps = savedTrash;
         document.querySelectorAll('.icon').forEach(icon => {
+            if (icon.id === 'icon-win-tetris' && !installedApps[icon.id]) {
+                icon.style.display = 'none';
+                return;
+            }
             if (trashedApps[icon.id]) {
                 icon.style.display = 'none';
                 return;
@@ -384,6 +192,5 @@ window.activateDesktopMode = function() {
     try { if (window.initMessenger) window.initMessenger(); } catch (e) {}
     try { if (window.initKeeperStore) window.initKeeperStore(); } catch (e) {}
     try { if (window.initTetrisGame) window.initTetrisGame(); } catch (e) {}
-    if (typeof updateDesktopTexts === 'function') updateDesktopTexts();
+    if (window.updateDesktopTexts) window.updateDesktopTexts();
 };
-
