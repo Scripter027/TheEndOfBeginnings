@@ -10,36 +10,57 @@ window.renderExplorerList = function() {
     container.innerHTML = '';
     const icons = document.querySelectorAll('.icon');
     const isRu = (currentLang === 'ru');
+    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
+    
     const appTypes = {
         apps: ['icon-win-msg', 'icon-win-search', 'icon-win-bsod'],
         games: ['icon-win-dino', 'icon-win-blocks', 'icon-win-tetris', 'icon-win-sudoku', 'icon-win-memory', 'icon-win-tower'],
         other: ['icon-win-zip', 'icon-win-zip2', 'icon-win-zip3', 'icon-win-dontopen']
     };
+    
+    const defaultInstalled = ['icon-win-msg', 'icon-win-search', 'icon-win-bsod', 'icon-win-dino', 'icon-win-blocks'];
     const listHTML = [];
+    
     icons.forEach(icon => {
         if (icon.id === 'icon-win-explorer' || icon.id === 'icon-win-trash' || icon.id === 'icon-win-store' || icon.id === 'icon-win-settings') return;
         if (trashedApps[icon.id]) return;
+        
         if (appTypes[window.currentExplorerTab] && appTypes[window.currentExplorerTab].includes(icon.id)) {
             const titleRu = icon.dataset.titleRu || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
             const titleEn = icon.dataset.titleEn || (icon.querySelector('.icon-name') ? icon.querySelector('.icon-name').innerText : '');
             const displayTitle = isRu ? titleRu : titleEn;
             const pic = icon.querySelector('.icon-pic') ? icon.querySelector('.icon-pic').innerText : '📦';
             const targetId = icon.dataset.id || '';
-            listHTML.push(`
-                <div class="store-item">
-                    <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
-                        <span>${pic}</span>
-                        <span>${displayTitle}</span>
+            
+            let isAvailable = defaultInstalled.includes(icon.id) || !!installedApps[icon.id];
+            
+            if (isAvailable) {
+                listHTML.push(`
+                    <div class="store-item">
+                        <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
+                            <span>${pic}</span>
+                            <span>${displayTitle}</span>
+                        </div>
+                        <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu ? 'Открыть' : 'Open'}</button>
                     </div>
-                    <button class="explorer-btn" onclick="window.openOSWindow('${targetId}', '${displayTitle}', '${pic}')">${isRu?'Открыть':'Open'}</button>
-                </div>
-            `);
+                `);
+            } else {
+                listHTML.push(`
+                    <div class="store-item" style="opacity: 0.5;">
+                        <div class="store-item-left" style="display:flex; align-items:center; gap:8px; color: #ff3333;">
+                            <span>${pic}</span>
+                            <span>${displayTitle} (${isRu ? 'Не скачано' : 'Not installed'})</span>
+                        </div>
+                        <button class="explorer-btn" style="border-color: #ff3333; color: #ff3333; cursor: not-allowed;" onclick="alert('${isRu ? 'Ошибка: Сначала скачайте приложение в Магазине!' : 'Error: Install this app from the Store first!'}')">${isRu ? 'Блок' : 'Locked'}</button>
+                    </div>
+                `);
+            }
         }
     });
     
     const contentWrap = document.createElement('div');
     contentWrap.style.cssText = "height:calc(100% - 40px); overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:6px;";
-    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu?'Пусто':'Empty'}</div>`;
+    contentWrap.innerHTML = listHTML.length > 0 ? listHTML.join('') : `<div style="text-align:center; padding-top:20px; color:rgba(85,255,85,0.4);">${isRu ? 'Пусто' : 'Empty'}</div>`;
     
     const tabsWrap = document.createElement('div');
     tabsWrap.className = "store-tabs-container";
