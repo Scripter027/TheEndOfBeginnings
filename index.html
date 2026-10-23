@@ -190,7 +190,7 @@
                 <button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button>
             </div>
         </div>
-         <div id="win-tetris" class="os-window" style="width: 300px; height: 420px; top: 8%; left: 15px;">
+        <div id="win-tetris" class="os-window" style="width: 300px; height: 420px; top: 8%; left: 15px;">
             <div class="window-header"><span id="head-tetris">TETRIS.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-tetris')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-tetris')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-tetris')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:calc(100% - 38px); padding:8px;">
                 <div id="tetris-score" style="font-size:14px; font-weight:bold; color:#55ff55; margin-bottom:4px;">СЧЕТ: 0</div>
@@ -255,7 +255,6 @@
                 <div id="dino-hint" style="font-size:11px; padding:6px; background:rgba(85,255,85,0.1); cursor:pointer; border:1px solid #55ff55;" onclick="window.triggerDinoJump()">НАЖМИ ДЛЯ ПРЫЖКА / СТАРТА</div>
             </div>
         </div>
-
         <div id="win-blocks" class="os-window" style="width: 320px; height: 500px; top: 2px; left: 2px;">
             <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-blocks')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-blocks')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-blocks')">X</span></div></div>
             <div class="window-body" style="overflow-y:auto; display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px;">
@@ -278,7 +277,7 @@
             <div id="taskbar-timer" class="taskbar-timer">00:00:00:00</div>
         </div>
     </div>
-        <script src="config.js"></script>
+    <script src="config.js"></script>
     <script src="engine.js"></script>
     <script src="grid-manager.js"></script>
     <script src="trash.js"></script>
