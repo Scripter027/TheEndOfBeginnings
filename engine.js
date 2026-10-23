@@ -22,7 +22,7 @@ function printBootLines() {
         if (mainContainer) mainContainer.style.display = 'flex';
         return;
     }
-    if (bootLine < bootLogs.length) { 
+    if (typeof bootLogs !== 'undefined' && bootLine < bootLogs.length) { 
         bootScreen.innerHTML += bootLogs[bootLine] + '<br>'; 
         bootScreen.scrollTop = bootScreen.scrollHeight; 
         bootLine++; 
@@ -77,7 +77,6 @@ if (modalOverlayEl) {
         modalOverlayEl.style.display = 'none'; 
     });
 }
-
 const timerToggle = document.getElementById('timer-toggle');
 if (timerToggle) {
     timerToggle.addEventListener('click', () => { 
@@ -89,6 +88,7 @@ if (timerToggle) {
         }
     });
 }
+
 const langBtnEl = document.getElementById('lang-btn');
 if (langBtnEl) {
     langBtnEl.addEventListener('click', () => {
