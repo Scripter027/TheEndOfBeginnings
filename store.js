@@ -50,13 +50,14 @@ function renderStoreList() {
     container.innerHTML = '';
     const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
     const localTrash = typeof trashedApps !== 'undefined' ? trashedApps : {};
+    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
     const storeApps = [
-        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟', type: 'apps' },
-        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐', type: 'apps' },
-        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀', type: 'apps' },
-        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', type: 'games' },
-        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', type: 'games' },
-        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games' }
+        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟', type: 'apps', defaultInstalled: true },
+        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐', type: 'apps', defaultInstalled: true },
+        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀', type: 'apps', defaultInstalled: true },
+        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', type: 'games', defaultInstalled: true },
+        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', type: 'games', defaultInstalled: true },
+        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games', defaultInstalled: false }
     ];
     storeApps.forEach(app => {
         if (app.type !== window.activeStoreTab) return;
@@ -64,7 +65,14 @@ function renderStoreList() {
         item.className = 'store-item';
         const displayTitle = isRu ? app.ru : app.en;
         const iconEl = document.getElementById(app.id);
-        const isInstalled = iconEl && iconEl.style.display !== 'none' && !localTrash[app.id];
+        
+        let isInstalled = app.defaultInstalled;
+        if (app.id === 'icon-win-tetris') {
+            isInstalled = !!installedApps[app.id];
+        } else if (iconEl && (iconEl.style.display === 'none' || localTrash[app.id])) {
+            isInstalled = false;
+        }
+
         let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
         item.innerHTML = `
             <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
@@ -81,6 +89,8 @@ window.toggleAppInstallation = function(id, isInstalled) {
     const icon = document.getElementById(id);
     if (!icon) return;
     if (typeof trashedApps === 'undefined') window.trashedApps = {};
+    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
+
     if (isInstalled) {
         icon.style.display = 'none';
         if (icon.dataset && icon.dataset.id) {
@@ -88,6 +98,10 @@ window.toggleAppInstallation = function(id, isInstalled) {
         }
         trashedApps[id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
         localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+        if (id === 'icon-win-tetris') {
+            delete installedApps[id];
+            localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
+        }
     } else {
         const slot = window.getFirstAvailableSlot ? window.getFirstAvailableSlot() : { left: '20px', top: '20px' };
         icon.style.left = slot.left; 
@@ -96,6 +110,10 @@ window.toggleAppInstallation = function(id, isInstalled) {
         let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
         positions[id] = { left: slot.left, top: slot.top };
         localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+        if (id === 'icon-win-tetris') {
+            installedApps[id] = true;
+            localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
+        }
         if (trashedApps[id]) { 
             delete trashedApps[id]; 
             localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps)); 
