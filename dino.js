@@ -13,6 +13,18 @@ window.initDinoGame = function() {
     let obstacles = [];
     let lastTime = 0;
 
+    function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width - 16;
+        canvas.height = 150;
+    }
+    resizeCanvas();
+
+    const resizeObserver = new ResizeObserver(() => {
+        resizeCanvas();
+    });
+    resizeObserver.observe(canvas.parentElement);
+
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
     }
@@ -48,7 +60,6 @@ window.initDinoGame = function() {
         spawnObstacle();
     }
     window.resetDinoGame = resetGame;
-
     function jump() {
         if (!isPlaying) {
             resetGame();
