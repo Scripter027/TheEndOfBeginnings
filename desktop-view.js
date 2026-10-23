@@ -138,6 +138,8 @@ window.clearAllOSData = function() {
     localStorage.removeItem('kpr_sudoku_highscore');
     localStorage.removeItem('kpr_memory_highscore');
     localStorage.removeItem('kpr_tower_highscore');
+    localStorage.removeItem('kpr_words_highscore');
+    localStorage.removeItem('kpr_hangman_highscore');
     localStorage.removeItem('kpr_icon_positions');
     localStorage.removeItem('kpr_trashed_apps');
     localStorage.removeItem('kpr_installed_apps');
