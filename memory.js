@@ -10,6 +10,7 @@ window.initMemoryGame = function() {
     let highscore = localStorage.getItem('kpr_memory_highscore') || 0;
     let isPlayingSequence = false;
     let isGameOver = false;
+    let flashTimeouts = {};
 
     function getLang() {
         return typeof currentLang !== 'undefined' ? currentLang : 'ru';
@@ -21,6 +22,18 @@ window.initMemoryGame = function() {
     }
 
     window.resetMemoryGame = function() {
+        for (let key in flashTimeouts) {
+            clearTimeout(flashTimeouts[key]);
+        }
+        flashTimeouts = {};
+        
+        if (boardEl) {
+            Array.from(boardEl.children).forEach(btn => {
+                btn.style.background = 'transparent';
+                btn.style.boxShadow = 'inset 0 0 10px rgba(0,51,0,0.5)';
+            });
+        }
+
         sequence = [];
         playerSequence = [];
         score = 0;
@@ -40,12 +53,18 @@ window.initMemoryGame = function() {
         isPlayingSequence = true;
         let i = 0;
         const interval = setInterval(() => {
+            if (isGameOver) {
+                clearInterval(interval);
+                return;
+            }
             const btnIndex = sequence[i];
             flashButton(btnIndex);
             i++;
             if (i >= sequence.length) {
                 clearInterval(interval);
-                isPlayingSequence = false;
+                setTimeout(() => {
+                    isPlayingSequence = false;
+                }, 400);
             }
         }, 600);
     }
@@ -53,12 +72,18 @@ window.initMemoryGame = function() {
     function flashButton(index) {
         const btn = boardEl.children[index];
         if (!btn) return;
-        const originalBg = btn.style.background;
+
+        if (flashTimeouts[index]) {
+            clearTimeout(flashTimeouts[index]);
+        }
+
         btn.style.background = '#55ff55';
         btn.style.boxShadow = '0 0 20px #55ff55';
-        setTimeout(() => {
-            btn.style.background = originalBg;
-            btn.style.boxShadow = '';
+
+        flashTimeouts[index] = setTimeout(() => {
+            btn.style.background = 'transparent';
+            btn.style.boxShadow = 'inset 0 0 10px rgba(0,51,0,0.5)';
+            delete flashTimeouts[index];
         }, 300);
     }
 
@@ -79,6 +104,7 @@ window.initMemoryGame = function() {
                 localStorage.setItem('kpr_memory_highscore', highscore);
             }
             updateScorePanel();
+            isPlayingSequence = true;
             setTimeout(nextRound, 800);
         }
     };
@@ -106,6 +132,7 @@ window.initMemoryGame = function() {
         btn.className = 'bb-cell';
         btn.style.cursor = 'pointer';
         btn.style.border = '2px solid #003300';
+        btn.style.background = 'transparent';
         btn.style.boxShadow = 'inset 0 0 10px rgba(0,51,0,0.5)';
         btn.onclick = () => window.handleMemoryClick(i);
         boardEl.appendChild(btn);
