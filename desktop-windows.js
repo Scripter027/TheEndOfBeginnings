@@ -2,58 +2,75 @@ window.osZIndex = 3000;
 window.openWindowsTrack = {};
 window.desktopLangClicks = 0;
 
+if (!localStorage.getItem('kpr_installed_apps')) {
+    const defaultApps = {
+        'icon-win-msg': true,
+        'icon-win-search': true,
+        'icon-win-bsod': true,
+        'icon-win-dino': true,
+        'icon-win-blocks': true
+    };
+    localStorage.setItem('kpr_installed_apps', JSON.stringify(defaultApps));
+}
+
 document.querySelectorAll('.icon').forEach(icon => {
     let isDragging = false;
-    let shiftX = 0, shiftY = 0;
+    let startX = 0, startY = 0;
     let oldTop = icon.style.top;
     let oldLeft = icon.style.left;
 
-    const picEl = icon.querySelector('.icon-pic');
-    const nameEl = icon.querySelector('.icon-name');
-
     function executeOpen() {
-        if (icon.style.display === 'none') return;
-        window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
-    }
-
-    if (nameEl) {
-        nameEl.style.cursor = 'pointer';
-        nameEl.style.pointerEvents = 'auto';
+        const targetId = icon.getAttribute('data-id') || icon.dataset.id;
+        if (!targetId) return;
         
-        nameEl.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            executeOpen();
-        });
-
-        nameEl.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            executeOpen();
-        });
+        const displayTitle = currentLang === 'ru' ? 
+            (icon.getAttribute('data-title-ru') || icon.dataset.titleRu) : 
+            (icon.getAttribute('data-title-en') || icon.dataset.titleEn);
+            
+        const iconPic = icon.getAttribute('data-icon') || icon.dataset.icon || '📦';
+        
+        window.openOSWindow(targetId, displayTitle, iconPic);
     }
 
-    if (picEl) {
-        picEl.style.cursor = 'move';
-        picEl.style.pointerEvents = 'auto';
+    icon.addEventListener('click', function(e) {
+        if (isDragging) return;
+        e.preventDefault();
+        e.stopPropagation();
+        executeOpen();
+    });
 
-        picEl.addEventListener('pointerdown', function(e) {
-            if (icon.style.display === 'none') return;
+    let lastTap = 0;
+    icon.addEventListener('touchend', function(e) {
+        if (isDragging) return;
+        let currentTime = new Date().getTime();
+        let tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault();
             e.stopPropagation();
-            
-            isDragging = false;
-            icon.style.zIndex = "5000";
-            
-            let rect = icon.getBoundingClientRect();
-            shiftX = e.clientX - rect.left;
-            shiftY = e.clientY - rect.top;
-            
-            oldTop = icon.style.top;
-            oldLeft = icon.style.left;
+            executeOpen();
+        }
+        lastTap = currentTime;
+    });
 
-            function onPointerMove(ev) {
+    icon.addEventListener('pointerdown', function(e) {
+        isDragging = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        icon.style.zIndex = "5000";
+        oldTop = icon.style.top;
+        oldLeft = icon.style.left;
+
+        let rect = icon.getBoundingClientRect();
+        let shiftX = e.clientX - rect.left;
+        let shiftY = e.clientY - rect.top;
+
+        function onPointerMove(ev) {
+            if (Math.abs(ev.clientX - startX) > 4 || Math.abs(ev.clientY - startY) > 4) {
                 isDragging = true;
-                
+            }
+            
+            if (isDragging) {
                 let containerEl = document.getElementById('desktopIconsContainer');
                 if (!containerEl) return;
                 let container = containerEl.getBoundingClientRect();
@@ -64,61 +81,51 @@ document.querySelectorAll('.icon').forEach(icon => {
                 icon.style.left = x + 'px';
                 icon.style.top = y + 'px';
             }
+        }
 
-            document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointermove', onPointerMove);
 
-            document.addEventListener('pointerup', function onUp(ev) {
-                icon.style.zIndex = "auto";
-                document.removeEventListener('pointermove', onPointerMove);
-                document.removeEventListener('pointerup', onUp);
+        document.addEventListener('pointerup', function onUp(ev) {
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onUp);
+            
+            icon.style.zIndex = "auto";
 
-                if (!isDragging) return;
+            if (!isDragging) return;
 
-                let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
-                    window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : 
-                    { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
-                    
-                const trashIcon = document.getElementById('icon-win-trash');
+            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
+                window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : 
+                { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
+                
+            const trashIcon = document.getElementById('icon-win-trash');
 
-                if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
-                    icon.style.display = 'none';
-                    window.closeOSWindow(icon.dataset.id);
-                    if (typeof trashedApps !== 'undefined') {
-                        trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
-                        localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-                    }
-                    if (window.renderTrashList) window.renderTrashList();
-                    if (window.renderExplorerList) window.renderExplorerList();
-                    if (window.renderStoreList) window.renderStoreList();
-                    icon.style.left = oldLeft;
-                    icon.style.top = oldTop;
-                    return;
+            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
+                icon.style.display = 'none';
+                window.closeOSWindow(icon.getAttribute('data-id') || icon.dataset.id);
+                if (typeof trashedApps !== 'undefined') {
+                    trashedApps[icon.id] = { ru: icon.getAttribute('data-title-ru') || '', en: icon.getAttribute('data-title-en') || '' };
+                    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
                 }
-
-                let overlap = false;
-                document.querySelectorAll('.icon').forEach(other => {
-                    if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
-                });
-
-                if (overlap) {
-                    icon.style.left = oldLeft;
-                    icon.style.top = oldTop;
-                    return;
-                }
-
-                icon.style.left = snap.x + 'px';
-                icon.style.top = snap.y + 'px';
-
-                try {
-                    let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-                    positions[icon.id] = { left: icon.style.left, top: icon.style.top };
-                    localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-                } catch(err) {}
+                if (window.renderTrashList) window.renderTrashList();
                 if (window.renderExplorerList) window.renderExplorerList();
                 if (window.renderStoreList) window.renderStoreList();
-            });
+                icon.style.left = oldLeft;
+                icon.style.top = oldTop;
+                return;
+            }
+
+            icon.style.left = snap.x + 'px';
+            icon.style.top = snap.y + 'px';
+
+            try {
+                let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+                positions[icon.id] = { left: icon.style.left, top: icon.style.top };
+                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+            } catch(err) {}
+            if (window.renderExplorerList) window.renderExplorerList();
+            if (window.renderStoreList) window.renderStoreList();
         });
-    }
+    });
 });
 
 document.querySelectorAll('.os-window').forEach(win => {
