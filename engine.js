@@ -8,14 +8,16 @@
         return;
     }
 
-    const bootScr = document.getElementById('boot-screen');
-    const mainCont = document.getElementById('main-container');
-    if (bootScr) bootScr.style.display = 'none';
-    if (mainCont) mainCont.style.display = 'none';
+    window.onload = function() {
+        const bootScr = document.getElementById('boot-screen');
+        const mainCont = document.getElementById('main-container');
+        if (bootScr) bootScr.style.display = 'none';
+        if (mainCont) mainCont.style.display = 'none';
 
-    if (window.activateDesktopMode) {
-        window.activateDesktopMode();
-    }
+        if (window.activateDesktopMode) {
+            window.activateDesktopMode();
+        }
+    };
 })();
 
 function updateTimer() {
