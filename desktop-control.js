@@ -189,17 +189,8 @@ window.toggleWindowFromTaskbar = function(id) {
 };
 
 window.exitToTerminal = function() {
-    const desktop = document.getElementById('desktop-env');
-    const mainContainer = document.getElementById('main-container');
-    const responseText = document.getElementById('response-text');
-    const userInput = document.getElementById('user-input');
-    
-    if (desktop) desktop.style.display = 'none';
-    if (mainContainer) mainContainer.style.display = 'flex';
-    if (responseText && typeof langData !== 'undefined' && langData[currentLang]) {
-        responseText.innerText = langData[currentLang].defaultPrompt;
-    }
-    if (userInput) userInput.focus();
+    console.log("Шлюз терминала заблокирован. Выход невозможен.");
+    return false;
 };
 
 window.toggleDesktopLanguage = function() {
