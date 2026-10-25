@@ -4,122 +4,121 @@ window.desktopLangClicks = 0;
 
 document.querySelectorAll('.icon').forEach(icon => {
     let isDragging = false;
-    let startX = 0, startY = 0;
+    let shiftX = 0, shiftY = 0;
     let oldTop = icon.style.top;
     let oldLeft = icon.style.left;
+
+    const picEl = icon.querySelector('.icon-pic');
+    const nameEl = icon.querySelector('.icon-name');
 
     function executeOpen() {
         if (icon.style.display === 'none') return;
         window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
     }
 
-    icon.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isDragging) {
-            executeOpen();
-        }
-    });
-
-    let lastTap = 0;
-    icon.addEventListener('touchend', (e) => {
-        if (isDragging || icon.style.display === 'none') return;
-        let currentTime = new Date().getTime();
-        let tapLength = currentTime - lastTap;
-        if (tapLength < 300 && tapLength > 0) {
+    if (nameEl) {
+        nameEl.style.cursor = 'pointer';
+        nameEl.style.pointerEvents = 'auto';
+        
+        nameEl.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             executeOpen();
-        }
-        lastTap = currentTime;
-    });
+        });
 
-    icon.addEventListener('pointerdown', function(e) {
-        if (icon.style.display === 'none') return;
-        
-        isDragging = false;
-        startX = e.clientX;
-        startY = e.clientY;
-        
-        icon.style.zIndex = "5000";
-        oldTop = icon.style.top;
-        oldLeft = icon.style.left;
+        nameEl.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            executeOpen();
+        });
+    }
 
-        function onPointerMove(ev) {
-            if (!isDragging && (Math.abs(ev.clientX - startX) > 8 || Math.abs(ev.clientY - startY) > 8)) {
-                isDragging = true;
-            }
+    if (picEl) {
+        picEl.style.cursor = 'move';
+        picEl.style.pointerEvents = 'auto';
+
+        picEl.addEventListener('pointerdown', function(e) {
+            if (icon.style.display === 'none') return;
+            e.stopPropagation();
             
-            if (isDragging) {
+            isDragging = false;
+            icon.style.zIndex = "5000";
+            
+            let rect = icon.getBoundingClientRect();
+            shiftX = e.clientX - rect.left;
+            shiftY = e.clientY - rect.top;
+            
+            oldTop = icon.style.top;
+            oldLeft = icon.style.left;
+
+            function onPointerMove(ev) {
+                isDragging = true;
+                
                 let containerEl = document.getElementById('desktopIconsContainer');
                 if (!containerEl) return;
                 let container = containerEl.getBoundingClientRect();
                 
-                let x = ev.clientX - container.left - (icon.offsetWidth / 2);
-                let y = ev.clientY - container.top - (icon.offsetHeight / 2);
+                let x = ev.clientX - container.left - shiftX;
+                let y = ev.clientY - container.top - shiftY;
                 
                 icon.style.left = x + 'px';
                 icon.style.top = y + 'px';
             }
-        }
 
-        document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointermove', onPointerMove);
 
-        document.addEventListener('pointerup', function onUp(ev) {
-            icon.style.zIndex = "auto";
-            document.removeEventListener('pointermove', onPointerMove);
-            document.removeEventListener('pointerup', onUp);
+            document.addEventListener('pointerup', function onUp(ev) {
+                icon.style.zIndex = "auto";
+                document.removeEventListener('pointermove', onPointerMove);
+                document.removeEventListener('pointerup', onUp);
 
-            setTimeout(() => { isDragging = false; }, 50);
+                if (!isDragging) return;
 
-            if (Math.abs(ev.clientX - startX) <= 8 && Math.abs(ev.clientY - startY) <= 8) {
-                return;
-            }
+                let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
+                    window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : 
+                    { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
+                    
+                const trashIcon = document.getElementById('icon-win-trash');
 
-            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
-                window.snapToGrid(ev.clientX - (icon.offsetWidth / 2), ev.clientY - (icon.offsetHeight / 2)) : 
-                { x: ev.clientX - (icon.offsetWidth / 2), y: ev.clientY - (icon.offsetHeight / 2) };
-                
-            const trashIcon = document.getElementById('icon-win-trash');
-
-            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
-                icon.style.display = 'none';
-                window.closeOSWindow(icon.dataset.id);
-                if (typeof trashedApps !== 'undefined') {
-                    trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
-                    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+                if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
+                    icon.style.display = 'none';
+                    window.closeOSWindow(icon.dataset.id);
+                    if (typeof trashedApps !== 'undefined') {
+                        trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
+                        localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+                    }
+                    if (window.renderTrashList) window.renderTrashList();
+                    if (window.renderExplorerList) window.renderExplorerList();
+                    if (window.renderStoreList) window.renderStoreList();
+                    icon.style.left = oldLeft;
+                    icon.style.top = oldTop;
+                    return;
                 }
-                if (window.renderTrashList) window.renderTrashList();
+
+                let overlap = false;
+                document.querySelectorAll('.icon').forEach(other => {
+                    if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
+                });
+
+                if (overlap) {
+                    icon.style.left = oldLeft;
+                    icon.style.top = oldTop;
+                    return;
+                }
+
+                icon.style.left = snap.x + 'px';
+                icon.style.top = snap.y + 'px';
+
+                try {
+                    let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+                    positions[icon.id] = { left: icon.style.left, top: icon.style.top };
+                    localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+                } catch(err) {}
                 if (window.renderExplorerList) window.renderExplorerList();
                 if (window.renderStoreList) window.renderStoreList();
-                icon.style.left = oldLeft;
-                icon.style.top = oldTop;
-                return;
-            }
-
-            let overlap = false;
-            document.querySelectorAll('.icon').forEach(other => {
-                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
             });
-
-            if (overlap) {
-                icon.style.left = oldLeft;
-                icon.style.top = oldTop;
-                return;
-            }
-
-            icon.style.left = snap.x + 'px';
-            icon.style.top = snap.y + 'px';
-
-            try {
-                let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-                positions[icon.id] = { left: icon.style.left, top: icon.style.top };
-                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-            } catch(err) {}
-            if (window.renderExplorerList) window.renderExplorerList();
-            if (window.renderStoreList) window.renderStoreList();
         });
-    });
+    }
 });
 
 document.querySelectorAll('.os-window').forEach(win => {
