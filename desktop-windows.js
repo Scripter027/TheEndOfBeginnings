@@ -1,82 +1,197 @@
-(function generateDesktopWindowsPartOne() {
-    const container = document.getElementById(
-        'desktop-windows-container'
-    );
-    if (!container) return;
-    const templatesOne = [
-        { id: 'win-trash', style: 'width: 340px; height: 240px; top: 15%; left: 10px;', headId: 'head-trash', title: 'КОРЗИНА', body: '<div class="trash-controls"><button class="trash-btn" id="btn-trash-clear" onclick="emptyTrash()">Очистить</button></div><div class="trash-list" id="trashListContainer"></div>' },
-        { id: 'win-explorer', style: 'width: 360px; height: 300px; top: 10%; left: 40px;', headId: 'head-explorer', title: 'ПРОВОДНИК', body: '<div id="explorerListContainer" style="height:100%; width:100%;"></div>' },
-        { id: 'win-store', style: 'width: 360px; height: 320px; top: 15%; left: 60px;', headId: 'head-store', title: 'KEEPER STORE', body: '<div id="storeListContainer" style="height: calc(100% - 40px); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px;"></div><div class="store-tab-container" style="height: 40px; border-top: 2px solid #55ff55; display: flex; background: rgba(0,0,0,0.85);"><button id="store-tab-apps" onclick="switchStoreTab(\'apps\')" style="flex:1; background:transparent; border:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">APPS</button><button id="store-tab-games" onclick="switchStoreTab(\'games\')" style="flex:1; background:transparent; border-left: 2px solid #55ff55; border-top:none; border-right:none; border-bottom:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">GAMES</button></div>' },
-        { id: 'win-settings', style: 'width: 340px; height: 220px; top: 20%; left: 80px;', headId: 'head-settings', title: 'НАСТРОЙКИ', body: '<div style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; height:100%;"><p id="txt-settings-info" style="font-size:12px; text-align:center; line-height:1.4;"></p><button class="trash-btn" id="btn-reset-all" onclick="window.clearAllOSData()" style="border-color:var(--neon-red); color:var(--neon-red); box-shadow: 0 0 10px rgba(255, 51, 51, 0.4); width:100%; padding:12px; font-weight:bold; margin-top:5px;">СТЕРЕТЬ ДАННЫЕ</button></div>' },
-        { id: 'win-tetris', style: 'width: 300px; height: 420px; top: 8%; left: 15px;', headId: 'head-tetris', title: 'TETRIS.EXE', body: '<div style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; overflow:hidden; height:100%; padding:8px;"><div id="tetris-score" style="font-size:14px; font-weight:bold; color:#55ff55; margin-bottom:4px;">СЧЕТ: 0</div><canvas id="tetrisCanvas" style="background:#000; border:2px solid #55ff55; display:block; max-height:200px; aspect-ratio:10/20;"></canvas><div id="tetris-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:4px 0;"></div><div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%;"><button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris(\'left\')">◀</button><button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris(\'rotate\')">🔄</button><button class="trash-btn" style="padding:6px; font-size:11px;" onclick="controlTetris(\'right\')">▶</button><button class="trash-btn" style="padding:6px; font-size:11px; grid-column:span 3;" onclick="controlTetris(\'down\')">▼ СКОРОСТЬ</button></div></div>' },
-        { id: 'win-sudoku', style: 'width: 320px; height: 490px; top: 15%; left: 15px;', headId: 'head-sudoku', title: 'SUDOKU.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow:hidden;"><div id="sudoku-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;"><span id="sudoku-current-score">SCORE: 0</span><span id="sudoku-high-score">BEST: 0</span></div><div id="sudokuBoard" style="display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; background:#000000; border:2px solid #55ff55; width:100%; aspect-ratio:1/1; margin-bottom:6px;"></div><div id="sudoku-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; line-height:1.3;"></div><div id="sudokuDock" class="bb-dock" style="min-height:45px; padding:4px;"></div></div>' },
-        { id: 'win-memory', style: 'width: 300px; height: 400px; top: 10%; left: 20px;', headId: 'head-memory', title: 'MEMORY.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow:hidden;"><div id="memory-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">СЧЕТ: 0</div><div id="memoryBoard" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; aspect-ratio:1/1; margin:10px 0;"></div><div id="memory-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div></div>' },
-        { id: 'win-tower', style: 'width: 320px; height: 410px; top: 12%; left: 40px;', headId: 'head-tower', title: 'TOWER.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow:hidden;"><div id="tower-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">ЭТАЖИ: 0</div><canvas id="towerCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:240px;"></canvas><div id="tower-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div></div>' }
-    ];
-    templatesOne.forEach(t => {
-        const winDiv = document.createElement('div');
-        winDiv.className = 'os-window';
-        winDiv.id = t.id;
-        winDiv.style.cssText = t.style;
-        winDiv.innerHTML = `
-            <div class="window-header">
-                <span id="${t.headId}">${t.title}</span>
-                <div class="window-controls">
-                    <span class="window-btn" 
-                    onclick="toggleMaximize('${t.id}')">[ ]</span>
-                    <span class="window-btn" 
-                    onclick="minimizeOSWindow('${t.id}')">_</span>
-                    <span class="window-btn window-close" 
-                    onclick="closeOSWindow('${t.id}')">X</span>
-                </div>
-            </div>
-            <div class="window-body" 
-            style="height:calc(100% - 38px); overflow-y:auto;">
-                ${t.body}
-            </div>
-        `;
-        container.appendChild(winDiv);
+window.osZIndex = 3000;
+window.openWindowsTrack = {};
+window.desktopLangClicks = 0;
+
+document.querySelectorAll('.icon').forEach(icon => {
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let shiftX = 0, shiftY = 0;
+    let oldTop = icon.style.top;
+    let oldLeft = icon.style.left;
+
+    icon.addEventListener('dblclick', (e) => {
+        if (icon.style.display === 'none') return;
+        window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
     });
-})();
-(function generateDesktopWindowsPartTwo() {
-    const container = document.getElementById(
-        'desktop-windows-container'
-    );
-    if (!container) return;
-    const templatesTwo = [
-        { id: 'win-zip', style: 'width: 330px; height: 200px; top: 20%; left: 15px;', headId: 'head-zip', title: 'SECRET.ZIP', body: '<p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p><input type="password" class="zip-input-field" placeholder="..."><button class="trash-btn" onclick="checkZipPassword(\'win-zip\')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>' },
-        { id: 'win-zip2', style: 'width: 330px; height: 200px; top: 25%; left: 20px;', headId: 'head-zip2', title: 'SECRET1.ZIP', body: '<p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p><input type="password" class="zip-input-field" placeholder="..."><button class="trash-btn" onclick="checkZipPassword(\'win-zip2\')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>' },
-        { id: 'win-zip3', style: 'width: 330px; height: 200px; top: 30%; left: 25px;', headId: 'head-zip3', title: 'SECRET2.ZIP', body: '<p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p><input type="password" class="zip-input-field" placeholder="..."><button class="trash-btn" onclick="checkZipPassword(\'win-zip3\')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>' },
-        { id: 'win-dontopen', style: 'width: 320px; height: 200px; top: 20%; left: 30px;', headId: 'head-dontopen', title: 'НЕ ОТКРЫВАТЬ', body: '<div id="nestedFolderBody"><span class="nested-folder-link" id="nested-link-0" onclick="advanceNestedFolder(1)">📁 Я СЕРЬЕЗНО</span></div>' },
-        { id: 'win-msg', style: 'width: 380px; height: 260px; top: 12%; left: 12px;', headId: 'head-msg', title: 'МЕССЕНДЖЕР v1.02', body: '<div class="msg-container" style="height:100%; width:100%;"><div class="msg-left" id="msg-user-list"></div><div class="msg-right" id="msg-chat-zone"></div></div>' },
-        { id: 'win-search', style: 'width: 330px; height: 180px; top: 40%; left: 8px;', headId: 'head-search', title: 'БРАУЗЕР \'ПРИЗРАК\'', body: '<div id="search-browser-body" style="height:100%; width:100%;"></div>' },
-        { id: 'win-dino', style: 'width: 360px; height: 280px; top: 5%; left: 5px;', headId: 'head-dino', title: 'DINO_RUN.EXE', body: '<div style="text-align:center; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px;"><canvas id="dinoCanvas" class="dino-canvas" width="580" height="150" style="max-height:140px;"></canvas><div id="dino-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:4px 0;"></div><div id="dino-hint" style="font-size:11px; padding:6px; background:rgba(85,255,85,0.1); cursor:pointer; border:1px solid #55ff55;" onclick="window.triggerDinoJump()">НАЖМИ ДЛЯ ПРЫЖКА / СТАРТА</div></div>' },
-        { id: 'win-blocks', style: 'width: 320px; height: 500px; top: 2px; left: 2px;', headId: 'head-blocks', title: 'BLOCK_BLAST.EXE', body: '<div style="overflow-y:auto; display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px;"><div class="bb-container"><div style="font-size:14px; font-weight:bold; margin-bottom:4px;" id="bb-score">СЧЕТ: 0</div><div id="bbBoard" class="bb-board"></div><div id="bb-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold; margin:6px 0;"></div><div id="bbDock" class="bb-dock"></div></div></div>' },
-        { id: 'win-words', style: 'width: 320px; height: 480px; top: 10%; left: 15px;', headId: 'head-words', title: 'СЛОВА.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow-y:auto;"><div id="words-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;"><span>SCORE: 0</span><span>BEST: 0</span></div><div style="display:flex; justify-content:center; align-items:center; width:100%; flex:1;"><div id="wordsBoard"></div></div><div id="words-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; margin-top:4px; line-height:1.3;"></div><div id="wordsDock" style="width:100%; min-height:65px; margin-top:4px;"></div></div>' },
-        { id: 'win-hangman', style: 'width: 330px; height: 430px; top: 15%; left: 30px;', headId: 'head-hangman', title: 'ВИСЕЛИЦА.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:6px; overflow:hidden;"><div id="hangman-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;"><span id="hangman-current-score">SCORE: 0</span><span id="hangman-high-score">BEST: 0</span></div><canvas id="hangmanCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:150px;"></canvas><div id="hangman-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; margin-top:2px; line-height:1.3;"></div><div id="hangmanDock" style="width:100%; min-height:65px;"></div></div>' }
-    ];
-    templatesTwo.forEach(t => {
-        const winDiv = document.createElement('div');
-        winDiv.className = 'os-window';
-        winDiv.id = t.id;
-        winDiv.style.cssText = t.style;
-        winDiv.innerHTML = `
-            <div class="window-header">
-                <span id="${t.headId}">${t.title}</span>
-                <div class="window-controls">
-                    <span class="window-btn" 
-                    onclick="toggleMaximize('${t.id}')">[ ]</span>
-                    <span class="window-btn" 
-                    onclick="minimizeOSWindow('${t.id}')">_</span>
-                    <span class="window-btn window-close" 
-                    onclick="closeOSWindow('${t.id}')">X</span>
-                </div>
-            </div>
-            <div class="window-body" 
-            style="height:calc(100% - 38px); overflow-y:auto;">
-                ${t.body}
-            </div>
-        `;
-        container.appendChild(winDiv);
+
+    let lastTap = 0;
+    icon.addEventListener('touchend', (e) => {
+        if (isDragging || icon.style.display === 'none') return;
+        let currentTime = new Date().getTime();
+        let tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault();
+            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
+        }
+        lastTap = currentTime;
     });
-})();
+
+    icon.addEventListener('pointerdown', function(e) {
+        if (icon.style.display === 'none') return;
+        
+        isDragging = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        icon.style.zIndex = "5000";
+        let rect = icon.getBoundingClientRect();
+        shiftX = e.clientX - rect.left;
+        shiftY = e.clientY - rect.top;
+        oldTop = icon.style.top;
+        oldLeft = icon.style.left;
+
+        function onPointerMove(ev) {
+            if (!isDragging && (Math.abs(ev.clientX - startX) > 4 || Math.abs(ev.clientY - startY) > 4)) {
+                isDragging = true;
+            }
+            
+            let containerEl = document.getElementById('desktopIconsContainer');
+            if (!containerEl) return;
+            let container = containerEl.getBoundingClientRect();
+            let x = ev.clientX - container.left - shiftX;
+            let y = ev.clientY - container.top - shiftY;
+            icon.style.left = x + 'px';
+            icon.style.top = y + 'px';
+        }
+
+        document.addEventListener('pointermove', onPointerMove);
+
+        document.addEventListener('pointerup', function onUp(ev) {
+            icon.style.zIndex = "auto";
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onUp);
+
+            if (!isDragging && ev.pointerType === 'mouse') {
+                return;
+            }
+
+            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
+            const trashIcon = document.getElementById('icon-win-trash');
+
+            if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
+                icon.style.display = 'none';
+                window.closeOSWindow(icon.dataset.id);
+                if (typeof trashedApps !== 'undefined') {
+                    trashedApps[icon.id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
+                    localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
+                }
+                if (window.renderTrashList) window.renderTrashList();
+                if (window.renderExplorerList) window.renderExplorerList();
+                if (window.renderStoreList) window.renderStoreList();
+                icon.style.left = oldLeft;
+                icon.style.top = oldTop;
+                return;
+            }
+
+            let overlap = false;
+            document.querySelectorAll('.icon').forEach(other => {
+                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
+            });
+
+            if (overlap) {
+                icon.style.left = oldLeft;
+                icon.style.top = oldTop;
+                return;
+            }
+
+            icon.style.left = snap.x + 'px';
+            icon.style.top = snap.y + 'px';
+
+            try {
+                let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+                positions[icon.id] = { left: icon.style.left, top: icon.style.top };
+                localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
+            } catch(err) {}
+            if (window.renderExplorerList) window.renderExplorerList();
+            if (window.renderStoreList) window.renderStoreList();
+        });
+    });
+});
+
+document.querySelectorAll('.os-window').forEach(win => {
+    let header = win.querySelector('.window-header');
+    if (!header) return;
+    header.addEventListener('pointerdown', function(e) {
+        if (e.target.classList.contains('window-btn') || win.classList.contains('maximized')) return;
+        win.style.zIndex = ++window.osZIndex;
+        let shiftX = e.clientX - win.getBoundingClientRect().left;
+        let shiftY = e.clientY - win.getBoundingClientRect().top;
+        
+        function moveAt(pageX, pageY) {
+            let top = pageY - shiftY;
+            if (top < 0) top = 0;
+            win.style.left = (pageX - shiftX) + 'px';
+            win.style.top = top + 'px';
+        }
+        
+        function onPointerMove(ev) { moveAt(ev.clientX, ev.clientY); }
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', function onUp() {
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onUp);
+        });
+    });
+});
+
+window.toggleMaximize = function(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    win.classList.toggle('maximized');
+    if (id === 'win-msg' && window.initMessenger) window.initMessenger();
+};
+
+window.openOSWindow = function(id, title, iconStr) {
+    if (id === 'win-bsod') {
+        if (window.triggerBSOD) window.triggerBSOD();
+        return;
+    }
+    const win = document.getElementById(id);
+    if (!win) return;
+    win.style.display = 'block';
+    win.style.zIndex = ++window.osZIndex;
+    if (window.innerWidth < 600) {
+        win.style.left = '4vw';
+        win.style.top = '10vh';
+    }
+    if (!window.openWindowsTrack[id]) {
+        window.openWindowsTrack[id] = iconStr || '📦';
+        if (window.renderTaskbarApps) window.renderTaskbarApps();
+    }
+    if (id === 'win-dino' && window.resetDinoGame) window.resetDinoGame();
+    if (id === 'win-blocks' && window.resetBlockBlastGame) window.resetBlockBlastGame();
+    if (id === 'win-store' && window.initKeeperStore) window.initKeeperStore();
+    if (id === 'win-search' && window.initSearchBrowser) window.initSearchBrowser();
+    if (id === 'win-tetris' && window.initTetrisGame) window.initTetrisGame();
+    if (id === 'win-sudoku' && window.showSudokuMenu) window.showSudokuMenu();
+    if (id === 'win-memory' && window.resetMemoryGame) window.resetMemoryGame();
+    if (id === 'win-tower' && window.resetTowerGame) window.resetTowerGame();
+    if (id === 'win-words' && window.showWordsMenu) window.showWordsMenu();
+    if (id === 'win-hangman' && window.showHangmanMenu) window.showHangmanMenu();
+};
+
+window.closeOSWindow = function(id) {
+    const win = document.getElementById(id);
+    if (win) {
+        win.style.display = 'none';
+        win.classList.remove('maximized');
+    }
+    delete window.openWindowsTrack[id];
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
+};
+
+window.minimizeOSWindow = function(id) {
+    const win = document.getElementById(id);
+    if (win) win.style.display = 'none';
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
+};
+
+window.toggleWindowFromTaskbar = function(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    if (win.style.display === 'block') {
+        win.style.display = 'none';
+    } else {
+        win.style.display = 'block';
+        win.style.zIndex = ++window.osZIndex;
+    }
+};
