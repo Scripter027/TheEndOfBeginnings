@@ -13,9 +13,10 @@
         const mainCont = document.getElementById('main-container');
         if (bootScr) bootScr.style.display = 'none';
         if (mainCont) mainCont.style.display = 'none';
-
-        if (window.activateDesktopMode) {
-            window.activateDesktopMode();
+        
+        const menuEl = document.getElementById('game-main-menu');
+        if (menuEl) {
+            menuEl.style.display = 'flex';
         }
     };
 })();
