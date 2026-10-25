@@ -5,13 +5,17 @@ window.desktopLangClicks = 0;
 document.querySelectorAll('.icon').forEach(icon => {
     let isDragging = false;
     let startX = 0, startY = 0;
-    let shiftX = 0, shiftY = 0;
     let oldTop = icon.style.top;
     let oldLeft = icon.style.left;
 
-    icon.addEventListener('dblclick', (e) => {
+    function executeOpen() {
         if (icon.style.display === 'none') return;
         window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
+    }
+
+    icon.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        executeOpen();
     });
 
     let lastTap = 0;
@@ -21,7 +25,7 @@ document.querySelectorAll('.icon').forEach(icon => {
         let tapLength = currentTime - lastTap;
         if (tapLength < 300 && tapLength > 0) {
             e.preventDefault();
-            window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
+            executeOpen();
         }
         lastTap = currentTime;
     });
@@ -34,22 +38,21 @@ document.querySelectorAll('.icon').forEach(icon => {
         startY = e.clientY;
         
         icon.style.zIndex = "5000";
-        let rect = icon.getBoundingClientRect();
-        shiftX = e.clientX - rect.left;
-        shiftY = e.clientY - rect.top;
         oldTop = icon.style.top;
         oldLeft = icon.style.left;
 
         function onPointerMove(ev) {
-            if (!isDragging && (Math.abs(ev.clientX - startX) > 4 || Math.abs(ev.clientY - startY) > 4)) {
+            if (!isDragging && (Math.abs(ev.clientX - startX) > 5 || Math.abs(ev.clientY - startY) > 5)) {
                 isDragging = true;
             }
             
             let containerEl = document.getElementById('desktopIconsContainer');
             if (!containerEl) return;
             let container = containerEl.getBoundingClientRect();
-            let x = ev.clientX - container.left - shiftX;
-            let y = ev.clientY - container.top - shiftY;
+            
+            let x = ev.clientX - container.left - (icon.offsetWidth / 2);
+            let y = ev.clientY - container.top - (icon.offsetHeight / 2);
+            
             icon.style.left = x + 'px';
             icon.style.top = y + 'px';
         }
@@ -61,11 +64,18 @@ document.querySelectorAll('.icon').forEach(icon => {
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
 
-            if (!isDragging && ev.pointerType === 'mouse') {
+            if (!isDragging) {
+                if (ev.pointerType === 'touch') {
+                } else {
+                    executeOpen();
+                }
                 return;
             }
 
-            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
+            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
+                window.snapToGrid(ev.clientX - (icon.offsetWidth / 2), ev.clientY - (icon.offsetHeight / 2)) : 
+                { x: ev.clientX - (icon.offsetWidth / 2), y: ev.clientY - (icon.offsetHeight / 2) };
+                
             const trashIcon = document.getElementById('icon-win-trash');
 
             if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
@@ -194,4 +204,5 @@ window.toggleWindowFromTaskbar = function(id) {
         win.style.display = 'block';
         win.style.zIndex = ++window.osZIndex;
     }
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
 };
