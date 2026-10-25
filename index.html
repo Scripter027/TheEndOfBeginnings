@@ -29,7 +29,7 @@
         body::before {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), var(--glass-glare);
-            z-index: 9999; background-size: 100% 4px, 100% 100%; pointer-events: none;
+            z-index: 999999; background-size: 100% 4px, 100% 100%; pointer-events: none;
         }
         body.wrong-flash { color: var(--neon-red) !important; text-shadow: var(--glow-red) !important; }
         body.wrong-flash::before {
@@ -76,15 +76,11 @@
         .info-btn:hover { opacity: 1; background: var(--neon-green); color: #000000; text-shadow: none; }
         .lang-switch { position: absolute; bottom: 20px; right: 20px; font-size: 15px; font-weight: bold; cursor: pointer; opacity: 0.6; padding: 5px 10px; transition: all 0.1s ease; }
         .lang-switch:hover { opacity: 1; }
-        .lang-switch.rage-mode { color: var(--neon-red) !important; border: 1px dashed var(--neon-red); box-shadow: var(--glow-red); text-shadow: var(--glow-red); animation: pulse 0.5s infinite alternate; }
         .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { border: 2px solid var(--neon-green); box-shadow: var(--glow-green); background: #000000; padding: 25px; max-width: 600px; width: 100%; text-align: center; line-height: 1.6; font-size: 15px; white-space: pre-line; }
         .pwa-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; box-sizing: border-box; }
         .pwa-box { border: 2px solid var(--neon-green); padding: 20px; box-shadow: var(--glow-green); max-width: 450px; width: 100%; line-height: 1.6; font-size: 15px; }
-        @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
         a { color: var(--neon-green); text-decoration: underline; cursor: pointer; pointer-events: auto; }
-        @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; } .modal-content { font-size: 14px; } }
-        @media (max-width: 480px) { #main-container { padding: 10px; } .timer-wrapper { top: 4%; width: 85%; min-width: 0; } .timer { font-size: 19px; } .secret-active .timer { font-size: 22px; } .terminal-box { margin-top: 80px; } .terminal-output { font-size: 15px; min-height: 120px; margin-bottom: 20px; } .input-group { flex-direction: column; gap: 8px; } .btn-submit { width: 100%; padding: 12px; } .terminal-input { padding: 12px; font-size: 15px; } .info-btn { bottom: 15px; left: 15px; } .lang-switch { bottom: 15px; right: 15px; } }
         .desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: #55ff55; padding: 10px; user-select: none; text-shadow: 0 0 10px rgba(85, 255, 85, 0.5); overflow: hidden; }
         .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
         .icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid #55ff55; width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border-radius: 0; touch-action: none; z-index: 2100; transition: background 0.15s ease, box-shadow 0.15s ease; }
@@ -123,15 +119,32 @@
         .msg-user-item:hover { border-color: #55ff55; background: rgba(85, 255, 85, 0.15); }
         .msg-right { width: 65%; display: flex; flex-direction: column; height: 100%; background: rgba(0,0,0,0.2); }
         .dino-canvas { background: #000000; border: 2px solid #55ff55; display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.4); }
+        .menu-glitch-green { color: #33ff33; text-shadow: 0 0 10px rgba(51, 255, 51, 0.4); animation: menuJitterMin 0.3s infinite; }
+        .menu-glitch-red { color: #ff3333 !important; text-shadow: 0 0 15px rgba(255, 51, 51, 0.8) !important; animation: menuJitterMax 0.1s infinite !important; }
+        @keyframes menuJitterMin { 0% { transform: translate(0, 0); } 20% { transform: translate(-1px, 1px); } 40% { transform: translate(1px, -1px); } 60% { transform: translate(-1px, -1px); } 80% { transform: translate(1px, 1px); } 100% { transform: translate(0, 0); } }
+        @keyframes menuJitterMax { 0% { transform: translate(0, 0); } 10% { transform: translate(-3px, 2px); } 20% { transform: translate(3px, -2px); } 30% { transform: translate(-2px, -3px); } 40% { transform: translate(2px, 3px); } 50% { transform: translate(-3px, -1px); } 60% { transform: translate(3px, 2px); } 70% { transform: translate(-1px, -3px); } 80% { transform: translate(2px, 1px); } 90% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
+        @media (max-width: 768px) { .timer-wrapper { min-width: 220px; padding: 8px 15px; } .timer { font-size: 22px; } .secret-active .timer { font-size: 28px; } .terminal-output { font-size: 17px; } .modal-content { font-size: 14px; } }
+        @media (max-width: 480px) { #main-container { padding: 10px; } .timer-wrapper { top: 4%; width: 85%; min-width: 0; } .timer { font-size: 19px; } .secret-active .timer { font-size: 22px; } .terminal-box { margin-top: 80px; } .terminal-output { font-size: 15px; min-height: 120px; margin-bottom: 20px; } .input-group { flex-direction: column; gap: 8px; } .btn-submit { width: 100%; padding: 12px; } .terminal-input { padding: 12px; font-size: 15px; } .info-btn { bottom: 15px; left: 15px; } .lang-switch { bottom: 15px; right: 15px; } }
     </style>
 </head>
 <body>
+    <div id="game-main-menu" style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; flex-direction: column; justify-content: space-between; padding: 40px; box-sizing: border-box;">
+        <div>
+            <div id="menu-title-node" class="menu-glitch-green" style="font-size: 48px; font-weight: bold; letter-spacing: 3px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; user-select: none;">The Message</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%;">
+            <button id="menu-btn-story" class="btn-submit" style="opacity: 0.4; cursor: not-allowed; width: 100%; text-align: left; padding: 16px;">НАЧАТЬ ИГРУ</button>
+            <button id="menu-btn-free" class="btn-submit" style="width: 100%; text-align: left; padding: 16px;">СВОБОДНАЯ ИГРА</button>
+        </div>
+    </div>
+
     <div id="pwa-install-overlay" class="pwa-overlay">
         <div class="pwa-box">
             <p>Чтобы данный site работал вам нужно добавить его на экран домой.</p><br>
-            <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
+            <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") in вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
+
     <div id="main-container">
         <div class="timer-wrapper" id="timer-toggle">
             <div class="timer-title" id="timer-label">До момента x осталось:</div>
@@ -170,7 +183,7 @@
             <div class="icon" id="icon-win-zip3" data-id="win-zip3" data-title-ru="secret2.zip" data-title-en="secret2.zip" data-icon="📦"><div class="icon-pic">📦</div><div class="icon-name">secret2.zip</div></div>
             <div class="icon" id="icon-win-dontopen" data-id="win-dontopen" data-title-ru="НЕ ОТКРЫВАТЬ" data-title-en="DO NOT OPEN" data-icon="📁"><div class="icon-pic">📁</div><div class="icon-name" id="label-win-dontopen">НЕ ОТКРЫВАТЬ</div></div>
             <div class="icon" id="icon-win-bsod" data-id="win-bsod" data-title-ru="Экран Смерти" data-title-en="BSOD Screen" data-icon="💀"><div class="icon-pic">💀</div><div class="icon-name" id="label-win-bsod">Экран Смерти</div></div>
-            <div class="icon" id="icon-win-words" data-id="win-words" data-title-ru="Слова" data-title-en="Words" data-icon="🔤"><div class="icon-pic">🔤</div><div class="icon-name" id="label-win-words">Слова</div></div>
+            <div class="icon" id="icon-win-words" data-id="win-words" data-title-ru="Слова" data-title-en="Words" data-icon="𔔤"><div class="icon-pic">𔔤</div><div class="icon-name" id="label-win-words">Слова</div></div>
             <div class="icon" id="icon-win-hangman" data-id="win-hangman" data-title-ru="Виселица" data-title-en="Hangman" data-icon="🪵"><div class="icon-pic">🪵</div><div class="icon-name" id="label-win-hangman">Виселица</div></div>
         </div>
         <div id="win-trash" class="os-window" style="width: 340px; height: 240px; top: 15%; left: 10px;">
@@ -305,7 +318,7 @@
                 </div>
             </div>
         </div>
-                        <div id="win-words" class="os-window" style="width: 320px; height: 480px; top: 10%; left: 15px;">
+        <div id="win-words" class="os-window" style="width: 320px; height: 480px; top: 10%; left: 15px;">
             <div class="window-header"><span id="head-words">СЛОВА.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-words')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-words')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-words')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:8px; overflow-y:auto;">
                 <div id="words-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
@@ -319,7 +332,6 @@
                 <div id="wordsDock" style="width:100%; min-height:65px; margin-top:4px;"></div>
             </div>
         </div>
-
         <div id="win-hangman" class="os-window" style="width: 330px; height: 430px; top: 15%; left: 30px;">
             <div class="window-header"><span id="head-hangman">ВИСЕЛИЦА.EXE</span><div class="window-controls"><span class="window-btn" onclick="toggleMaximize('win-hangman')">[ ]</span><span class="window-btn" onclick="minimizeOSWindow('win-hangman')">_</span><span class="window-btn window-close" onclick="closeOSWindow('win-hangman')">X</span></div></div>
             <div class="window-body" style="display:flex; flex-direction:column; justify-content:space-between; height:calc(100% - 38px); padding:6px; overflow:hidden;">
@@ -344,6 +356,7 @@
         </div>
     </div>
     <script src="config.js"></script>
+    <script src="menu.js"></script>
     <script src="engine.js"></script>
     <script src="grid-manager.js"></script>
     <script src="trash.js"></script>
