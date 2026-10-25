@@ -1,7 +1,8 @@
 (function generateDesktopWindowsPartOne() {
-    const container = document.getElementById('desktop-windows-container');
+    const container = document.getElementById(
+        'desktop-windows-container'
+    );
     if (!container) return;
-
     const templatesOne = [
         { id: 'win-trash', style: 'width: 340px; height: 240px; top: 15%; left: 10px;', headId: 'head-trash', title: 'КОРЗИНА', body: '<div class="trash-controls"><button class="trash-btn" id="btn-trash-clear" onclick="emptyTrash()">Очистить</button></div><div class="trash-list" id="trashListContainer"></div>' },
         { id: 'win-explorer', style: 'width: 360px; height: 300px; top: 10%; left: 40px;', headId: 'head-explorer', title: 'ПРОВОДНИК', body: '<div id="explorerListContainer" style="height:100%; width:100%;"></div>' },
@@ -12,7 +13,6 @@
         { id: 'win-memory', style: 'width: 300px; height: 400px; top: 10%; left: 20px;', headId: 'head-memory', title: 'MEMORY.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow:hidden;"><div id="memory-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">СЧЕТ: 0</div><div id="memoryBoard" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; width:100%; aspect-ratio:1/1; margin:10px 0;"></div><div id="memory-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div></div>' },
         { id: 'win-tower', style: 'width: 320px; height: 410px; top: 12%; left: 40px;', headId: 'head-tower', title: 'TOWER.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow:hidden;"><div id="tower-score" style="font-size:13px; font-weight:bold; color:#55ff55; text-align:center;">ЭТАЖИ: 0</div><canvas id="towerCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:240px;"></canvas><div id="tower-over-box" style="width:100%; min-height:30px; text-align:center; font-weight:bold;"></div></div>' }
     ];
-
     templatesOne.forEach(t => {
         const winDiv = document.createElement('div');
         winDiv.className = 'os-window';
@@ -22,12 +22,16 @@
             <div class="window-header">
                 <span id="${t.headId}">${t.title}</span>
                 <div class="window-controls">
-                    <span class="window-btn" onclick="toggleMaximize('${t.id}')">[ ]</span>
-                    <span class="window-btn" onclick="minimizeOSWindow('${t.id}')">_</span>
-                    <span class="window-btn window-close" onclick="closeOSWindow('${t.id}')">X</span>
+                    <span class="window-btn" 
+                    onclick="toggleMaximize('${t.id}')">[ ]</span>
+                    <span class="window-btn" 
+                    onclick="minimizeOSWindow('${t.id}')">_</span>
+                    <span class="window-btn window-close" 
+                    onclick="closeOSWindow('${t.id}')">X</span>
                 </div>
             </div>
-            <div class="window-body" style="height:calc(100% - 38px); overflow-y:auto;">
+            <div class="window-body" 
+            style="height:calc(100% - 38px); overflow-y:auto;">
                 ${t.body}
             </div>
         `;
@@ -35,9 +39,10 @@
     });
 })();
 (function generateDesktopWindowsPartTwo() {
-    const container = document.getElementById('desktop-windows-container');
+    const container = document.getElementById(
+        'desktop-windows-container'
+    );
     if (!container) return;
-
     const templatesTwo = [
         { id: 'win-zip', style: 'width: 330px; height: 200px; top: 20%; left: 15px;', headId: 'head-zip', title: 'SECRET.ZIP', body: '<p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p><input type="password" class="zip-input-field" placeholder="..."><button class="trash-btn" onclick="checkZipPassword(\'win-zip\')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>' },
         { id: 'win-zip2', style: 'width: 330px; height: 200px; top: 25%; left: 20px;', headId: 'head-zip2', title: 'SECRET1.ZIP', body: '<p class="txt-zip-locked" style="margin-bottom:10px;">Файл зашифрован ключом AES-256.</p><input type="password" class="zip-input-field" placeholder="..."><button class="trash-btn" onclick="checkZipPassword(\'win-zip2\')" style="background:#55ff55; color:#000000; font-weight:bold; width:100%; margin-top:10px; text-shadow:none;">ОК</button>' },
@@ -50,7 +55,6 @@
         { id: 'win-words', style: 'width: 320px; height: 480px; top: 10%; left: 15px;', headId: 'head-words', title: 'СЛОВА.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:8px; overflow-y:auto;"><div id="words-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;"><span>SCORE: 0</span><span>BEST: 0</span></div><div style="display:flex; justify-content:center; align-items:center; width:100%; flex:1;"><div id="wordsBoard"></div></div><div id="words-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; margin-top:4px; line-height:1.3;"></div><div id="wordsDock" style="width:100%; min-height:65px; margin-top:4px;"></div></div>' },
         { id: 'win-hangman', style: 'width: 330px; height: 430px; top: 15%; left: 30px;', headId: 'head-hangman', title: 'ВИСЕЛИЦА.EXE', body: '<div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:6px; overflow:hidden;"><div id="hangman-score-panel" style="font-size:11px; font-weight:bold; color:#55ff55; display:flex; justify-content:space-between; width:100%; margin-bottom:4px;"><span id="hangman-current-score">SCORE: 0</span><span id="hangman-high-score">BEST: 0</span></div><canvas id="hangmanCanvas" style="background:#000; border:2px solid #55ff55; display:block; width:100%; height:150px;"></canvas><div id="hangman-over-box" style="width:100%; min-height:35px; text-align:center; font-weight:bold; margin-top:2px; line-height:1.3;"></div><div id="hangmanDock" style="width:100%; min-height:65px;"></div></div>' }
     ];
-
     templatesTwo.forEach(t => {
         const winDiv = document.createElement('div');
         winDiv.className = 'os-window';
@@ -60,12 +64,16 @@
             <div class="window-header">
                 <span id="${t.headId}">${t.title}</span>
                 <div class="window-controls">
-                    <span class="window-btn" onclick="toggleMaximize('${t.id}')">[ ]</span>
-                    <span class="window-btn" onclick="minimizeOSWindow('${t.id}')">_</span>
-                    <span class="window-btn window-close" onclick="closeOSWindow('${t.id}')">X</span>
+                    <span class="window-btn" 
+                    onclick="toggleMaximize('${t.id}')">[ ]</span>
+                    <span class="window-btn" 
+                    onclick="minimizeOSWindow('${t.id}')">_</span>
+                    <span class="window-btn window-close" 
+                    onclick="closeOSWindow('${t.id}')">X</span>
                 </div>
             </div>
-            <div class="window-body" style="height:calc(100% - 38px); overflow-y:auto;">
+            <div class="window-body" 
+            style="height:calc(100% - 38px); overflow-y:auto;">
                 ${t.body}
             </div>
         `;
