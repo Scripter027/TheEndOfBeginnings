@@ -2,6 +2,15 @@ window.osZIndex = 3000;
 window.openWindowsTrack = {};
 window.desktopLangClicks = 0;
 
+(function automaticSystemWipe() {
+    if (!localStorage.getItem('kpr_os_v1_repair_flush')) {
+        localStorage.removeItem('kpr_icon_positions');
+        localStorage.removeItem('kpr_trashed_apps');
+        localStorage.removeItem('kpr_installed_apps');
+        localStorage.setItem('kpr_os_v1_repair_flush', 'true');
+    }
+})();
+
 if (!localStorage.getItem('kpr_installed_apps')) {
     const defaultApps = {
         'icon-win-msg': true,
@@ -33,10 +42,11 @@ document.querySelectorAll('.icon').forEach(icon => {
     }
 
     icon.addEventListener('click', function(e) {
-        if (isDragging) return;
         e.preventDefault();
         e.stopPropagation();
-        executeOpen();
+        if (!isDragging) {
+            executeOpen();
+        }
     });
 
     let lastTap = 0;
@@ -66,7 +76,7 @@ document.querySelectorAll('.icon').forEach(icon => {
         let shiftY = e.clientY - rect.top;
 
         function onPointerMove(ev) {
-            if (Math.abs(ev.clientX - startX) > 4 || Math.abs(ev.clientY - startY) > 4) {
+            if (Math.abs(ev.clientX - startX) > 8 || Math.abs(ev.clientY - startY) > 8) {
                 isDragging = true;
             }
             
@@ -109,6 +119,17 @@ document.querySelectorAll('.icon').forEach(icon => {
                 if (window.renderTrashList) window.renderTrashList();
                 if (window.renderExplorerList) window.renderExplorerList();
                 if (window.renderStoreList) window.renderStoreList();
+                icon.style.left = oldLeft;
+                icon.style.top = oldTop;
+                return;
+            }
+
+            let overlap = false;
+            document.querySelectorAll('.icon').forEach(other => {
+                if (other !== icon && other.style.display !== 'none' && other.offsetLeft === snap.x && other.offsetTop === snap.y) overlap = true;
+            });
+
+            if (overlap) {
                 icon.style.left = oldLeft;
                 icon.style.top = oldTop;
                 return;
