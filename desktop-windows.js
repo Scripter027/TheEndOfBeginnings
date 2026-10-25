@@ -13,9 +13,12 @@ document.querySelectorAll('.icon').forEach(icon => {
         window.openOSWindow(icon.dataset.id, currentLang === 'ru' ? icon.dataset.titleRu : icon.dataset.titleEn, icon.dataset.icon);
     }
 
-    icon.addEventListener('dblclick', (e) => {
+    icon.addEventListener('click', (e) => {
         e.preventDefault();
-        executeOpen();
+        e.stopPropagation();
+        if (!isDragging) {
+            executeOpen();
+        }
     });
 
     let lastTap = 0;
@@ -25,6 +28,7 @@ document.querySelectorAll('.icon').forEach(icon => {
         let tapLength = currentTime - lastTap;
         if (tapLength < 300 && tapLength > 0) {
             e.preventDefault();
+            e.stopPropagation();
             executeOpen();
         }
         lastTap = currentTime;
@@ -42,19 +46,21 @@ document.querySelectorAll('.icon').forEach(icon => {
         oldLeft = icon.style.left;
 
         function onPointerMove(ev) {
-            if (!isDragging && (Math.abs(ev.clientX - startX) > 5 || Math.abs(ev.clientY - startY) > 5)) {
+            if (!isDragging && (Math.abs(ev.clientX - startX) > 8 || Math.abs(ev.clientY - startY) > 8)) {
                 isDragging = true;
             }
             
-            let containerEl = document.getElementById('desktopIconsContainer');
-            if (!containerEl) return;
-            let container = containerEl.getBoundingClientRect();
-            
-            let x = ev.clientX - container.left - (icon.offsetWidth / 2);
-            let y = ev.clientY - container.top - (icon.offsetHeight / 2);
-            
-            icon.style.left = x + 'px';
-            icon.style.top = y + 'px';
+            if (isDragging) {
+                let containerEl = document.getElementById('desktopIconsContainer');
+                if (!containerEl) return;
+                let container = containerEl.getBoundingClientRect();
+                
+                let x = ev.clientX - container.left - (icon.offsetWidth / 2);
+                let y = ev.clientY - container.top - (icon.offsetHeight / 2);
+                
+                icon.style.left = x + 'px';
+                icon.style.top = y + 'px';
+            }
         }
 
         document.addEventListener('pointermove', onPointerMove);
@@ -64,11 +70,9 @@ document.querySelectorAll('.icon').forEach(icon => {
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
 
-            if (!isDragging) {
-                if (ev.pointerType === 'touch') {
-                } else {
-                    executeOpen();
-                }
+            setTimeout(() => { isDragging = false; }, 50);
+
+            if (Math.abs(ev.clientX - startX) <= 8 && Math.abs(ev.clientY - startY) <= 8) {
                 return;
             }
 
