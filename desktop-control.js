@@ -184,8 +184,9 @@ window.openOSWindow = function(id, title, iconStr) {
     win.style.position = 'absolute';
     win.style.zIndex = ++window.osZIndex;
     
-    const winWidth = win.offsetWidth || 300;
-    const winHeight = win.offsetHeight || 400;
+    const winRect = win.getBoundingClientRect();
+    const winWidth = winRect.width || win.offsetWidth || 320;
+    const winHeight = winRect.height || win.offsetHeight || 420;
     
     const leftPos = (window.innerWidth - winWidth) / 2;
     const topPos = (window.innerHeight - 44 - winHeight) / 2;
