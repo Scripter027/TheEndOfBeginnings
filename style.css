@@ -83,7 +83,24 @@ a { color: var(--neon-green); text-decoration: underline; cursor: pointer; }
 #game-main-menu { transition: background-color 0.2s ease; background-color: #000000 !important; }
 body.wrong-flash #game-main-menu .btn-submit { color: var(--neon-red) !important; border-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; text-shadow: var(--glow-red) !important; }
 body.wrong-flash #game-main-menu .btn-submit:hover:not(:disabled) { background: var(--neon-red) !important; color: #000000 !important; text-shadow: none !important; }
-body.wrong-flash #menu-matrix-art { color: var(--neon-red) !important; }
+.fade-in-element { animation: fadeInScene 1.5s ease forwards; }
+@keyframes fadeInScene { from { opacity: 0; } to { opacity: 1; } }
+.global-loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000000; z-index: 999999; justify-content: center; align-items: center; flex-direction: column; gap: 25px; font-family: 'Courier New', Courier, monospace; }
+.loader-text { color: var(--neon-green); font-size: 24px; font-weight: bold; letter-spacing: 4px; text-transform: uppercase; text-shadow: var(--glow-green); }
+body.wrong-flash .loader-text { color: var(--neon-red); text-shadow: var(--glow-red); }
+.loader-canvas-node { width: 60px; height: 64px; position: relative; animation: spinLoader 2s linear infinite; }
+.loader-line-draw { position: absolute; background: var(--neon-green); box-shadow: var(--glow-green); transition: background 0.2s, box-shadow 0.2s; }
+body.wrong-flash .loader-line-draw { background: var(--neon-red); box-shadow: var(--glow-red); }
+.l-top { top: 0; left: 0; height: 2px; width: 0; animation: drawTop 0.5s linear forwards; }
+.l-right { top: 0; right: 0; width: 2px; height: 0; animation: drawRight 0.5s linear 0.5s forwards; }
+.l-bottom { bottom: 0; right: 0; height: 2px; width: 0; animation: drawBottom 0.5s linear 1s forwards; }
+.l-left { bottom: 0; left: 0; width: 2px; height: 0; animation: drawLeft 0.5s linear 1.5s forwards; }
+@keyframes drawTop { from { width: 0; } to { width: 100%; } }
+@keyframes drawRight { from { height: 0; } to { height: 100%; } }
+@keyframes drawBottom { from { width: 0; } to { width: 100%; } }
+@keyframes drawLeft { from { height: 0; } to { height: 100%; } }
+@keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.desktop-fade-in { animation: fadeInScene 1s ease forwards; }
 @keyframes menuJitterMicro {
     0% { transform: translate(0, 0); }
     20% { transform: translate(-0.5px, 0.5px); }
