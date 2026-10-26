@@ -4,24 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The End of Beginnings</title>
-    <link rel="manifest" href="manifest.json">
-    <!-- Оставляем один единственный файл стилей вместо скриптов-инжекторов -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="game-main-menu" style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; flex-direction: column; justify-content: space-between; padding: 40px;">
-        <div><div id="menu-title-node" class="menu-glitch-green" style="font-size: 48px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;">The Message</div></div>
+        <div>
+            <div id="menu-title-node" class="menu-glitch-green" style="font-size: 48px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase;">The Message</div>
+        </div>
         <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%;">
             <button id="menu-btn-story" class="btn-submit" style="opacity: 0.4; cursor: not-allowed; width: 100%; text-align: left; padding: 16px;">НАЧАТЬ ИГРУ</button>
             <button id="menu-btn-free" class="btn-submit" style="width: 100%; text-align: left; padding: 16px;">СВОБОДНАЯ ИГРА</button>
-        </div>
-    </div>
-
-    <div id="pwa-install-overlay" class="pwa-overlay">
-        <div class="pwa-box">
-            <p>Чтобы данный site работал вам нужно добавить его на экран домой.</p><br>
-            <p>Нажмите на иконку меню (три точки или стрелка "Поделиться") в вашем браузере и выберите пункт "На экран 'Домой'" (или "Добавить на гл. экран").</p>
         </div>
     </div>
 
@@ -34,23 +27,25 @@
         <div class="lang-switch" id="lang-btn">EN</div>
     </div>
 
-    <div class="modal-overlay" id="modal-overlay"><div class="modal-content" id="modal-text-content"></div></div>
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content" id="modal-text-content"></div>
+    </div>
+
     <div id="desktop-env" class="desktop-env">
         <div class="desktop-icons-container" id="desktopIconsContainer"></div>
         <div id="desktop-windows-container"></div>
         <div class="taskbar">
             <div class="taskbar-left">
                 <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
-                <button class="taskbar-lang" id="taskbar-lang-btn" onclick="toggleDesktopLanguage()">RU</button>
-                <button class="taskbar-lang" id="taskbar-settings-btn" onclick="window.openOSWindow('win-settings', '⚙', '⚙')" style="border-style:dashed;">⚙</button>
-                <button class="taskbar-exit" id="tb-exit-btn" onclick="exitToTerminal()">ВЫХОД</button>
+                <button class="taskbar-lang" id="taskbar-lang-btn">RU</button>
+                <button class="taskbar-settings-btn" id="taskbar-settings-btn" style="border-style:dashed;">⚙</button>
+                <button class="taskbar-exit" id="tb-exit-btn">ВЫХОД</button>
                 <div id="taskbar-apps" class="taskbar-apps"></div>
             </div>
             <div id="taskbar-timer" class="taskbar-timer">00:00:00:00</div>
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script src="desktop-icons.js"></script>
     <script src="desktop-windows.js"></script>
     <script src="menu.js"></script>
@@ -72,6 +67,5 @@
     <script src="tower.js"></script>
     <script src="words.js"></script>
     <script src="hangman.js"></script>
-    <script src="theme-adjustments.js"></script>
 </body>
 </html>
