@@ -6,7 +6,8 @@
 
     if (!menuEl || !titleEl || !btnFree || !btnStory) return;
 
-    titleEl.style.fontSize = '64px';
+    titleEl.style.fontSize = '84px';
+    titleEl.style.fontFamily = 'inherit';
 
     btnStory.addEventListener('click', (e) => {
         e.preventDefault();
@@ -15,7 +16,7 @@
 
     btnFree.addEventListener('click', () => {
         menuEl.style.display = 'none';
-        document.body.classList.remove('rage-active');
+        document.body.classList.remove('wrong-flash');
         if (window.activateDesktopMode) {
             window.activateDesktopMode();
         }
@@ -23,7 +24,7 @@
 
     function updateMenuLang() {
         const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
-        titleEl.innerText = "(The Message)";
+        titleEl.innerText = '("(The Message)")';
         btnStory.innerText = isRu ? "НАЧАТЬ ИГРУ" : "START GAME";
         btnFree.innerText = isRu ? "СВОБОДНАЯ ИГРА" : "FREE PLAY";
     }
