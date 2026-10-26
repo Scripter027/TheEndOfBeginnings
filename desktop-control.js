@@ -179,12 +179,20 @@ window.openOSWindow = function(id, title, iconStr) {
     }
     const win = document.getElementById(id);
     if (!win) return;
+    
     win.style.display = 'block';
+    win.style.position = 'absolute';
     win.style.zIndex = ++window.osZIndex;
-    if (window.innerWidth < 600) {
-        win.style.left = '4vw';
-        win.style.top = '10vh';
-    }
+    
+    const winWidth = win.offsetWidth || 300;
+    const winHeight = win.offsetHeight || 400;
+    
+    const leftPos = (window.innerWidth - winWidth) / 2;
+    const topPos = (window.innerHeight - 44 - winHeight) / 2;
+    
+    win.style.left = Math.max(10, leftPos) + 'px';
+    win.style.top = Math.max(10, topPos) + 'px';
+    
     if (!window.openWindowsTrack[id]) {
         window.openWindowsTrack[id] = iconStr || '📦';
         if (window.renderTaskbarApps) window.renderTaskbarApps();
