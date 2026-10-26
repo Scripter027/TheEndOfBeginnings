@@ -20,6 +20,10 @@ body.wrong-flash::before {
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.05) 0%, rgba(255, 50, 50, 0.01) 40%, rgba(0, 0, 0, 0.5) 100%) !important;
     background-size: 100% 4px, 100% 100%;
 }
+#game-main-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; overflow: hidden; transition: background-color 0.2s ease; }
+.menu-title-wrap { display: block; width: 100%; }
+#menu-title-node { font-size: 84px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; font-family: inherit; }
+.menu-buttons-wrap { display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%; }
 .info-btn, .lang-switch { position: absolute; bottom: 20px; font-weight: bold; cursor: pointer; opacity: 0.6; padding: 5px 12px; transition: all 0.2s ease; }
 .info-btn { left: 20px; font-size: 18px; border: 2px solid var(--neon-green); border-radius: 50%; box-shadow: var(--glow-green); }
 .info-btn:hover { opacity: 1; background: var(--neon-green); color: #000000; text-shadow: none; }
@@ -80,7 +84,6 @@ a { color: var(--neon-green); text-decoration: underline; cursor: pointer; }
 .dino-canvas { background: #000000; border: 2px solid #55ff55; display: block; margin: 0 auto; width: 100%; max-width: 100%; height: auto; touch-action: none; box-shadow: 0 0 15px rgba(85, 255, 85, 0.42); }
 .menu-glitch-green { color: var(--neon-green); text-shadow: 0 0 5px rgba(51, 255, 51, 0.3); animation: menuJitterMicro 0.6s infinite; }
 .menu-glitch-red { color: var(--neon-red) !important; text-shadow: 0 0 20px rgba(255, 51, 51, 0.9) !important; animation: menuJitterMax 0.1s infinite !important; }
-#game-main-menu { transition: background-color 0.2s ease; background-color: #000000 !important; }
 body.wrong-flash #game-main-menu .btn-submit { color: var(--neon-red) !important; border-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; text-shadow: var(--glow-red) !important; }
 body.wrong-flash #game-main-menu .btn-submit:hover:not(:disabled) { background: var(--neon-red) !important; color: #000000 !important; text-shadow: none !important; }
 .fade-in-element { animation: fadeInScene 1.5s ease forwards; }
@@ -108,9 +111,9 @@ body.wrong-flash .loader-line-draw { background: var(--neon-red); box-shadow: va
 @media (max-width: 1024px) and (orientation: portrait) { .orientation-blocker-overlay { display: flex !important; } }
 @media (max-width: 950px) and (orientation: landscape) {
     #game-main-menu { padding: 20px !important; flex-direction: row !important; align-items: center !important; justify-content: space-around !important; gap: 20px !important; }
-    #game-main-menu > div:first-child { width: auto !important; }
+    .menu-title-wrap { width: auto !important; }
     #menu-title-node { font-size: 38px !important; letter-spacing: 1px !important; white-space: nowrap !important; }
-    #game-main-menu > div:last-child { max-width: 260px !important; width: 100% !important; margin: 0 !important; gap: 10px !important; }
+    .menu-buttons-wrap { max-width: 260px !important; width: 100% !important; margin: 0 !important; gap: 10px !important; }
     .btn-submit { padding: 10px 14px !important; font-size: 13px !important; }
 }
 @keyframes menuJitterMicro {
