@@ -354,8 +354,53 @@ window.updateDesktopTexts = function() {
 };
 
 window.clearAllOSData = function() {
-    localStorage.clear();
-    location.reload();
+    document.querySelectorAll('.os-window').forEach(win => {
+        win.style.display = 'none';
+        win.classList.remove('maximized');
+    });
+    window.openWindowsTrack = {};
+    if (window.renderTaskbarApps) window.renderTaskbarApps();
+
+    localStorage.removeItem('kpr_icon_positions');
+    localStorage.removeItem('kpr_trashed_apps');
+    
+    if (typeof trashedApps !== 'undefined') {
+        window.trashedApps = {};
+    }
+
+    const defaultApps = {
+        'icon-win-msg': true,
+        'icon-win-search': true,
+        'icon-win-bsod': true,
+        'icon-win-dino': true,
+        'icon-win-blocks': true
+    };
+    localStorage.setItem('kpr_installed_apps', JSON.stringify(defaultApps));
+
+    const gameKeys = [
+        'kpr_dino_highscore',
+        'kpr_blockblast_highscore',
+        'kpr_tetris_highscore',
+        'kpr_sudoku_highscore',
+        'kpr_memory_highscore',
+        'kpr_tower_highscore',
+        'kpr_words_highscore',
+        'kpr_hangman_highscore'
+    ];
+    gameKeys.forEach(key => localStorage.removeItem(key));
+
+    if (window.generateDesktopIcons) {
+        window.generateDesktopIcons();
+    }
+    if (window.renderStoreList) {
+        window.renderStoreList();
+    }
+    if (window.renderTrashList) {
+        window.renderTrashList();
+    }
+    if (window.renderExplorerList) {
+        window.renderExplorerList();
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
