@@ -239,7 +239,22 @@ window.toggleWindowFromTaskbar = function(id) {
 };
 
 window.exitToTerminal = function() {
-    console.log("Шлюз терминала заблокирован. Выход невозможен.");
+    const deskEnv = document.getElementById('desktop-env');
+    const menuEl = document.getElementById('game-main-menu');
+    if (window.runSystemLoader) {
+        window.runSystemLoader(() => {
+            if (deskEnv) deskEnv.style.display = 'none';
+            if (menuEl) {
+                menuEl.style.display = 'flex';
+                menuEl.classList.remove('fade-in-element');
+                void menuEl.offsetWidth;
+                menuEl.classList.add('fade-in-element');
+            }
+        });
+    } else {
+        if (deskEnv) deskEnv.style.display = 'none';
+        if (menuEl) menuEl.style.display = 'flex';
+    }
     return false;
 };
 
