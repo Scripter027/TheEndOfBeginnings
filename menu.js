@@ -24,7 +24,7 @@
 
     function updateMenuLang() {
         const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
-        titleEl.innerText = '("(The Message)")';
+        titleEl.innerText = '""THE MESSAGE""';
         btnStory.innerText = isRu ? "НАЧАТЬ ИГРУ" : "START GAME";
         btnFree.innerText = isRu ? "СВОБОДНАЯ ИГРА" : "FREE PLAY";
     }
