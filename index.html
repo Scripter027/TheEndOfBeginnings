@@ -8,32 +8,13 @@
 </head>
 <body>
 
-    <div id="game-main-menu" style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; flex-direction: row; justify-content: space-between; padding: 40px; overflow: hidden;">
-        <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 50%; z-index: 2;">
-            <div>
-                <div id="menu-title-node" class="menu-glitch-green" style="font-size: 84px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; font-family: inherit;">[The Message]</div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%;">
-                <button id="menu-btn-story" class="btn-submit" style="opacity: 0.4; cursor: not-allowed; width: 100%; text-align: left; padding: 16px;">НАЧАТЬ ИГРУ</button>
-                <button id="menu-btn-free" class="btn-submit" style="width: 100%; text-align: left; padding: 16px;">СВОБОДНАЯ ИГРА</button>
-            </div>
+    <div id="game-main-menu" style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; flex-direction: column; justify-content: space-between; padding: 40px; overflow: hidden;">
+        <div>
+            <div id="menu-title-node" class="menu-glitch-green" style="font-size: 84px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; font-family: inherit;">[The Message]</div>
         </div>
-        <div id="menu-matrix-art" style="display: flex; width: 50%; height: 100%; justify-content: flex-end; align-items: center; font-family: 'Courier New', monospace; font-size: 10px; line-height: 1.1; white-space: pre; color: var(--neon-green); opacity: 0.4; pointer-events: none; user-select: none; z-index: 1; transition: color 0.2s ease;">
-0000011111000000000000000000000
-0001111111110000011111111000000
-0011110011110000111111111100000
-0011100001110001100000001100000
-0011100001110001100000001100000
-0001110011100001111111111100000
-0000111111000001111111111000000
-0000011110000001100000001100000
-0000110011000001100000001100000
-0001100001100001111111111100000
-0011000000110000000111000000000
-0111000000111000000111000000000
-1111111111111100111111111110000
-0000111100000000000111000000000
-0000111100000000111111111110000
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%;">
+            <button id="menu-btn-story" class="btn-submit" style="opacity: 0.4; cursor: not-allowed; width: 100%; text-align: left; padding: 16px;">НАЧАТЬ ИГРУ</button>
+            <button id="menu-btn-free" class="btn-submit" style="width: 100%; text-align: left; padding: 16px;">СВОБОДНАЯ ИГРА</button>
         </div>
     </div>
 
