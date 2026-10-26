@@ -2,6 +2,10 @@ window.osZIndex = 3000;
 window.openWindowsTrack = {};
 window.desktopLangClicks = 0;
 
+if (typeof currentLang === 'undefined') {
+    window.currentLang = 'ru';
+}
+
 (function automaticSystemWipe() {
     if (!localStorage.getItem('kpr_os_v1_repair_flush')) {
         localStorage.removeItem('kpr_icon_positions');
@@ -32,7 +36,8 @@ document.querySelectorAll('.icon').forEach(icon => {
         const targetId = icon.getAttribute('data-id') || icon.dataset.id;
         if (!targetId) return;
         
-        const displayTitle = currentLang === 'ru' ? 
+        const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ru';
+        const displayTitle = lang === 'ru' ? 
             (icon.getAttribute('data-title-ru') || icon.dataset.titleRu) : 
             (icon.getAttribute('data-title-en') || icon.dataset.titleEn);
             
@@ -164,7 +169,12 @@ window.toggleMaximize = function(id) {
 
 window.openOSWindow = function(id, title, iconStr) {
     if (id === 'win-bsod') {
-        if (window.triggerBSOD) window.triggerBSOD();
+        if (window.triggerBSOD) {
+            window.triggerBSOD();
+        } else {
+            const bsodFallback = document.getElementById('win-bsod');
+            if (bsodFallback) bsodFallback.style.display = 'block';
+        }
         return;
     }
     const win = document.getElementById(id);
@@ -226,27 +236,28 @@ window.exitToTerminal = function() {
 
 window.toggleDesktopLanguage = function() {
     window.desktopLangClicks++;
-    if (window.desktopLangClicks >= 10) {
-        const env = document.getElementById('desktop-env');
-        const banner = document.getElementById('rageBanner');
-        if (env) env.classList.add('rage-active');
-        if (banner) banner.style.display = 'block';
-        setTimeout(() => {
-            if (env) env.classList.remove('rage-active');
-            if (banner) banner.style.display = 'none';
-            window.desktopLangClicks = 0;
-        }, 10000);
-    }
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    const langBtn = document.getElementById('taskbar-lang-btn');
-    if (langBtn) langBtn.innerText = currentLang.toUpperCase();
-    if (window.updateDesktopTexts) window.updateDesktopTexts();
+    
+    const taskbarLangBtn = document.getElementById('taskbar-lang-btn');
+    if (taskbarLangBtn) taskbarLangBtn.innerText = currentLang.toUpperCase();
+    
+    const containerLangBtn = document.getElementById('lang-btn');
+    if (containerLangBtn) containerLangBtn.innerText = currentLang.toUpperCase();
+    
+    if (window.updateDesktopTexts) {
+        try { window.updateDesktopTexts(); } catch(e) { console.log(e); }
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     const langBtn = document.getElementById('taskbar-lang-btn');
     if (langBtn) {
         langBtn.addEventListener('click', window.toggleDesktopLanguage);
+    }
+    
+    const containerLangBtn = document.getElementById('lang-btn');
+    if (containerLangBtn) {
+        containerLangBtn.addEventListener('click', window.toggleDesktopLanguage);
     }
     
     const settingsBtn = document.getElementById('taskbar-settings-btn');
