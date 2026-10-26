@@ -36,16 +36,21 @@
     });
 
     function updateMenuLang() {
-        const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+        let isRu = true;
+        if (typeof currentLang !== 'undefined') {
+            isRu = (currentLang === 'ru');
+        } else if (typeof window.currentLang !== 'undefined') {
+            isRu = (window.currentLang === 'ru');
+        }
         btnStory.innerText = isRu ? "НАЧАТЬ ИГРУ" : "START GAME";
         btnFree.innerText = isRu ? "СВОБОДНАЯ ИГРА" : "FREE PLAY";
     }
 
-    setInterval(() => {
-        if (window.updateDesktopTexts) {
-            updateMenuLang();
-        }
-    }, 500);
+    if (window.updateDesktopTexts) {
+        updateMenuLang();
+    } else {
+        setTimeout(updateMenuLang, 100);
+    }
 
     function runGlitchCycle() {
         titleEl.classList.remove('menu-glitch-green');
