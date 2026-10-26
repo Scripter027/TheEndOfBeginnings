@@ -1,6 +1,6 @@
 {
-  "name": "The End of Beginnings",
-  "short_name": "KPR Terminal",
+  "name": "The Message",
+  "short_name": "TM",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
