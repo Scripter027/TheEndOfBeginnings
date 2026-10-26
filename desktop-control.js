@@ -180,13 +180,13 @@ window.openOSWindow = function(id, title, iconStr) {
     const win = document.getElementById(id);
     if (!win) return;
     
-    win.style.display = 'block';
     win.style.position = 'absolute';
+    win.style.display = 'block';
     win.style.zIndex = ++window.osZIndex;
     
     const winRect = win.getBoundingClientRect();
-    const winWidth = winRect.width || win.offsetWidth || 320;
-    const winHeight = winRect.height || win.offsetHeight || 420;
+    const winWidth = winRect.width || 320;
+    const winHeight = winRect.height || 420;
     
     const leftPos = (window.innerWidth - winWidth) / 2;
     const topPos = (window.innerHeight - 44 - winHeight) / 2;
