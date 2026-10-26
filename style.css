@@ -101,6 +101,11 @@ body.wrong-flash .loader-line-draw { background: var(--neon-red); box-shadow: va
 @keyframes drawLeft { from { height: 0; } to { height: 100%; } }
 @keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .desktop-fade-in { animation: fadeInScene 1s ease forwards; }
+.orientation-blocker-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000000; z-index: 9999999; justify-content: center; align-items: center; flex-direction: column; gap: 20px; padding: 30px; box-sizing: border-box; text-align: center; }
+.blocker-rotate-icon { font-size: 50px; color: var(--neon-green); animation: rotatePrompt 2s ease-in-out infinite; box-shadow: var(--glow-green); border: 2px solid var(--neon-green); border-radius: 50%; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); }
+.blocker-alert-text { color: var(--neon-green); font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: bold; line-height: 1.6; letter-spacing: 1px; text-transform: uppercase; text-shadow: var(--glow-green); }
+@keyframes rotatePrompt { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(0deg); } }
+@media (max-width: 1024px) and (orientation: portrait) { .orientation-blocker-overlay { display: flex !important; } }
 @keyframes menuJitterMicro {
     0% { transform: translate(0, 0); }
     20% { transform: translate(-0.5px, 0.5px); }
