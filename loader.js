@@ -21,6 +21,14 @@ window.runSystemLoader = function(onComplete) {
         txtNode.innerText = (typeof currentLang !== 'undefined' && currentLang === 'en') ? "LOADING" : "ЗАГРУЗКА";
     }
 
+    const blockerText = document.getElementById('blocker-text-node');
+    if (blockerText) {
+        const isEn = (typeof currentLang !== 'undefined' && currentLang === 'en');
+        blockerText.innerHTML = isEn ? 
+            "PLEASE ROTATE YOUR DEVICE TO LANDSCAPE" : 
+            "ПОЖАЛУЙСТА, ПЕРЕВЕРНИТЕ УСТРОЙСТВО ГОРИЗОНТАЛЬНО";
+    }
+
     loader.style.display = 'flex';
     void loader.offsetWidth;
     loader.style.opacity = '1';
