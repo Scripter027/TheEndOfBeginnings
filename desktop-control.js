@@ -1,5 +1,9 @@
 let trashedApps = {};
 
+if (typeof currentLang === 'undefined') {
+    window.currentLang = 'ru';
+}
+
 function renderTaskbarApps() {
     const container = document.getElementById('taskbar-apps');
     if (!container) return;
