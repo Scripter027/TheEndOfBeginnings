@@ -6,9 +6,6 @@
 
     if (!menuEl || !titleEl || !btnFree || !btnStory) return;
 
-    titleEl.style.fontSize = '84px';
-    titleEl.style.fontFamily = 'inherit';
-
     btnStory.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -24,7 +21,6 @@
 
     function updateMenuLang() {
         const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
-        titleEl.innerText = '""THE MESSAGE""';
         btnStory.innerText = isRu ? "НАЧАТЬ ИГРУ" : "START GAME";
         btnFree.innerText = isRu ? "СВОБОДНАЯ ИГРА" : "FREE PLAY";
     }
