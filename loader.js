@@ -22,6 +22,7 @@ window.runSystemLoader = function(onComplete) {
     }
 
     loader.style.display = 'flex';
+    void loader.offsetWidth;
     loader.style.opacity = '1';
 
     setTimeout(() => {
