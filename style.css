@@ -85,7 +85,7 @@ body.wrong-flash #game-main-menu .btn-submit { color: var(--neon-red) !important
 body.wrong-flash #game-main-menu .btn-submit:hover:not(:disabled) { background: var(--neon-red) !important; color: #000000 !important; text-shadow: none !important; }
 .fade-in-element { animation: fadeInScene 1.5s ease forwards; }
 @keyframes fadeInScene { from { opacity: 0; } to { opacity: 1; } }
-.global-loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000000; z-index: 999999; justify-content: center; align-items: center; flex-direction: column; gap: 25px; font-family: 'Courier New', Courier, monospace; }
+.global-loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000000; z-index: 999999; justify-content: center; align-items: center; flex-direction: column; gap: 25px; font-family: 'Courier New', Courier, monospace; opacity: 0; transition: opacity 0.5s ease; }
 .loader-text { color: var(--neon-green); font-size: 24px; font-weight: bold; letter-spacing: 4px; text-transform: uppercase; text-shadow: var(--glow-green); }
 body.wrong-flash .loader-text { color: var(--neon-red); text-shadow: var(--glow-red); }
 .loader-canvas-node { width: 60px; height: 64px; position: relative; animation: spinLoader 2s linear infinite; }
