@@ -2,7 +2,7 @@
     --neon-green: #33ff33; --dark-green: #002200; --bright-green: #88ff88;
     --neon-red: #ff3333; --dark-red: #220000;
     --glow-green: 0 0 10px rgba(51, 255, 51, 0.4); --glow-red: 0 0 10px rgba(255, 51, 51, 0.4);
-    --glass-glare: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.4) 100%);
+    --glass-glare: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body, html {
@@ -12,15 +12,16 @@ body, html {
 }
 body::before {
     content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), var(--glass-glare);
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), var(--glass-glare);
     z-index: 999999; background-size: 100% 4px, 100% 100%; pointer-events: none !important;
+    transform: translateZ(0); will-change: transform;
 }
 body.wrong-flash { color: var(--neon-red) !important; text-shadow: var(--glow-red) !important; }
 body.wrong-flash::before {
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.05) 0%, rgba(255, 50, 50, 0.01) 40%, rgba(0, 0, 0, 0.5) 100%) !important;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.03) 0%, rgba(0, 0, 0, 0.4) 100%) !important;
     background-size: 100% 4px, 100% 100%;
 }
-#game-main-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; overflow: hidden; transition: background-color 0.2s ease; }
+#game-main-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; overflow: hidden; transition: background-color 0.2s ease; transform: translateZ(0); }
 .menu-title-wrap { display: block; width: 100%; }
 #menu-title-node { font-size: 84px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; font-family: inherit; }
 .menu-buttons-wrap { display: flex; flex-direction: column; gap: 15px; max-width: 300px; width: 100%; }
@@ -44,13 +45,13 @@ a { color: var(--neon-green); text-decoration: underline; cursor: pointer; }
 .store-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border: 1px solid #55ff55; background: rgba(0,0,0,0.4); margin-bottom: 4px; }
 .explorer-btn { background: transparent; border: 2px solid #55ff55; color: #55ff55; padding: 4px 10px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: bold; }
 .explorer-btn:hover { background: #55ff55; color: #000000; }
-.desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: #55ff55; padding: 10px; text-shadow: 0 0 10px rgba(85, 255, 85, 0.5); overflow: hidden; }
+.desktop-env { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2000; color: #55ff55; padding: 10px; text-shadow: 0 0 10px rgba(85, 255, 85, 0.5); overflow: hidden; transform: translateZ(0); }
 .desktop-icons-container { position: relative; width: 100%; height: calc(100% - 50px); }
-.icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid #55ff55; width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); touch-action: none; z-index: 2100; pointer-events: auto !important; }
+.icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: move; padding: 10px; border: 2px solid #55ff55; width: 80px; height: 75px; box-shadow: 0 0 12px rgba(85, 255, 85, 0.5); background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); touch-action: none; z-index: 2100; pointer-events: auto !important; transform: translateZ(0); }
 .icon:hover { background: rgba(85, 255, 85, 0.3); border-color: #88ff88; box-shadow: 0 0 25px rgba(85, 255, 85, 0.9); color: #88ff88; }
 .icon-pic { font-size: 24px; margin-bottom: 2px; pointer-events: none; }
 .icon-name { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; word-break: break-word; line-height: 1.1; pointer-events: none; }
-.os-window { display: none; position: absolute; border: 2px solid #55ff55; background: rgba(0, 0, 0, 0.95); box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; }
+.os-window { display: none; position: absolute; border: 2px solid #55ff55; background: rgba(0, 0, 0, 0.95); box-shadow: 0 0 20px rgba(85, 255, 85, 0.5); min-width: 280px; max-width: 95vw; max-height: 80vh; z-index: 3000; overflow: hidden; transform: translateZ(0); }
 .os-window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; height: calc(100vh - 44px) !important; max-width: 100vw !important; max-height: calc(100vh - 44px) !important; }
 .window-header { background: #55ff55; color: #000000; padding: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; text-shadow: none; touch-action: none; }
 .window-controls { display: flex; gap: 6px; }
