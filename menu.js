@@ -6,16 +6,32 @@
 
     if (!menuEl || !titleEl || !btnFree || !btnStory) return;
 
+    menuEl.classList.add('fade-in-element');
+    titleEl.style.fontSize = '84px';
+    titleEl.style.fontFamily = 'inherit';
+
     btnStory.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
     });
 
     btnFree.addEventListener('click', () => {
-        menuEl.style.display = 'none';
-        document.body.classList.remove('wrong-flash');
-        if (window.activateDesktopMode) {
-            window.activateDesktopMode();
+        if (window.runSystemLoader) {
+            window.runSystemLoader(() => {
+                menuEl.style.display = 'none';
+                document.body.classList.remove('wrong-flash');
+                const deskEnv = document.getElementById('desktop-env');
+                if (deskEnv) {
+                    deskEnv.style.display = 'block';
+                    deskEnv.classList.add('desktop-fade-in');
+                }
+                if (window.activateDesktopMode) {
+                    window.activateDesktopMode();
+                }
+            });
+        } else {
+            menuEl.style.display = 'none';
+            if (window.activateDesktopMode) window.activateDesktopMode();
         }
     });
 
