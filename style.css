@@ -106,6 +106,13 @@ body.wrong-flash .loader-line-draw { background: var(--neon-red); box-shadow: va
 .blocker-alert-text { color: var(--neon-green); font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: bold; line-height: 1.6; letter-spacing: 1px; text-transform: uppercase; text-shadow: var(--glow-green); }
 @keyframes rotatePrompt { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(0deg); } }
 @media (max-width: 1024px) and (orientation: portrait) { .orientation-blocker-overlay { display: flex !important; } }
+@media (max-width: 950px) and (orientation: landscape) {
+    #game-main-menu { padding: 20px !important; flex-direction: row !important; align-items: center !important; justify-content: space-around !important; gap: 20px !important; }
+    #game-main-menu > div:first-child { width: auto !important; }
+    #menu-title-node { font-size: 38px !important; letter-spacing: 1px !important; white-space: nowrap !important; }
+    #game-main-menu > div:last-child { max-width: 260px !important; width: 100% !important; margin: 0 !important; gap: 10px !important; }
+    .btn-submit { padding: 10px 14px !important; font-size: 13px !important; }
+}
 @keyframes menuJitterMicro {
     0% { transform: translate(0, 0); }
     20% { transform: translate(-0.5px, 0.5px); }
