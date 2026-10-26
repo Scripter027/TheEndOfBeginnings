@@ -42,7 +42,15 @@
         <div id="desktop-windows-container">
             <div id="win-settings" class="os-window">
                 <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-settings')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-settings')">X</button></div></div>
-                <div class="window-body"><p id="txt-settings-info">Сброс сотрет рекорды и вернет иконки по умолчанию.</p><br><button id="btn-reset-all" class="btn-submit" onclick="window.clearAllOSData()">СТЕРЕТЬ ДАННЫЕ</button></div>
+                <div class="window-body">
+                    <p id="txt-settings-info">Сброс сотрет рекорды и вернет иконки по умолчанию.</p><br>
+                    <button id="btn-reset-all" class="btn-submit" onclick="window.clearAllOSData()">СТЕРЕТЬ ДАННЫЕ</button>
+                    <br><br>
+                    <div style="border: 2px dashed #55ff55; padding: 10px; font-size: 11px; background: rgba(0,0,0,0.3);">
+                        <span style="font-weight: bold; color: #88ff88;" id="txt-pwa-head">ДОБАВИТЬ НА ЭКРАН ДОМОЙ:</span><br>
+                        <span id="txt-pwa-body">Нажмите на три точки в углу браузера (или кнопку "Поделиться") и выберите "Добавить на рабочий стол" / "Добавить на экран домой", чтобы играть во весь экран!</span>
+                    </div>
+                </div>
             </div>
 
             <div id="win-explorer" class="os-window">
@@ -127,7 +135,6 @@
         </div>
     </div>
 
-    <script src="desktop-icons.js"></script>
     <script src="desktop-windows.js"></script>
     <script src="menu.js"></script>
     <script src="loader.js"></script>
