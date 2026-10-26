@@ -1,129 +1,88 @@
-window.activeStoreTab = 'apps';
-
 window.initKeeperStore = function() {
-    renderStoreLayout();
-    updateStoreTexts();
+    window.renderStoreList();
 };
 
-function renderStoreLayout() {
+window.renderStoreList = function() {
     const win = document.getElementById('win-store');
     if (!win) return;
-    let body = win.querySelector('.window-body');
-    if (!body || body.querySelector('.store-tab-container')) return;
-    body.style.padding = '0';
-    body.innerHTML = `
-        <div id="storeListContainer" style="height: calc(100% - 40px); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px;"></div>
-        <div class="store-tab-container" style="height: 40px; border-top: 2px solid #55ff55; display: flex; background: rgba(0,0,0,0.85);">
-            <button id="store-tab-apps" onclick="switchStoreTab('apps')" style="flex:1; background:transparent; border:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">APPS</button>
-            <button id="store-tab-games" onclick="switchStoreTab('games')" style="flex:1; background:transparent; border-left: 2px solid #55ff55; border-top:none; border-right:none; border-bottom:none; color:#55ff55; font-weight:bold; font-size:11px; cursor:pointer;">GAMES</button>
-        </div>
-    `;
-}
+    const body = win.querySelector('.window-body');
+    if (!body) return;
 
-window.switchStoreTab = function(tabId) {
-    window.activeStoreTab = tabId;
-    const btnApps = document.getElementById('store-tab-apps');
-    const btnGames = document.getElementById('store-tab-games');
-    if (btnApps && btnGames) {
-        btnApps.style.background = tabId === 'apps' ? '#55ff55' : 'transparent';
-        btnApps.style.color = tabId === 'apps' ? '#000000' : '#55ff55';
-        btnGames.style.background = tabId === 'games' ? '#55ff55' : 'transparent';
-        btnGames.style.color = tabId === 'games' ? '#000000' : '#55ff55';
+    body.innerHTML = '';
+    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
+    const localTrash = typeof trashedApps !== 'undefined' ? trashedApps : {};
+
+    const storeItems = [
+        { id: 'icon-win-tetris', target: 'win-tetris', ru: 'ТЕТРИС', en: 'TETRIS', pic: '🕹️' },
+        { id: 'icon-win-sudoku', target: 'win-sudoku', ru: 'СУДОКУ', en: 'SUDOKU', pic: '🔢' },
+        { id: 'icon-win-memory', target: 'win-memory', ru: 'ПАМЯТЬ', en: 'MEMORY', pic: '🧠' },
+        { id: 'icon-win-tower', target: 'win-tower', ru: 'БАШНЯ', en: 'TOWER', pic: '🏢' },
+        { id: 'icon-win-words', target: 'win-words', ru: 'СЛОВА', en: 'WORDS', pic: '🔤' },
+        { id: 'icon-win-hangman', target: 'win-hangman', ru: 'ВИСЕЛИЦА', en: 'HANGMAN', pic: '🪵' }
+    ];
+
+    let hasAvailable = false;
+    storeItems.forEach(item => {
+        if (installedApps[item.id] || localTrash[item.id]) return;
+        hasAvailable = true;
+
+        const row = document.createElement('div');
+        row.className = 'store-item';
+        
+        const title = isRu ? item.ru : item.en;
+        row.innerHTML = `
+            <span>${item.pic} ${title}</span>
+            <button class="explorer-btn" data-app-id="${item.id}">${isRu ? 'СКАЧАТЬ' : 'DOWNLOAD'}</button>
+        `;
+
+        row.querySelector('.explorer-btn').addEventListener('click', function() {
+            window.installApp(this.getAttribute('data-app-id'));
+        });
+
+        body.appendChild(row);
+    });
+
+    if (!hasAvailable) {
+        body.innerHTML = `<div style="text-align:center; padding-top:20px; opacity:0.6;">${isRu ? 'ВСЕ ПРИЛОЖЕНИЯ УСТАНОВЛЕНЫ' : 'ALL APPS INSTALLED'}</div>`;
     }
-    renderStoreList();
 };
 
-function updateStoreTexts() {
+window.installApp = function(id) {
+    let installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
+    installedApps[id] = true;
+    localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
+    
+    if (window.generateDesktopIcons) window.generateDesktopIcons();
+    if (window.renderStoreList) window.renderStoreList();
+    if (window.renderExplorerList) window.renderExplorerList();
+};
+
+window.advanceNestedFolder = function(step) {
+    const body = document.getElementById('nestedFolderBody');
+    if (!body) return;
     const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
-    const head = document.getElementById('head-store');
-    if (head) head.innerText = isRu ? "KEEPER STORE" : "KEEPER STORE";
-    const btnApps = document.getElementById('store-tab-apps');
-    const btnGames = document.getElementById('store-tab-games');
-    if (btnApps) btnApps.innerText = isRu ? "ПРИЛОЖЕНИЯ" : "APPS";
-    if (btnGames) btnGames.innerText = isRu ? "ИГРЫ" : "GAMES";
-    window.switchStoreTab(window.activeStoreTab);
-}
-
-function renderStoreList() {
-    const container = document.getElementById('storeListContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
-    const localTrash = typeof trashedApps !== 'undefined' ? trashedApps : {};
-    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
-    const storeApps = [
-        { id: 'icon-win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', icon: '📟', type: 'apps', defaultInstalled: true },
-        { id: 'icon-win-search', ru: 'Поисковик', en: 'Search', icon: '🌐', type: 'apps', defaultInstalled: true },
-        { id: 'icon-win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', icon: '💀', type: 'apps', defaultInstalled: true },
-        { id: 'icon-win-dino', ru: 'Динозавр', en: 'Dino', icon: '🦖', type: 'games', defaultInstalled: true },
-        { id: 'icon-win-blocks', ru: 'Блок Бласт', en: 'Block Blast', icon: '🧱', type: 'games', defaultInstalled: true },
-        { id: 'icon-win-tetris', ru: 'Тетрис', en: 'Tetris', icon: '🕹️', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-sudoku', ru: 'Судоку', en: 'Sudoku', icon: '🔢', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-memory', ru: 'Память', en: 'Memory', icon: '🧠', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-tower', ru: 'Башня', en: 'Tower', icon: '🏢', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-words', ru: 'Угадай слово', en: 'Guess Word', icon: '🔤', type: 'games', defaultInstalled: false },
-        { id: 'icon-win-hangman', ru: 'Виселица', en: 'Hangman', icon: '🪵', type: 'games', defaultInstalled: false }
-    ];
-    storeApps.forEach(app => {
-        if (app.type !== window.activeStoreTab) return;
-        const item = document.createElement('div');
-        item.className = 'store-item';
-        const displayTitle = isRu ? app.ru : app.en;
-        const iconEl = document.getElementById(app.id);
-        
-        let isInstalled = app.defaultInstalled;
-        if (app.id === 'icon-win-tetris' || app.id === 'icon-win-sudoku' || app.id === 'icon-win-memory' || app.id === 'icon-win-tower' || app.id === 'icon-win-words' || app.id === 'icon-win-hangman') {
-            isInstalled = !!installedApps[app.id];
-        } else if (iconEl && (iconEl.style.display === 'none' || localTrash[app.id])) {
-            isInstalled = false;
-        }
-
-        let btnText = isInstalled ? (isRu ? 'Удалить' : 'Uninstall') : (isRu ? 'Скачать' : 'Install');
-        item.innerHTML = `
-            <div class="store-item-left" style="display:flex; align-items:center; gap:8px;">
-                <span>${app.icon}</span>
-                <span>${displayTitle}</span>
-            </div>
-            <button class="explorer-btn" onclick="toggleAppInstallation('${app.id}', ${isInstalled})">${btnText}</button>
-        `;
-        container.appendChild(item);
-    });
-}
-
-window.toggleAppInstallation = function(id, isInstalled) {
-    const icon = document.getElementById(id);
-    if (!icon) return;
-    if (typeof trashedApps === 'undefined') window.trashedApps = {};
-    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
-
-    if (isInstalled) {
-        icon.style.display = 'none';
-        if (icon.dataset && icon.dataset.id) {
-            window.closeOSWindow(icon.dataset.id);
-        }
-        trashedApps[id] = { ru: icon.dataset.titleRu || '', en: icon.dataset.titleEn || '' };
-        localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps));
-        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower' || id === 'icon-win-words' || id === 'icon-win-hangman') {
-            delete installedApps[id];
-            localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
-        }
-    } else {
-        const slot = window.getFirstAvailableSlot ? window.getFirstAvailableSlot() : { left: '20px', top: '20px' };
-        icon.style.left = slot.left; 
-        icon.style.top = slot.top; 
-        icon.style.display = 'flex';
-        let positions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
-        positions[id] = { left: slot.left, top: slot.top };
-        localStorage.setItem('kpr_icon_positions', JSON.stringify(positions));
-        if (id === 'icon-win-tetris' || id === 'icon-win-sudoku' || id === 'icon-win-memory' || id === 'icon-win-tower' || id === 'icon-win-words' || id === 'icon-win-hangman') {
-            installedApps[id] = true;
-            localStorage.setItem('kpr_installed_apps', JSON.stringify(installedApps));
-        }
-        if (trashedApps[id]) { 
-            delete trashedApps[id]; 
-            localStorage.setItem('kpr_trashed_apps', JSON.stringify(trashedApps)); 
-        }
+    
+    if (step === 0) {
+        body.innerHTML = `<div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" onclick="window.advanceNestedFolder(1)">📁 АРХИВ_СТАРЫЙ</span></div>`;
+    } else if (step === 1) {
+        body.innerHTML = `<div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" onclick="window.openOSWindow('win-zip', 'SECRET.ZIP', '📦')">📄 SECRET.ZIP</span></div>`;
     }
-    if (window.updateDesktopTexts) window.updateDesktopTexts();
-    renderStoreList();
+};
+
+window.checkZipPassword = function(windowId) {
+    const win = document.getElementById(windowId);
+    if (!win) return;
+    const input = win.querySelector('.zip-input-field');
+    if (!input) return;
+    
+    const pass = input.value.trim();
+    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+    
+    if (windowId === 'win-zip' && pass === '246') {
+        input.outerHTML = `<div style="color:#55ff55; margin-top:10px;">${isRu ? 'ДОСТУП РАЗРЕШЕН: СЕКРЕТНЫЙ ТЕКСТ 1' : 'ACCESS GRANTED: SECRET TEXT 1'}</div>`;
+    } else {
+        input.value = '';
+        input.placeholder = isRu ? 'НЕВЕРНЫЙ ПАРОЛЬ!' : 'WRONG PASSWORD!';
+    }
 };
