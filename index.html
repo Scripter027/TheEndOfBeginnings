@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The End of Beginnings</title>
+    <title>The Message</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,7 +33,83 @@
 
     <div id="desktop-env" class="desktop-env">
         <div class="desktop-icons-container" id="desktopIconsContainer"></div>
-        <div id="desktop-windows-container"></div>
+        
+        <div id="desktop-windows-container">
+            <div id="win-settings" class="os-window">
+                <div class="window-header"><span id="head-settings">НАСТРОЙКИ</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-settings')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-settings')">X</button></div></div>
+                <div class="window-body"><p id="txt-settings-info">Сброс сотрет рекорды и вернет иконки по умолчанию.</p><br><button id="btn-reset-all" class="btn-submit" onclick="window.clearAllOSData()">СТЕРЕТЬ ДАННЫЕ</button></div>
+            </div>
+
+            <div id="win-explorer" class="os-window">
+                <div class="window-header"><span id="head-explorer">ПРОВОДНИК</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-explorer')">_</button><button class="window-btn" onclick="window.toggleMaximize('win-explorer')">[]</button><button class="window-btn" onclick="window.closeOSWindow('win-explorer')">X</button></div></div>
+                <div class="window-body" id="explorerListContainer"></div>
+            </div>
+
+            <div id="win-store" class="os-window">
+                <div class="window-header"><span id="head-store">KEEPER STORE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-store')">_</button><button class="window-btn" onclick="window.toggleMaximize('win-store')">[]</button><button class="window-btn" onclick="window.closeOSWindow('win-store')">X</button></div></div>
+                <div class="window-body"></div>
+            </div>
+
+            <div id="win-trash" class="os-window">
+                <div class="window-header"><span id="head-trash">КОРЗИНА</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-trash')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-trash')">X</button></div></div>
+                <div class="window-body"><div class="trash-controls"><button id="btn-trash-clear" class="trash-btn" onclick="window.emptyTrash()">Очистить</button></div><div class="trash-list" id="trashListContainer"></div></div>
+            </div>
+
+            <div id="win-msg" class="os-window">
+                <div class="window-header"><span id="head-msg">МЕССЕНДЖЕР v1.02</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-msg')">_</button><button class="window-btn" onclick="window.toggleMaximize('win-msg')">[]</button><button class="window-btn" onclick="window.closeOSWindow('win-msg')">X</button></div></div>
+                <div class="window-body"><div class="msg-container"><div class="msg-left" id="msg-user-list"></div><div class="msg-right" id="msg-chat-zone"></div></div></div>
+            </div>
+
+            <div id="win-search" class="os-window">
+                <div class="window-header"><span id="head-search">БРАУЗЕР 'ПРИЗРАК'</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-search')">_</button><button class="window-btn" onclick="window.toggleMaximize('win-search')">[]</button><button class="window-btn" onclick="window.closeOSWindow('win-search')">X</button></div></div>
+                <div class="window-body" id="search-browser-body"></div>
+            </div>
+            <div id="win-dino" class="os-window">
+                <div class="window-header"><span id="head-dino">DINO_RUN.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-dino')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-dino')">X</button></div></div>
+                <div class="window-body"><canvas id="dinoCanvas" class="dino-canvas"></canvas><div id="dino-over-box" style="text-align:center; margin-top:5px;"></div></div>
+            </div>
+
+            <div id="win-blocks" class="os-window">
+                <div class="window-header"><span id="head-blocks">BLOCK_BLAST.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-blocks')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-blocks')">X</button></div></div>
+                <div class="window-body"><div class="bb-container"><div id="bb-score" style="font-weight:bold; color:#55ff55; font-size:12px;">СЧЕТ: 0</div><div class="bb-board" id="bbBoard"></div><div class="bb-dock" id="bbDock"></div><div id="bb-over-box" style="text-align:center; min-height:15px;"></div></div></div>
+            </div>
+
+            <div id="win-tetris" class="os-window">
+                <div class="window-header"><span id="head-tetris">ТЕТРИС.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-tetris')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-tetris')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div id="tetris-score" style="font-weight:bold; color:#55ff55; font-size:12px;">СЧЕТ: 0</div><canvas id="tetrisCanvas" style="border:2px solid #55ff55; background:#000; display:block;"></canvas><div id="tetris-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-sudoku" class="os-window">
+                <div class="window-header"><span id="head-sudoku">СУДОКУ.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-sudoku')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-sudoku')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="display:flex; gap:15px; font-size:11px; color:#55ff55; font-weight:bold;"><div id="sudoku-current-score">СЧЕТ: 0</div><div id="sudoku-high-score">РЕКОРД: 0</div></div><div class="bb-board" id="sudokuBoard" style="grid-template-columns: repeat(9, 1fr); gap:1px;"></div><div class="bb-dock" id="sudokuDock" style="min-height:35px; gap:4px; padding:3px;"></div><div id="sudoku-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-memory" class="os-window">
+                <div class="window-header"><span id="head-memory">ПАМЯТЬ.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-memory')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-memory')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:8px;"><div id="memory-score" style="font-weight:bold; color:#55ff55; font-size:12px;">СЧЕТ: 0</div><div class="bb-board" id="memoryBoard" style="grid-template-columns: repeat(2, 1fr); gap:4px; max-width:200px;"></div><div id="memory-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-tower" class="os-window">
+                <div class="window-header"><span id="head-tower">БАШНЯ.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-tower')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-tower')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div id="tower-score" style="font-weight:bold; color:#55ff55; font-size:12px;">ЭТАЖИ: 0</div><canvas id="towerCanvas" style="border:2px solid #55ff55; background:#000; display:block;"></canvas><div id="tower-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-words" class="os-window">
+                <div class="window-header"><span id="head-words">СЛОВА.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-words')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-words')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div id="words-score-panel" style="display:flex; gap:20px; font-weight:bold; color:#55ff55; font-size:11px;"></div><div id="wordsBoard"></div><div id="wordsDock" style="width:100%;"></div><div id="words-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-hangman" class="os-window">
+                <div class="window-header"><span id="head-hangman">ВИСЕЛИЦА.EXE</span><div class="window-controls"><button class="window-btn" onclick="window.minimizeOSWindow('win-hangman')">_</button><button class="window-btn" onclick="window.closeOSWindow('win-hangman')">X</button></div></div>
+                <div class="window-body" style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="display:flex; gap:15px; font-size:11px; color:#55ff55; font-weight:bold;"><div id="hangman-current-score">СЧЕТ: 0</div><div id="hangman-high-score">РЕКОРД: 0</div></div><canvas id="hangmanCanvas" width="220" height="140" style="border:2px solid #55ff55; background:#000; display:block;"></canvas><div id="hangmanDock" style="width:100%;"></div><div id="hangman-over-box" style="text-align:center; min-height:15px;"></div></div>
+            </div>
+
+            <div id="win-dontopen" class="os-window"><div class="window-header"><span id="head-dontopen">DO NOT OPEN</span><div class="window-controls"><button class="window-btn" onclick="window.closeOSWindow('win-dontopen')">X</button></div></div><div class="window-body" id="nestedFolderBody"><div style="padding-left: 8px; border-left: 2px dashed #55ff55; margin-top: 6px;"><span class="nested-folder-link" onclick="window.advanceNestedFolder(0)">📁 НЕ ОТКРЫВАТЬ СКАЗАЛ</span></div></div></div>
+            <div id="win-zip" class="os-window"><div class="window-header"><span id="head-zip">SECRET.ZIP</span><div class="window-controls"><button class="window-btn" onclick="window.closeOSWindow('win-zip')">X</button></div></div><div class="window-body"><p class="txt-zip-locked">Файл зашифрован ключом AES-256.</p><br><input type="password" class="zip-input-field" placeholder="PASSWORD..." onkeydown="if(event.key==='Enter') window.checkZipPassword('win-zip')"></div></div>
+            <div id="win-zip2" class="os-window"><div class="window-header"><span id="head-zip2">SECRET1.ZIP</span><div class="window-controls"><button class="window-btn" onclick="window.closeOSWindow('win-zip2')">X</button></div></div><div class="window-body"><p class="txt-zip-locked">Файл зашифрован ключом AES-256.</p><br><input type="password" class="zip-input-field" placeholder="PASSWORD..." onkeydown="if(event.key==='Enter') window.checkZipPassword('win-zip2')"></div></div>
+            <div id="win-zip3" class="os-window"><div class="window-header"><span id="head-zip3">SECRET2.ZIP</span><div class="window-controls"><button class="window-btn" onclick="window.closeOSWindow('win-zip3')">X</button></div></div><div class="window-body"><p class="txt-zip-locked">Файл зашифрован ключом AES-256.</p><br><input type="password" class="zip-input-field" placeholder="PASSWORD..." onkeydown="if(event.key==='Enter') window.checkZipPassword('win-zip3')"></div></div>
+        </div>
+
         <div class="taskbar">
             <div class="taskbar-left">
                 <div class="taskbar-start" id="tb-os-label">KPR-OS v1.0</div>
