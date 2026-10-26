@@ -81,9 +81,8 @@ a { color: var(--neon-green); text-decoration: underline; cursor: pointer; }
 .menu-glitch-green { color: var(--neon-green); text-shadow: 0 0 5px rgba(51, 255, 51, 0.3); animation: menuJitterMicro 0.6s infinite; }
 .menu-glitch-red { color: var(--neon-red) !important; text-shadow: 0 0 20px rgba(255, 51, 51, 0.9) !important; animation: menuJitterMax 0.1s infinite !important; }
 
-#game-main-menu { transition: background-color 0.2s ease; }
-body.wrong-flash #game-main-menu { background-color: #220000 !important; }
-body.wrong-flash #game-main-menu .btn-submit { color: var(--neon-red) !important; border-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; }
+#game-main-menu { transition: background-color 0.2s ease; background-color: #000000 !important; }
+body.wrong-flash #game-main-menu .btn-submit { color: var(--neon-red) !important; border-color: var(--neon-red) !important; box-shadow: var(--glow-red) !important; text-shadow: var(--glow-red) !important; }
 body.wrong-flash #game-main-menu .btn-submit:hover:not(:disabled) { background: var(--neon-red) !important; color: #000000 !important; text-shadow: none !important; }
 
 @keyframes menuJitterMicro {
