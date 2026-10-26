@@ -26,7 +26,68 @@ if (!localStorage.getItem('kpr_installed_apps')) {
     localStorage.setItem('kpr_installed_apps', JSON.stringify(defaultApps));
 }
 
-document.querySelectorAll('.icon').forEach(icon => {
+window.generateDesktopIcons = function() {
+    const container = document.getElementById('desktopIconsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+    const installedApps = JSON.parse(localStorage.getItem('kpr_installed_apps')) || {};
+    const savedPositions = JSON.parse(localStorage.getItem('kpr_icon_positions')) || {};
+    const localTrash = typeof trashedApps !== 'undefined' ? trashedApps : {};
+
+    const allIcons = [
+        { id: 'icon-win-explorer', target: 'win-explorer', ru: 'Проводник', en: 'Explorer', pic: '📁', core: true },
+        { id: 'icon-win-store', target: 'win-store', ru: 'Магазин', en: 'Store', pic: '🛒', core: true },
+        { id: 'icon-win-trash', target: 'win-trash', ru: 'Корзина', en: 'Trash', pic: '🗑️', core: true },
+        { id: 'icon-win-msg', target: 'win-msg', ru: 'KPR-Связь', en: 'KPR-Chat', pic: '📟' },
+        { id: 'icon-win-search', target: 'win-search', ru: 'Поисковик', en: 'Search', pic: '🌐' },
+        { id: 'icon-win-bsod', target: 'win-bsod', ru: 'Экран Смерти', en: 'BSOD Screen', pic: '💀' },
+        { id: 'icon-win-dino', target: 'win-dino', ru: 'Динозавр', en: 'Dino', pic: '🦖' },
+        { id: 'icon-win-blocks', target: 'win-blocks', ru: 'Блок Бласт', en: 'Block Blast', pic: '🧱' },
+        { id: 'icon-win-tetris', target: 'win-tetris', ru: 'Тетрис', en: 'Tetris', pic: '🕹️' },
+        { id: 'icon-win-sudoku', target: 'win-sudoku', ru: 'Судоку', en: 'Sudoku', pic: '🔢' },
+        { id: 'icon-win-memory', target: 'win-memory', ru: 'Память', en: 'Memory', pic: '🧠' },
+        { id: 'icon-win-tower', target: 'win-tower', ru: 'Башня', en: 'Tower', pic: '🏢' },
+        { id: 'icon-win-words', target: 'win-words', ru: 'Угадай слово', en: 'Guess Word', pic: '🔤' },
+        { id: 'icon-win-hangman', target: 'win-hangman', ru: 'Виселица', en: 'Hangman', pic: '🪵' }
+    ];
+
+    allIcons.forEach(iconData => {
+        if (localTrash[iconData.id]) return;
+        if (!iconData.core && !installedApps[iconData.id]) return;
+
+        const iconEl = document.createElement('div');
+        iconEl.id = iconData.id;
+        iconEl.className = 'icon';
+        iconEl.setAttribute('data-id', iconData.target);
+        iconEl.setAttribute('data-title-ru', iconData.ru);
+        iconEl.setAttribute('data-title-en', iconData.en);
+        iconEl.setAttribute('data-icon', iconData.pic);
+
+        iconEl.innerHTML = `
+            <div class="icon-pic">${iconData.pic}</div>
+            <div class="icon-name">${isRu ? iconData.ru : iconData.en}</div>
+        `;
+
+        if (savedPositions[iconData.id]) {
+            iconEl.style.left = savedPositions[iconData.id].left;
+            iconEl.style.top = savedPositions[iconData.id].top;
+        } else if (window.getFirstAvailableSlot) {
+            const slot = window.getFirstAvailableSlot();
+            iconEl.style.left = slot.left;
+            iconEl.style.top = slot.top;
+            savedPositions[iconData.id] = { left: slot.left, top: slot.top };
+        }
+
+        container.appendChild(iconEl);
+        bindDragLogic(iconEl);
+    });
+
+    localStorage.setItem('kpr_icon_positions', JSON.stringify(savedPositions));
+};
+
+function bindDragLogic(icon) {
     let isDragging = false;
     let startX = 0, startY = 0;
     let oldTop = icon.style.top;
@@ -35,14 +96,9 @@ document.querySelectorAll('.icon').forEach(icon => {
     function executeOpen() {
         const targetId = icon.getAttribute('data-id') || icon.dataset.id;
         if (!targetId) return;
-        
         const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ru';
-        const displayTitle = lang === 'ru' ? 
-            (icon.getAttribute('data-title-ru') || icon.dataset.titleRu) : 
-            (icon.getAttribute('data-title-en') || icon.dataset.titleEn);
-            
-        const iconPic = icon.getAttribute('data-icon') || icon.dataset.icon || '📦';
-        
+        const displayTitle = lang === 'ru' ? icon.getAttribute('data-title-ru') : icon.getAttribute('data-title-en');
+        const iconPic = icon.getAttribute('data-icon') || '📦';
         window.openOSWindow(targetId, displayTitle, iconPic);
     }
 
@@ -50,7 +106,6 @@ document.querySelectorAll('.icon').forEach(icon => {
         isDragging = false;
         startX = e.clientX;
         startY = e.clientY;
-        
         icon.style.zIndex = "5000";
         oldTop = icon.style.top;
         oldLeft = icon.style.left;
@@ -63,26 +118,21 @@ document.querySelectorAll('.icon').forEach(icon => {
             if (Math.abs(ev.clientX - startX) > 8 || Math.abs(ev.clientY - startY) > 8) {
                 isDragging = true;
             }
-            
             if (isDragging) {
                 let containerEl = document.getElementById('desktopIconsContainer');
                 if (!containerEl) return;
                 let container = containerEl.getBoundingClientRect();
-                
                 let x = ev.clientX - container.left - shiftX;
                 let y = ev.clientY - container.top - shiftY;
-                
                 icon.style.left = x + 'px';
                 icon.style.top = y + 'px';
             }
         }
 
         document.addEventListener('pointermove', onPointerMove);
-
         document.addEventListener('pointerup', function onUp(ev) {
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerup', onUp);
-            
             icon.style.zIndex = "auto";
 
             if (!isDragging) {
@@ -90,10 +140,7 @@ document.querySelectorAll('.icon').forEach(icon => {
                 return;
             }
 
-            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? 
-                window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : 
-                { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
-                
+            let snap = (window.snapToGrid && typeof window.snapToGrid === 'function') ? window.snapToGrid(ev.clientX - shiftX, ev.clientY - shiftY) : { x: ev.clientX - shiftX, y: ev.clientY - shiftY };
             const trashIcon = document.getElementById('icon-win-trash');
 
             if (icon.id !== 'icon-win-trash' && icon.id !== 'icon-win-explorer' && icon.id !== 'icon-win-store' && trashIcon && snap.x === trashIcon.offsetLeft && snap.y === trashIcon.offsetTop) {
@@ -134,7 +181,19 @@ document.querySelectorAll('.icon').forEach(icon => {
             if (window.renderStoreList) window.renderStoreList();
         });
     });
-});
+}
+
+window.updateDesktopIconsLanguage = function() {
+    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+    document.querySelectorAll('.icon').forEach(icon => {
+        const nameNode = icon.querySelector('.icon-name');
+        if (nameNode) {
+            const ruText = icon.getAttribute('data-title-ru');
+            const enText = icon.getAttribute('data-title-en');
+            nameNode.innerText = isRu ? ruText : enText;
+        }
+    });
+};
 document.querySelectorAll('.os-window').forEach(win => {
     let header = win.querySelector('.window-header');
     if (!header) return;
@@ -273,26 +332,42 @@ window.toggleDesktopLanguage = function() {
     }
 };
 
+window.updateDesktopTexts = function() {
+    const isRu = (typeof currentLang !== 'undefined' ? currentLang === 'ru' : true);
+    const osLabel = document.getElementById('tb-os-label');
+    if (osLabel) osLabel.innerText = isRu ? "KPR-OS v1.0" : "KPR-OS v1.0";
+    const exitBtn = document.getElementById('tb-exit-btn');
+    if (exitBtn) exitBtn.innerText = isRu ? "ВЫХОД" : "EXIT";
+    const headSettings = document.getElementById('head-settings');
+    if (headSettings) headSettings.innerText = isRu ? "НАСТРОЙКИ" : "SETTINGS";
+    const txtSettingsInfo = document.getElementById('txt-settings-info');
+    if (txtSettingsInfo) txtSettingsInfo.innerText = isRu ? "Сброс сотрет рекорды и вернет иконки по умолчанию." : "Reset will wipe highscores and restore default icons.";
+    const btnResetAll = document.getElementById('btn-reset-all');
+    if (btnResetAll) btnResetAll.innerText = isRu ? "СТЕРЕТЬ ДАННЫЕ" : "WIPE DATA";
+    const txtPwaHead = document.getElementById('txt-pwa-head');
+    if (txtPwaHead) txtPwaHead.innerText = isRu ? "ДОБАВИТЬ НА ЭКРАН ДОМОЙ:" : "ADD TO HOME SCREEN:";
+    const txtPwaBody = document.getElementById('txt-pwa-body');
+    if (txtPwaBody) txtPwaBody.innerText = isRu ? "Нажмите на три точки в углу браузера (или кнопку 'Поделиться') и выберите 'Добавить на рабочий стол', чтобы играть во весь экран!" : "Click on the three dots in your browser corner (or 'Share' button) and select 'Add to Home Screen' to play in full screen!";
+    if (window.updateDesktopIconsLanguage) {
+        window.updateDesktopIconsLanguage();
+    }
+};
+
+window.clearAllOSData = function() {
+    localStorage.clear();
+    location.reload();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const langBtn = document.getElementById('taskbar-lang-btn');
-    if (langBtn) {
-        langBtn.addEventListener('click', window.toggleDesktopLanguage);
-    }
-    
+    if (langBtn) langBtn.addEventListener('click', window.toggleDesktopLanguage);
     const containerLangBtn = document.getElementById('lang-btn');
-    if (containerLangBtn) {
-        containerLangBtn.addEventListener('click', window.toggleDesktopLanguage);
-    }
-    
+    if (containerLangBtn) containerLangBtn.addEventListener('click', window.toggleDesktopLanguage);
     const settingsBtn = document.getElementById('taskbar-settings-btn');
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', () => {
-            window.openOSWindow('win-settings', '⚙', '⚙');
-        });
-    }
-
+    if (settingsBtn) settingsBtn.addEventListener('click', () => { window.openOSWindow('win-settings', '⚙', '⚙'); });
     const exitBtn = document.getElementById('tb-exit-btn');
-    if (exitBtn) {
-        exitBtn.addEventListener('click', window.exitToTerminal);
+    if (exitBtn) exitBtn.addEventListener('click', window.exitToTerminal);
+    if (window.generateDesktopIcons) {
+        window.generateDesktopIcons();
     }
 });
