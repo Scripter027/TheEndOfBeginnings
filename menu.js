@@ -17,12 +17,14 @@
 
     btnFree.addEventListener('click', () => {
         if (window.runSystemLoader) {
+            menuEl.style.display = 'none';
             window.runSystemLoader(() => {
-                menuEl.style.display = 'none';
                 document.body.classList.remove('wrong-flash');
                 const deskEnv = document.getElementById('desktop-env');
                 if (deskEnv) {
                     deskEnv.style.display = 'block';
+                    deskEnv.classList.remove('desktop-fade-in');
+                    void deskEnv.offsetWidth;
                     deskEnv.classList.add('desktop-fade-in');
                 }
                 if (window.activateDesktopMode) {
