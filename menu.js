@@ -7,8 +7,6 @@
     if (!menuEl || !titleEl || !btnFree || !btnStory) return;
 
     menuEl.classList.add('fade-in-element');
-    titleEl.style.fontSize = '84px';
-    titleEl.style.fontFamily = 'inherit';
 
     btnStory.addEventListener('click', (e) => {
         e.preventDefault();
