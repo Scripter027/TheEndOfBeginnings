@@ -3,11 +3,11 @@ window.openWindowsTrack = {};
 window.desktopLangClicks = 0;
 
 (function automaticSystemWipe() {
-    if (!localStorage.getItem('kpr_os_v1_repair_flush_v2')) {
+    if (!localStorage.getItem('kpr_os_v1_repair_flush_final')) {
         localStorage.removeItem('kpr_icon_positions');
         localStorage.removeItem('kpr_trashed_apps');
         localStorage.removeItem('kpr_installed_apps');
-        localStorage.setItem('kpr_os_v1_repair_flush_v2', 'true');
+        localStorage.setItem('kpr_os_v1_repair_flush_final', 'true');
     }
 })();
 
