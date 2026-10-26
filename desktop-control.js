@@ -242,8 +242,8 @@ window.exitToTerminal = function() {
     const deskEnv = document.getElementById('desktop-env');
     const menuEl = document.getElementById('game-main-menu');
     if (window.runSystemLoader) {
+        if (deskEnv) deskEnv.style.display = 'none';
         window.runSystemLoader(() => {
-            if (deskEnv) deskEnv.style.display = 'none';
             if (menuEl) {
                 menuEl.style.display = 'flex';
                 menuEl.classList.remove('fade-in-element');
